@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 1. Cargar Lineicons-5 -->
+    <link rel="stylesheet" href="/assets/lineicons-5/free-solid-fonts/lineicons-free-solid.css">
+
+    <!-- 2. Cargar Bulma local -->
+    <link rel="stylesheet" href="/assets/css/bulma.min.css">
+
+    <!-- 3. Cargar Alpine.js local (importante el atributo defer) -->
+    <script defer src="/assets/js/alpine.min.js"></script>
+
+    <!-- 4. Cargar JS del Servicio Actual -->
+    <script src="/assets/javascript/header.js"></script>
+
+	<title>Header</title>
+</head>
+<body x-data="headerComponent" class="has-text-centered has-navbar-fixed-top">
+    <div class="container">
+        <nav class="navbar is-fixed-top has-background-black-ter">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/welcome">
+                    <figure class="image mx-4">
+                        <img src="/assets/img/saavedraVanilla.svg"/>
+                    </figure>
+                </a>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="field is-grouped">
+                        <p class="control">
+                            <a href="/login">
+                                <button class="button is-primary px-3">
+                                    <span class="icon">
+                                        <i class="lni lnis-pen-to-square"></i>
+                                    </span>
+                                    <span>Salir</span>
+                                </button>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

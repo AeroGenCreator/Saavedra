@@ -1,0 +1,89 @@
+// STORES MULTI REQUEST
+let refreshSubscribers = [];
+
+// FLAG - ALERTS OF REFRESH IN COURSE
+let isRefreshing = false;
+
+// ONCE TOKEN IS REFRESHED, REQUEST CAN BE SEND
+function onTokenRefreshed() {
+
+  refreshSubscribers.forEach((callback) => callback());
+
+  // REFRESH STORING ARRAY
+  refreshSubscribers = [];
+
+}
+
+export async function SecureFetching(route, requestContent = {}) {
+
+  // CREDENTIALS "COOKIES" INCLUDED FOR EVERY FETCH
+  const options = {
+    ...requestContent,
+    credentials: 'include'
+  };
+
+  try {
+
+    let response = await fetch(route, options);
+
+    // IF ORIGINAL FETCH REQUIRES REFRESHING|
+    if (response.status === 401) {
+
+      // FIRST: IS THERE OTHER REFRESHING IN COURSE?
+      if (isRefreshing) {
+
+        // RETURN PROMISE
+        return new Promise((resolve) => {
+
+          // REQUETS IS SAVED AS A FUNCTION OF A NEW FETCHING
+          refreshSubscribers.push(async () => {
+
+            resolve(await fetch(route, options));
+
+          });
+
+        });
+
+      }
+
+      // IF NO REFRESH THEN REFRESHING PETITION CAN TAKE PLACE
+      isRefreshing = true;
+
+      const refreshResponse = await fetch("/refresh", {
+        method: "POST",
+        credentials: 'include'
+      });
+
+      // ONCE REFRESH IS DONE, FLAG CAN RETURN TO FALSE
+      isRefreshing = false;
+
+      // POSITIVE REFRESH? 1. ALL REQUEST ARE EXECUTED 2. NEW FETCH WITH NEW TOKEN
+      if (refreshResponse.ok) {
+
+        onTokenRefreshed();
+
+        return await fetch(route, options);
+
+      } else {
+
+        // DB TOKEN AND COOKIE DON'T MATCH, ALERT, SESSION EXPIRED.
+        alert("Session has expired!");
+        window.location.href = "/login";
+        return refreshResponse;
+
+      }
+
+    }
+
+    // RETURNS ORIGINAL RESPONSE AS LONG AS IT IS NOT 401
+    return response;
+
+  } catch (error) {
+
+    console.error("Reusable fetching component error:", error);
+
+    throw error;
+
+  }
+
+}

@@ -1,0 +1,8 @@
+# Variables de Entorno
+.env
+# Credenciales Globales
+private/
+# Base de datos
+db/
+# Mac
+**/.DS_Store

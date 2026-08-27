@@ -10,19 +10,25 @@ document.addEventListener('alpine:init', () => {
     "initStatus": true,
 
     async init() {
+
       try {
 
-        const headerRes = await fetch("/assets/layout/header.html");
-        const footerRes = await fetch("/assets/layout/footer.html");
+        const headerRes = await fetch("/assets/src/html/header.html");
+        const footerRes = await fetch("/assets/src/html/footer.html");
 
-        this.headerContent = headerRes.text();
-        this.footerContent = footerRes.text();
+        this.headerContent = await headerRes.text();
+        this.footerContent = await footerRes.text();
 
       } catch (error) {
+
         console.error("Layout loading erro:", error);
+
       } finally {
+
         this.initStatus = false;
+
       }
+
     }
 
   })

@@ -15,4 +15,5 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	handler := api.New(service)
 
 	mux.HandleFunc("/login", handler.CallLogin)
+	mux.HandleFunc("/", handler.CallRoot)
 }

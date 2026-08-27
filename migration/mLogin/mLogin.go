@@ -1,5 +1,7 @@
 package mLogin
 
+// TABLES: users | auth_user_session
+
 import (
 	"database/sql"
 	"fmt"
@@ -24,7 +26,7 @@ func CreateSchema(db *sql.DB) error {
 		q1Migrate := `
 		CREATE TABLE users_new (
 			id INTEGER PRIMARY KEY,
-			name TEXT NOT NULL,
+			name TEXT NOT NULL UNIQUE,
 			email TEXT NOT NULL UNIQUE,
 			password TEXT NOT NULL
 		);
@@ -40,7 +42,7 @@ func CreateSchema(db *sql.DB) error {
 		q1Create := `
 		CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY,
-			name TEXT NOT NULL,
+			name TEXT NOT NULL UNIQUE,
 			email TEXT NOT NULL UNIQUE,
 			password TEXT NOT NULL
 		);`

@@ -20,7 +20,10 @@ document.addEventListener('alpine:init', () => {
         const response = await fetch(
           "/login",
           {
-            method: "POST", body: JSON.stringify({ "email": this.email, "password": this.password })
+            method: "POST",
+            body: JSON.stringify({ "email": this.email, "password": this.password }),
+            credentials: "include",
+            headers: { 'Content-Type': 'application/json' },
           })
 
         // Handler of errors HTTP

@@ -7,6 +7,7 @@
 package main
 
 import (
+	"Saavedra/env"
 	loginMigration "Saavedra/migration/mLogin"
 	loginRouter "Saavedra/service/Login/router"
 	loginStore "Saavedra/service/Login/store"
@@ -31,21 +32,24 @@ func main() {
 		log.Println("Error loading '.env' file", err)
 	}
 
-	dataBase := string(os.Getenv("DATABASE_FILE_NAME"))
-	adminName := string(os.Getenv("ADMIN_NAME"))
-	adminEmail := string(os.Getenv("ADMIN_EMAIL"))
-	adminPassword := string(os.Getenv("ADMIN_PASSWORD"))
+	dataBase := os.Getenv("DATABASE_FILE_NAME")
+	adminName := os.Getenv("ADMIN_NAME")
+	adminEmail := os.Getenv("ADMIN_EMAIL")
+	adminPassword := os.Getenv("ADMIN_PASSWORD")
 
 	if adminName == "" || adminEmail == "" || adminPassword == "" {
 		log.Fatal("There are missing admin credentials in '.env' file...")
 	}
 
-	err = os.MkdirAll("./Backend/Database/", 0755)
+	// LOAD THOSE GLOBAL ENV CONFS TO BE USED IN PROJECT
+	env.LoadGlobalEnvs()
+
+	err = os.MkdirAll("./db/", 0755)
 	if err != nil {
 		log.Fatal("Error when generatin database path...", err)
 	}
 
-	db, err := sql.Open("sqlite", "./Backend/Database/"+dataBase+".db")
+	db, err := sql.Open("sqlite", "./db/"+dataBase+".db")
 	if err != nil {
 		log.Fatal(err.Error())
 	}

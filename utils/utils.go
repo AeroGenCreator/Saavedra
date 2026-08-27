@@ -59,6 +59,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		if err != nil {
 			if err == http.ErrNoCookie {
+				log.Println(err)
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
@@ -74,8 +75,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		})
 
 		if err != nil || !tkn.Valid {
-			w.WriteHeader(http.StatusUnauthorized)
 			log.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 

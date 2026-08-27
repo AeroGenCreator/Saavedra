@@ -11,7 +11,7 @@ import (
 )
 
 type Service interface {
-	ValidatePassword(req *types.LoginRequest) (*types.Credentials, error)
+	ValidatePassword(req *types.User) (*types.Credentials, error)
 	LoadCompanyBranding() (*types.CompanyBranding, error)
 }
 
@@ -30,10 +30,10 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 // CONTRACT POST: VALIDATE LOGIN
-func (s service) ValidatePassword(req *types.LoginRequest) (*types.Credentials, error) {
+func (s service) ValidatePassword(req *types.User) (*types.Credentials, error) {
 
 	// 1. QUERY USER
-	dbNamePassword, err := s.store.GetUserInfo(req)
+	dbUser, err := s.store.GetUserInfo(req)
 	if err != nil {
 		return nil, err
 	}
@@ -43,18 +43,18 @@ func (s service) ValidatePassword(req *types.LoginRequest) (*types.Credentials, 
 	var token = ""
 
 	// 2. VALIDATE LOGIN
-	boolean := CheckPasswordHash(req.Password, dbNamePassword.HashedPassword)
+	boolean := CheckPasswordHash(req.Password, dbUser.Password)
 
 	// 3. GENERATE TOKEN
-	if boolean && dbNamePassword.UserName != "" {
-		token, err = utils.GenerateToken(dbNamePassword.UserName)
+	if boolean && dbUser.Name != "" {
+		token, err = utils.GenerateToken(dbUser.Name)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	// 4. NEW USER? INSERT AUTH IN DB
-	userSession.UserId = dbNamePassword.Id
+	userSession.UserId = dbUser.Id
 	userSession.AuthToken = token
 
 	err = s.store.InsertUserSession(&userSession)
@@ -63,24 +63,27 @@ func (s service) ValidatePassword(req *types.LoginRequest) (*types.Credentials, 
 	}
 
 	// 5. RETUNR CREDENTIALS
-	creds.UserName = dbNamePassword.UserName
+	creds.UserName = dbUser.Name
 	creds.ValidationStatus = boolean
 	creds.Token = token
 
 	return &creds, nil
 }
 
-// CONTRATO GET Exportar Branding
+// CONTRACT GET Exportar Branding
 func (s service) LoadCompanyBranding() (*types.CompanyBranding, error) {
+
 	// Lectura en bytes del fichero
-	fileBytes, err := os.ReadFile("config/global.json")
+	fileBytes, err := os.ReadFile("config/brand.json")
 	if err != nil {
 		return nil, err
 	}
+
 	// Parsing y asignacion a un "type"
 	var brand types.CompanyBranding
 	if err := json.Unmarshal(fileBytes, &brand); err != nil {
 		return nil, err
 	}
+
 	return &brand, nil
 }

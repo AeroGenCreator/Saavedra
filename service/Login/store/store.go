@@ -8,7 +8,7 @@ import (
 
 // Contratos Del servicio
 type Store interface {
-	GetUserInfo(request *types.LoginRequest) (*types.DBUserInfo, error)
+	GetUserInfo(request *types.User) (*types.User, error)
 	InsertUserSession(userInfo *types.AuthUserSession) error
 }
 
@@ -23,14 +23,14 @@ func New(db *sql.DB) Store {
 }
 
 // CONTRACT: QUERY TO USER INFO
-func (s *store) GetUserInfo(request *types.LoginRequest) (*types.DBUserInfo, error) {
-	q := `SELECT name, password FROM users WHERE email = ?;`
-	dbUser := types.DBUserInfo{}
+func (s *store) GetUserInfo(request *types.User) (*types.User, error) {
+	q := `SELECT id, name, email, password FROM users WHERE email = ?;`
+	dbUser := types.User{}
 
-	err := s.db.QueryRow(q, request.Email).Scan(&dbUser.UserName, &dbUser.HashedPassword)
+	err := s.db.QueryRow(q, request.Email).Scan(&dbUser.Id, &dbUser.Name, &dbUser.Email, &dbUser.Password)
 	if err == sql.ErrNoRows {
-		dbUser.UserName = ""
-		dbUser.HashedPassword = ""
+		dbUser.Name = ""
+		dbUser.Password = ""
 		return &dbUser, nil
 	} else if err != nil {
 		return nil, err
@@ -66,10 +66,7 @@ func InjectAdminDB(admin types.User, db *sql.DB) error {
 	admin.Password = hashedPassword
 
 	command := `
-	INSERT INTO users (name, email, password) VALUES (?, ?, ?)
-	ON CONFLICT(email) DO UPDATE SET
-	email = excluded.email,
-	password = excluded.password;
+	INSERT OR REPLACE INTO users (name, email, password) VALUES (?, ?, ?)
 	`
 
 	if _, err = db.Exec(command, admin.Name, admin.Email, admin.Password); err != nil {

@@ -6,8 +6,6 @@ import (
 	utils "Saavedra/utils"
 	"encoding/json"
 	"os"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Service interface {
@@ -21,12 +19,6 @@ type service struct {
 
 func New(store store.Store) Service {
 	return service{store: store}
-}
-
-// FUNCIÓN: CHECK PASSWORD
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }
 
 // CONTRACT POST: VALIDATE LOGIN
@@ -43,11 +35,11 @@ func (s service) ValidatePassword(req *types.User) (*types.Credentials, error) {
 	var token = ""
 
 	// 2. VALIDATE LOGIN
-	boolean := CheckPasswordHash(req.Password, dbUser.Password)
+	boolean := utils.CheckPasswordHash(req.Password, dbUser.Password)
 
 	// 3. GENERATE TOKEN
 	if boolean && dbUser.Name != "" {
-		token, err = utils.GenerateToken(dbUser.Name)
+		token, err = utils.GenerateToken(dbUser)
 		if err != nil {
 			return nil, err
 		}

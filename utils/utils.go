@@ -3,9 +3,11 @@ package utils
 import (
 	"Saavedra/env"
 	"Saavedra/service/Login/types"
+	"context"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -13,6 +15,10 @@ import (
 )
 
 // === REUSABLES ===
+
+type contextKey string
+
+const UserIDKey contextKey = "userID"
 
 // FUNCTION -> HASHED STRINGS
 func HashPassword(password string) (string, error) {
@@ -24,13 +30,20 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), nil
 }
 
+// FUNCTION: CHECK PASSWORD
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
+
 // FUNCTION: GENERATE SIGNED TOKEN
-func GenerateToken(userName string) (string, error) {
+func GenerateToken(user *types.User) (string, error) {
 	var jwtKey = []byte(env.ApyKey)
 	expirationTime := time.Now().Add(5 * time.Minute)
 
 	claims := &types.Claims{
-		UserName: userName,
+		UserId:   strconv.Itoa(user.Id),
+		UserName: user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
@@ -63,6 +76,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
+		// TOKEN EXTRACTION && VALIDATION
 		tokenStr := c.Value
 		claims := &types.Claims{}
 
@@ -76,7 +90,10 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		// USER ID IS ADDED TO THE REQUEST
+		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 
 	})
 }

@@ -1,4 +1,4 @@
-![Alt text](assets/img/saavedraVanilla.svg)
+![image](assets/img/saavedraVanilla.png)
 
 # About it
 

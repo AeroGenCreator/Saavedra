@@ -1,4 +1,6 @@
-# Saavedra Vanilla
+![Alt text](assets/img/saavedraVanilla.svg)
+
+# About it
 
 ## Quick Start
 
@@ -13,6 +15,9 @@ DATABASE_FILE_NAME=
 ADMIN_NAME=
 ADMIN_EMAIL=
 ADMIN_PASSWORD=
+# SET TO '1' IN PRODUCTION
+IS_PRODUCTION=
+
 ```
 
 ## Dependencies

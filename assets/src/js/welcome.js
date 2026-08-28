@@ -28,7 +28,22 @@ document.addEventListener('alpine:init', () => {
 
       }
 
+    },
+
+  async closeSession() {
+
+    try {
+
+      const res = await fetch("/login", { method: "PUT", credentials: "include" })
+      window.location.href = "/login"
+
+    } catch (error) {
+
+      console.log(error)
+
     }
+
+  }
 
   })
 

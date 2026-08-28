@@ -92,8 +92,50 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		// USER ID IS ADDED TO THE REQUEST
 		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
-
 		next.ServeHTTP(w, r.WithContext(ctx))
 
+	})
+}
+
+func LoginMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		c, err := r.Cookie("auth_token")
+
+		// 1. Manejo de errores de la cookie
+		if err != nil {
+			if err == http.ErrNoCookie {
+				log.Println("Sin cookie de autenticación, continuando como anónimo...")
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Println("Error al leer cookie:", err)
+			http.Error(w, "Galleta de autenticación inválida", http.StatusBadRequest)
+			return
+		}
+
+		tokenStr := c.Value
+
+		// 2. Si la cookie está vacía
+		if tokenStr == "" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// 3. Parsear token
+		claims := &types.Claims{}
+		parser := jwt.NewParser()
+
+		_, _, err = parser.ParseUnverified(tokenStr, claims)
+		if err != nil {
+			log.Println("Error al parsear token no verificado:", err)
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// 4. Inyección exitosa del valor en el contexto
+		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

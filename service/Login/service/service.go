@@ -11,6 +11,7 @@ import (
 type Service interface {
 	ValidatePassword(req *types.User) (*types.Credentials, error)
 	LoadCompanyBranding() (*types.CompanyBranding, error)
+	LogOut(id int) error
 }
 
 type service struct {
@@ -78,4 +79,12 @@ func (s service) LoadCompanyBranding() (*types.CompanyBranding, error) {
 	}
 
 	return &brand, nil
+}
+
+// CONTRACT -> SEND LOG OUT AND REQUEST -> JWT = NULL
+func (s service) LogOut(id int) error {
+	if err := s.store.SetUserSessionNull(id); err != nil {
+		return err
+	}
+	return nil
 }

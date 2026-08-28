@@ -10,7 +10,7 @@ import (
 type Store interface {
 	GetUserInfo(request *types.User) (*types.User, error)
 	InsertUserSession(userInfo *types.AuthUserSession) error
-	FetchUserAuthToken(user *types.User) (*types.AuthUserSession, error)
+	SetUserSessionNull(id int) error
 }
 
 // Objeto "cursor" SQL -> Con sus contratos
@@ -82,7 +82,12 @@ func InjectAdminDB(admin types.User, db *sql.DB) error {
 	return nil
 }
 
-// #
-func (s *store) FetchUserAuthToken(user *types.User) (*types.AuthUserSession, error) {
-	return nil, nil
+// CONTRACT: WHEN LOG OUT -> NO JWT TOKEN
+func (s *store) SetUserSessionNull(id int) error {
+	q := "UPDATE auth_user_session SET auth_token = NULL WHERE user_id = ?"
+	_, err := s.db.Exec(q, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

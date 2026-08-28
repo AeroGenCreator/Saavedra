@@ -4,6 +4,7 @@ import (
 	"Saavedra/service/Login/api"
 	"Saavedra/service/Login/service"
 	"Saavedra/service/Login/store"
+	utils "Saavedra/utils"
 	"database/sql"
 	"net/http"
 )
@@ -14,6 +15,6 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	service := service.New(store)
 	handler := api.New(service)
 
-	mux.HandleFunc("/login", handler.CallLogin)
+	mux.Handle("/login", utils.LoginMiddleware(http.HandlerFunc(handler.CallLogin)))
 	mux.HandleFunc("/", handler.CallRoot)
 }

@@ -4,10 +4,12 @@ import (
 	"Saavedra/env"
 	"Saavedra/service/Login/service"
 	"Saavedra/service/Login/types"
+	"Saavedra/utils"
 	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -66,7 +68,7 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 			Value:    creds.Token,
 			Expires:  time.Now().Add(5 * time.Minute),
 			Path:     "/",
-			HttpOnly: true,
+			HttpOnly: env.IsProduction,
 			Secure:   env.IsProduction,
 			SameSite: http.SameSiteLaxMode,
 		})
@@ -76,6 +78,31 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 			"success":  true,
 			"username": creds.UserName,
 		})
+
+	case http.MethodPut:
+
+		userID, ok := r.Context().Value(utils.UserIDKey).(string)
+
+		if !ok {
+			log.Println("userID was not extracted properly")
+			http.Error(w, "/login - Method PUT", http.StatusInternalServerError)
+			return
+		}
+
+		intID, err := strconv.Atoi(userID)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "Error parsing 'string'", http.StatusInternalServerError)
+			return
+		}
+
+		if err = e.service.LogOut(intID); err != nil {
+			log.Println(err)
+			http.Error(w, "DB Alteration Error", http.StatusInternalServerError)
+			return
+		}
+
+		return
 
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)

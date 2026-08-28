@@ -35,7 +35,7 @@
                     <div class="navbar-item">
                         <div class="field is-grouped">
                             <p class="control">
-                                <a href="/login">
+                                <a href="/login" @click.prevent="closeSession">
                                     <button class="button is-primary px-3">
                                         Cerrar Sesión
                                         <span class="px-2">

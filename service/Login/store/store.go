@@ -10,6 +10,7 @@ import (
 type Store interface {
 	GetUserInfo(request *types.User) (*types.User, error)
 	InsertUserSession(userInfo *types.AuthUserSession) error
+	FetchUserAuthToken(user *types.User) (*types.AuthUserSession, error)
 }
 
 // Objeto "cursor" SQL -> Con sus contratos
@@ -66,7 +67,12 @@ func InjectAdminDB(admin types.User, db *sql.DB) error {
 	admin.Password = hashedPassword
 
 	command := `
-	INSERT OR REPLACE INTO users (name, email, password) VALUES (?, ?, ?)
+	INSERT INTO users (name, email, password)
+	VALUES (?, ?, ?)
+	ON CONFLICT DO UPDATE SET
+	name = excluded.name,
+	email = excluded.email,
+	password = excluded.password;
 	`
 
 	if _, err = db.Exec(command, admin.Name, admin.Email, admin.Password); err != nil {
@@ -74,4 +80,9 @@ func InjectAdminDB(admin types.User, db *sql.DB) error {
 	}
 
 	return nil
+}
+
+// #
+func (s *store) FetchUserAuthToken(user *types.User) (*types.AuthUserSession, error) {
+	return nil, nil
 }

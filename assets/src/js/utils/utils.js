@@ -14,7 +14,7 @@ function onTokenRefreshed() {
 
 }
 
-export async function SecureFetching(route, requestContent = {}) {
+async function SecureFetching(route, requestContent = {}) {
 
   // CREDENTIALS "COOKIES" INCLUDED FOR EVERY FETCH
   const options = {

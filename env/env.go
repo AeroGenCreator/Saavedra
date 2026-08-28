@@ -7,6 +7,7 @@ import (
 )
 
 var IsProduction bool
+var ApyKey string
 
 func LoadGlobalEnvs() error {
 	IsProduction, err := strconv.ParseBool(os.Getenv("IS_PRODUCTION"))
@@ -15,5 +16,8 @@ func LoadGlobalEnvs() error {
 		IsProduction = false
 	}
 	log.Print("Project 'IS_PRODUCTION' status set to: ", IsProduction)
+
+	ApyKey = (os.Getenv("JWT_KEY"))
+
 	return nil
 }

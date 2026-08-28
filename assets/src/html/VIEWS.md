@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+## Header
 
-    <!-- Load Frontend Dependencies -->
-    <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
-    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
-
-	<title>Header</title>
-</head>
+```html
 <body class="has-text-centered has-navbar-fixed-top">
 
-    <div class="container">
+    <div class="container" x-data="utilsAlpine">
 
         <nav class="navbar is-fixed-top has-background-black-ter">
 
@@ -47,4 +37,23 @@
     </div>
 
 </body>
-</html>
+```
+
+## Footer
+
+```html
+<footer class="footer has-background-black-ter">
+  <div class="content has-text-centered">
+    <p class="has-text-white is-size-7">
+        <span class="is-bold">Saavedra Vanilla</span> esta construido sobre una arquitectura desacomplada basada en DSEE.
+        Cualquier servicio extra puede ser desarrollado según la necesidad del negocio. El cobro es por
+        la cantidad de capaz por servicio reduciendo el costo drasticamente. Para cotizar un servicio extra
+        en tu app
+        <a href="mailto:gallo85floyd@gmail.com">contactanos.</a>
+    </p>
+    <p class="is-size-7 has-text-white">
+        Numero de Contacto / WhatsApp: <span class="has-text-primary">+52 246 207 29 85</span>
+    </p>
+  </div>
+</footer>
+```

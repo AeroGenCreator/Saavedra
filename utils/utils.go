@@ -1,8 +1,8 @@
 package utils
 
 import (
+	"Saavedra/env"
 	"Saavedra/service/Login/types"
-	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -26,11 +26,7 @@ func HashPassword(password string) (string, error) {
 
 // FUNCTION: GENERATE SIGNED TOKEN
 func GenerateToken(userName string) (string, error) {
-	Key := string(os.Getenv("JWT_KEY"))
-	var jwtKey = []byte(Key)
-	if Key == "" {
-		return "", errors.New("System cannot continue since environment 'JWT_KEY' has not been declared")
-	}
+	var jwtKey = []byte(env.ApyKey)
 	expirationTime := time.Now().Add(5 * time.Minute)
 
 	claims := &types.Claims{

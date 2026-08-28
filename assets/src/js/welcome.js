@@ -4,33 +4,34 @@ document.addEventListener('alpine:init', () => {
 
   Alpine.data("welcomeComponent", () => ({
 
-    // DOM BOUND VARIABLES && CONTENTS
-    "headerContent": '',
-    "footerContent": '',
-    "initStatus": true,
+    async validateRefresh() {
 
-    async init() {
+      const res = await SecureFetching("/welcome")
 
-      try {
+      if (!res.ok) {
 
-        const headerRes = await fetch("/assets/src/html/header.html");
-        const footerRes = await fetch("/assets/src/html/footer.html");
+        if (res.status === 401) {
 
-        this.headerContent = await headerRes.text();
-        this.footerContent = await footerRes.text();
+          alert("Session expires")
+          window.location.href = "/"
 
-      } catch (error) {
+        } else {
 
-        console.error("Layout loading erro:", error);
+          alert(res.status)
+          window.location.href = "/"
 
-      } finally {
+        }
 
-        this.initStatus = false;
+      } else {
+
+        window.location.href = "/welcome"
 
       }
 
     }
 
   })
+
   )
+
 })

@@ -24,6 +24,12 @@ Either to develop or run Saavedra it is important to add the following alpine.js
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 ```
 
+Another important dependency is a set of functions and alpine components writen beforehand as reusables.
+
+```html
+<script defer src="/assets/src/js/utils/utils.js"></script>
+```
+
 To import lucide-icons you must add the following import path to the HTML header.
 
 ```html

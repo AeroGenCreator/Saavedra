@@ -14,12 +14,19 @@ function onTokenRefreshed() {
 
 }
 
-async function SecureFetching(route, requestContent = {}) {
+async function SecureFetching(route, requestContent = {}, customHeaders = {'X-Requested-With': 'jsFrontendComponent'}) {
+
   console.log("Attempting secure fetch...")
-  // CREDENTIALS "COOKIES" INCLUDED FOR EVERY FETCH
+
+  // CREDENTIALS, HEADERS && OPTIONS
   const options = {
     ...requestContent,
-    credentials: 'include'
+    credentials: 'include',
+    headers: {
+      'X-Requested-With': 'jsFrontendComponent',
+      ...(requestContent.headers || {}),
+      ...customHeaders
+    }
   };
 
   try {

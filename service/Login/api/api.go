@@ -159,26 +159,26 @@ func (e *EndpointHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		log.Println("Refresh token attempting...")
+
 		authUser := &types.AuthUserSession{
 			UserId:    intID,
 			AuthToken: apiKey,
 		}
 
-		validation, err := e.service.ValidateTokenRefresh(userName, authUser)
+		newToken, err := e.service.ValidateTokenRefresh(userName, authUser)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		if validation == "" {
+		if newToken == "" {
+			e.service.LogOut(&types.AuthUserSession{
+				UserId:    authUser.UserId,
+				AuthToken: "",
+			})
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
-			return
-		}
-
-		newToken, err := utils.GenerateToken(userName, intID)
-		if err != nil {
-			http.Error(w, "Token Generation Error", http.StatusInternalServerError)
 			return
 		}
 

@@ -7,6 +7,7 @@ document.addEventListener('alpine:init', () => {
     async imgRefresh() {
 
       console.log("Attempting refresh...", document.cookie)
+
       const res = await SecureFetching("/welcome")
 
       if (!res.ok) {

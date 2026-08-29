@@ -99,19 +99,19 @@ func (s service) ValidateTokenRefresh(name string, authUser *types.AuthUserSessi
 		return "", err
 	}
 
-	if dbUser.AuthToken != authUser.AuthToken {
+	newToken, err := utils.GenerateToken(name, dbUser.Id)
+
+	if dbUser.AuthToken == authUser.AuthToken {
 		err = s.store.UpdateUserSession(&types.AuthUserSession{
 			UserId:    dbUser.UserId,
-			AuthToken: "",
+			AuthToken: newToken,
 		})
 		if err != nil {
 			return "", err
 		}
-		return "", nil
+		return newToken, nil
 	}
 
-	newToken, err := utils.GenerateToken(name, dbUser.Id)
-
-	return newToken, nil
+	return "", nil
 
 }

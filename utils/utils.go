@@ -43,7 +43,7 @@ func CheckPasswordHash(password, hash string) bool {
 // FUNCTION: GENERATE SIGNED TOKEN
 func GenerateToken(name string, id int) (string, error) {
 	var jwtKey = []byte(env.ApyKey)
-	expirationTime := time.Now().Add(1 * time.Minute)
+	expirationTime := time.Now().Add(30 * time.Second)
 
 	claims := &types.Claims{
 		UserId:   strconv.Itoa(id),
@@ -68,7 +68,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		// JWTKEY
 		jwtKey := []byte(os.Getenv("JWT_KEY"))
-
+		requestedWith := r.Header.Get("X-Requested-With")
+		log.Println(requestedWith)
 		// APIKEY FROM JS
 		c, err := r.Cookie("auth_token")
 
@@ -85,19 +86,27 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		tokenStr := c.Value
 		claims := &types.Claims{}
 
-		tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (any, error) {
+		_, err = jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (any, error) {
 			return jwtKey, nil
 		})
+
+		if err != nil {
+			// HANDLES INVALID TOKEN OR NIL -> FROM JS RETURNS 401 -> FROM URL RETURN /login
+			log.Println(err.Error())
+
+			if requestedWith != "jsFrontendComponent" {
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				return
+			}
+
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
 		// USER ID IS ADDED TO THE REQUEST
 		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
 		ctx = context.WithValue(ctx, UserNameKey, claims.UserName)
 		ctx = context.WithValue(ctx, ApiKey, tokenStr)
-
-		if !tkn.Valid {
-			next.ServeHTTP(w, r.WithContext(ctx))
-			return
-		}
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 

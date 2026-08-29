@@ -15,7 +15,7 @@ func LoadGlobalEnvs() error {
 		log.Printf("Invalid value given to 'IS_PRODUCTION' (%v): default 'false'", err)
 		IsProduction = false
 	}
-	log.Print("Project 'IS_PRODUCTION' status set to: ", IsProduction)
+	log.Print("PROJECT STATUS SET TO:", IsProduction)
 
 	ApyKey = (os.Getenv("JWT_KEY"))
 

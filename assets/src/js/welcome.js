@@ -32,20 +32,19 @@ document.addEventListener('alpine:init', () => {
 
   async closeSession() {
 
-    console.log("Attempting user logout...")
-
     try {
+      console.log("Attempting user logout...")
+      const res = await fetch("/login", { method: "PATCH", credentials: "include" })
+      if (res.ok) {
 
-      const res = await fetch("/login", { method: "PUT", credentials: "include" })
-      if (!res.ok) {
-
-        window.location.href = "/login"
+        window.location.href = "/login", { method: "GET" }
 
       }
 
     } catch (error) {
 
       console.log(error)
+      return
 
     }
 

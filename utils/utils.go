@@ -111,7 +111,6 @@ func LowLevelMiddleware(next http.Handler) http.Handler {
 		// 1. Manejo de errores de la cookie
 		if err != nil {
 			if err == http.ErrNoCookie {
-				log.Println("No cookies, login with new user session...")
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -145,6 +144,7 @@ func LowLevelMiddleware(next http.Handler) http.Handler {
 		ctx = context.WithValue(ctx, UserNameKey, claims.UserName)
 		ctx = context.WithValue(ctx, ApiKey, tokenStr)
 		next.ServeHTTP(w, r.WithContext(ctx))
+
 	})
 }
 

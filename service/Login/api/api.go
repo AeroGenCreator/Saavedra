@@ -79,7 +79,7 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 			"username": creds.UserName,
 		})
 
-	case http.MethodPut:
+	case http.MethodPatch:
 
 		// WHENEVER PUT METHOD IS CALL -> DB APY TOKEN IS SET TO ''.
 		userID, ok := r.Context().Value(utils.UserIDKey).(string)
@@ -108,6 +108,17 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		http.SetCookie(w, &http.Cookie{
+			Name:     "auth_token",
+			Value:    "",
+			Expires:  time.Now().Add(5 * time.Minute),
+			Path:     "/",
+			HttpOnly: env.IsProduction,
+			Secure:   env.IsProduction,
+			SameSite: http.SameSiteLaxMode,
+		})
+
+		w.WriteHeader(http.StatusOK)
 		return
 
 	default:

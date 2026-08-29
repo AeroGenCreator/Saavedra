@@ -85,9 +85,9 @@ func (s *store) InsertUserSession(userInfo *types.AuthUserSession) error {
 
 // CONTRACT: WHEN LOG OUT -> NO JWT TOKEN || UPDATE
 func (s *store) UpdateUserSession(authUser *types.AuthUserSession) error {
-	q := "UPDATE auth_user_session SET auth_token = ? WHERE user_id = ?"
+	q := "UPDATE auth_user_session SET auth_token = ? WHERE user_id = ?;"
 
-	_, err := s.db.Exec(q, authUser.AuthToken, authUser.Id)
+	_, err := s.db.Exec(q, authUser.AuthToken, authUser.UserId)
 	if err != nil {
 		return err
 	}

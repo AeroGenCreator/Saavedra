@@ -43,7 +43,7 @@ func CheckPasswordHash(password, hash string) bool {
 // FUNCTION: GENERATE SIGNED TOKEN
 func GenerateToken(name string, id int) (string, error) {
 	var jwtKey = []byte(env.ApyKey)
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(1 * time.Minute)
 
 	claims := &types.Claims{
 		UserId:   strconv.Itoa(id),
@@ -66,16 +66,17 @@ func GenerateToken(name string, id int) (string, error) {
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		// TOKEN && API KEY
-		c, err := r.Cookie("auth_token")
+		// JWTKEY
 		jwtKey := []byte(os.Getenv("JWT_KEY"))
 
-		if err != nil {
-			if err == http.ErrNoCookie {
-				log.Println(err)
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
+		// APIKEY FROM JS
+		c, err := r.Cookie("auth_token")
+
+		if err == http.ErrNoCookie {
+			log.Println(err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		} else if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -88,9 +89,9 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return jwtKey, nil
 		})
 
-		if err != nil || !tkn.Valid {
-			log.Println(err)
-			w.WriteHeader(http.StatusUnauthorized)
+		if err != nil {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
@@ -98,6 +99,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
 		ctx = context.WithValue(ctx, UserNameKey, claims.UserName)
 		ctx = context.WithValue(ctx, ApiKey, tokenStr)
+
+		if !tkn.Valid {
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
+		}
+
 		next.ServeHTTP(w, r.WithContext(ctx))
 
 	})

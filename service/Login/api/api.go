@@ -66,9 +66,9 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name:     "auth_token",
 			Value:    creds.Token,
-			Expires:  time.Now().Add(5 * time.Minute),
+			Expires:  time.Now().Add(24 * time.Hour),
 			Path:     "/",
-			HttpOnly: env.IsProduction,
+			HttpOnly: true,
 			Secure:   env.IsProduction,
 			SameSite: http.SameSiteLaxMode,
 		})
@@ -85,7 +85,7 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 		userID, ok := r.Context().Value(utils.UserIDKey).(string)
 
 		if !ok {
-			log.Println("Cookies extraction failed")
+			log.Println("Cookies extraction failed /login...")
 			http.Error(w, "/login - Method PUT", http.StatusInternalServerError)
 			return
 		}
@@ -111,9 +111,9 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name:     "auth_token",
 			Value:    "",
-			Expires:  time.Now().Add(5 * time.Minute),
+			Expires:  time.Now().Add(24 * time.Hour),
 			Path:     "/",
-			HttpOnly: env.IsProduction,
+			HttpOnly: true,
 			Secure:   env.IsProduction,
 			SameSite: http.SameSiteLaxMode,
 		})
@@ -140,14 +140,14 @@ func (e *EndpointHandler) CallRoot(w http.ResponseWriter, r *http.Request) {
 
 func (e *EndpointHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet:
+	case http.MethodPost:
 
-		apiKey, ok := r.Context().Value(utils.ApiKey).(string)
-		userId, ok := r.Context().Value(utils.UserIDKey).(string)
-		userName, ok := r.Context().Value(utils.UserNameKey).(string)
+		apiKey, ok1 := r.Context().Value(utils.ApiKey).(string)
+		userId, ok2 := r.Context().Value(utils.UserIDKey).(string)
+		userName, ok3 := r.Context().Value(utils.UserNameKey).(string)
 
-		if !ok {
-			log.Println("Cookies extraction failed...")
+		if !ok1 || !ok2 || !ok3 {
+			log.Println("Cookies extraction failed /refresh...")
 			http.Error(w, "/login - Method PUT", http.StatusInternalServerError)
 			return
 		}
@@ -187,9 +187,9 @@ func (e *EndpointHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name:     "auth_token",
 			Value:    newToken,
-			Expires:  time.Now().Add(5 * time.Minute),
+			Expires:  time.Now().Add(24 * time.Hour),
 			Path:     "/",
-			HttpOnly: env.IsProduction,
+			HttpOnly: true,
 			Secure:   env.IsProduction,
 			SameSite: http.SameSiteLaxMode,
 		})

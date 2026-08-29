@@ -15,7 +15,7 @@ function onTokenRefreshed() {
 }
 
 async function SecureFetching(route, requestContent = {}) {
-
+  console.log("Attempting secure fetch...")
   // CREDENTIALS "COOKIES" INCLUDED FOR EVERY FETCH
   const options = {
     ...requestContent,
@@ -23,7 +23,7 @@ async function SecureFetching(route, requestContent = {}) {
   };
 
   try {
-
+    console.log(route, options)
     let response = await fetch(route, options);
 
     // IF ORIGINAL FETCH REQUIRES REFRESHING|
@@ -66,9 +66,7 @@ async function SecureFetching(route, requestContent = {}) {
 
       } else {
 
-        // DB TOKEN AND COOKIE DON'T MATCH, ALERT, SESSION EXPIRED.
-        alert("Session has expired!");
-        window.location.href = "/login";
+        // DB TOKEN AND COOKIE DON'T MATCH, SESSION EXPIRED.
         return refreshResponse;
 
       }

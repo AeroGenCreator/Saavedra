@@ -6,19 +6,19 @@ document.addEventListener('alpine:init', () => {
 
     async imgRefresh() {
 
+      console.log("Attempting refresh...", document.cookie)
       const res = await SecureFetching("/welcome")
 
       if (!res.ok) {
 
         if (res.status === 401) {
-
+          this.closeSession()
           alert("Session expires")
-          window.location.href = "/"
+
 
         } else {
-
+          this.closeSession()
           alert(res.status)
-          window.location.href = "/"
 
         }
 

@@ -50,3 +50,21 @@ Finally to import CSS styles I decided to go with `Bulma CSS`. It is also served
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script defer src="/assets/css/bulma/css/bulma.min.css"></script>
 ```
+
+## Debugging
+
+Saavedra suggest debugging by CLI. The following is the current debugging tool used by Saavedra `dlv`.
+
+```bash
+# Initializing debug mode.
+dlv debug main.go
+
+# Adding a breakpoint on line 30. (Must have content or must not be a commented line).
+# # Otherwise dlv won't create the breakpoint
+(dlv) break utils/utils.go:30
+```
+
+```bash
+# Breakpoint by calling a function.
+(dlv) break utils.FunctionName
+```

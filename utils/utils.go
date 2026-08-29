@@ -89,12 +89,6 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return jwtKey, nil
 		})
 
-		if err != nil {
-			log.Println(err.Error())
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
 		// USER ID IS ADDED TO THE REQUEST
 		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
 		ctx = context.WithValue(ctx, UserNameKey, claims.UserName)

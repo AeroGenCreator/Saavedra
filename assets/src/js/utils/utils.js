@@ -48,7 +48,7 @@ async function SecureFetching(route, requestContent = {}) {
 
       // IF NO REFRESH THEN REFRESHING PETITION CAN TAKE PLACE
       isRefreshing = true;
-
+      console.log("First attempt of refreshing...")
       const refreshResponse = await fetch("/refresh", {
         method: "POST",
         credentials: 'include'

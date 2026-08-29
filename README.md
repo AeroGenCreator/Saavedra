@@ -43,9 +43,10 @@ To import lucide-icons you must add the following import path to the HTML header
 <script defer src="/assets/web/lucide-font/lucide.css"></script>
 ```
 
-Finally to import CSS styles I decided to go with `Bulma CSS`. It is also served by `ServeAssets`.
+Finally to import CSS styles I decided to go with `Bulma CSS`. It is also served by `ServeAssets` directory.
 
 ```html
-<!-- -->
+<!-- It's important to add dynamic window resizing. Suggested by bulma -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script defer src="/assets/css/bulma/css/bulma.min.css"></script>
 ```

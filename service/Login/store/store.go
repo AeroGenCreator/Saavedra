@@ -10,7 +10,8 @@ import (
 type Store interface {
 	GetUserInfo(request *types.User) (*types.User, error)
 	InsertUserSession(userInfo *types.AuthUserSession) error
-	SetUserSessionNull(id int) error
+	UpdateUserSession(authUser *types.AuthUserSession) error
+	SelectUserSession(authUser *types.AuthUserSession) (*types.AuthUserSession, error)
 }
 
 // Objeto "cursor" SQL -> Con sus contratos
@@ -39,23 +40,6 @@ func (s *store) GetUserInfo(request *types.User) (*types.User, error) {
 	return &dbUser, nil
 }
 
-// CONTRATO: INSERT OR UPDATE USER SESSION IF NOT EXISTS
-func (s *store) InsertUserSession(userInfo *types.AuthUserSession) error {
-
-	query := `
-	INSERT INTO auth_user_session (user_id, auth_token)
-	VALUES (?, ?)
-	ON CONFLICT(user_id) DO UPDATE SET auth_token = excluded.auth_token;
-	`
-
-	_, err := s.db.Exec(query, userInfo.UserId, userInfo.AuthToken)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // FUNCTION: CALL WHEN MAIN RUNS. INJECTS ADMIN CREDENTIALS.
 func InjectAdminDB(admin types.User, db *sql.DB) error {
 
@@ -82,12 +66,44 @@ func InjectAdminDB(admin types.User, db *sql.DB) error {
 	return nil
 }
 
-// CONTRACT: WHEN LOG OUT -> NO JWT TOKEN
-func (s *store) SetUserSessionNull(id int) error {
-	q := "UPDATE auth_user_session SET auth_token = NULL WHERE user_id = ?"
-	_, err := s.db.Exec(q, id)
+// CONTRATO: INSERT OR UPDATE USER SESSION IF NOT EXISTS
+func (s *store) InsertUserSession(userInfo *types.AuthUserSession) error {
+
+	query := `
+	INSERT INTO auth_user_session (user_id, auth_token)
+	VALUES (?, ?)
+	ON CONFLICT(user_id) DO UPDATE SET auth_token = excluded.auth_token;
+	`
+
+	_, err := s.db.Exec(query, userInfo.UserId, userInfo.AuthToken)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// CONTRACT: WHEN LOG OUT -> NO JWT TOKEN || UPDATE
+func (s *store) UpdateUserSession(authUser *types.AuthUserSession) error {
+	q := "UPDATE auth_user_session SET auth_token = ? WHERE user_id = ?"
+
+	_, err := s.db.Exec(q, authUser.AuthToken, authUser.Id)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+// CONTRACT: FETCH DB APY TOKEN
+func (s *store) SelectUserSession(authUser *types.AuthUserSession) (*types.AuthUserSession, error) {
+	q := "SELECT id, user_id, auth_token FROM auth_user_session WHERE user_id = ?;"
+	session := types.AuthUserSession{}
+	err := s.db.QueryRow(q, authUser.UserId).Scan(&session.Id, &session.UserId, &session.AuthToken)
+	if err == sql.ErrNoRows {
+		session.AuthToken = ""
+		return &session, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return &session, nil
 }

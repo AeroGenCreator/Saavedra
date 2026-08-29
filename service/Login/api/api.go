@@ -81,10 +81,11 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 
 	case http.MethodPut:
 
+		// WHENEVER PUT METHOD IS CALL -> DB APY TOKEN IS SET TO ''.
 		userID, ok := r.Context().Value(utils.UserIDKey).(string)
 
 		if !ok {
-			log.Println("userID was not extracted properly")
+			log.Println("Cookies extraction failed")
 			http.Error(w, "/login - Method PUT", http.StatusInternalServerError)
 			return
 		}
@@ -96,7 +97,12 @@ func (e *EndpointHandler) CallLogin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if err = e.service.LogOut(intID); err != nil {
+		authUser := types.AuthUserSession{
+			UserId:    intID,
+			AuthToken: "",
+		}
+
+		if err = e.service.LogOut(&authUser); err != nil {
 			log.Println(err)
 			http.Error(w, "DB Alteration Error", http.StatusInternalServerError)
 			return
@@ -118,5 +124,69 @@ func (e *EndpointHandler) CallRoot(w http.ResponseWriter, r *http.Request) {
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 		return
+	}
+}
+
+func (e *EndpointHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+
+		apiKey, ok := r.Context().Value(utils.ApiKey).(string)
+		userId, ok := r.Context().Value(utils.UserIDKey).(string)
+		userName, ok := r.Context().Value(utils.UserNameKey).(string)
+
+		if !ok {
+			log.Println("Cookies extraction failed...")
+			http.Error(w, "/login - Method PUT", http.StatusInternalServerError)
+			return
+		}
+
+		intID, err := strconv.Atoi(userId)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, "Error parsing 'string'", http.StatusInternalServerError)
+			return
+		}
+
+		authUser := &types.AuthUserSession{
+			UserId:    intID,
+			AuthToken: apiKey,
+		}
+
+		validation, err := e.service.ValidateTokenRefresh(userName, authUser)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if validation == "" {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		newToken, err := utils.GenerateToken(userName, intID)
+		if err != nil {
+			http.Error(w, "Token Generation Error", http.StatusInternalServerError)
+			return
+		}
+
+		// COOKIES CREATION
+
+		http.SetCookie(w, &http.Cookie{
+			Name:     "auth_token",
+			Value:    newToken,
+			Expires:  time.Now().Add(5 * time.Minute),
+			Path:     "/",
+			HttpOnly: env.IsProduction,
+			Secure:   env.IsProduction,
+			SameSite: http.SameSiteLaxMode,
+		})
+
+		w.WriteHeader(http.StatusOK)
+		return
+
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}
 }

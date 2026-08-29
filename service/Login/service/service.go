@@ -11,7 +11,8 @@ import (
 type Service interface {
 	ValidatePassword(req *types.User) (*types.Credentials, error)
 	LoadCompanyBranding() (*types.CompanyBranding, error)
-	LogOut(id int) error
+	LogOut(authUser *types.AuthUserSession) error
+	ValidateTokenRefresh(name string, authUser *types.AuthUserSession) (string, error)
 }
 
 type service struct {
@@ -40,7 +41,7 @@ func (s service) ValidatePassword(req *types.User) (*types.Credentials, error) {
 
 	// 3. GENERATE TOKEN
 	if boolean && dbUser.Name != "" {
-		token, err = utils.GenerateToken(dbUser)
+		token, err = utils.GenerateToken(dbUser.Name, dbUser.Id)
 		if err != nil {
 			return nil, err
 		}
@@ -82,9 +83,35 @@ func (s service) LoadCompanyBranding() (*types.CompanyBranding, error) {
 }
 
 // CONTRACT -> SEND LOG OUT AND REQUEST -> JWT = NULL
-func (s service) LogOut(id int) error {
-	if err := s.store.SetUserSessionNull(id); err != nil {
+func (s service) LogOut(authUser *types.AuthUserSession) error {
+	if err := s.store.UpdateUserSession(authUser); err != nil {
 		return err
 	}
 	return nil
+}
+
+// CONTRACT ->
+func (s service) ValidateTokenRefresh(name string, authUser *types.AuthUserSession) (string, error) {
+
+	dbUser, err := s.store.SelectUserSession(authUser)
+
+	if err != nil {
+		return "", err
+	}
+
+	if dbUser.AuthToken != authUser.AuthToken {
+		err = s.store.UpdateUserSession(&types.AuthUserSession{
+			UserId:    dbUser.UserId,
+			AuthToken: "",
+		})
+		if err != nil {
+			return "", err
+		}
+		return "", nil
+	}
+
+	newToken, err := utils.GenerateToken(name, dbUser.Id)
+
+	return newToken, nil
+
 }

@@ -15,6 +15,7 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	service := service.New(store)
 	handler := api.New(service)
 
-	mux.Handle("/login", utils.LoginMiddleware(http.HandlerFunc(handler.CallLogin)))
+	mux.Handle("/login", utils.LowLevelMiddleware(http.HandlerFunc(handler.CallLogin)))
 	mux.HandleFunc("/", handler.CallRoot)
+	mux.Handle("/refresh", utils.LowLevelMiddleware(http.HandlerFunc(handler.RefreshToken)))
 }

@@ -4,7 +4,7 @@ document.addEventListener('alpine:init', () => {
 
   Alpine.data("welcomeComponent", () => ({
 
-    async validateRefresh() {
+    async imgRefresh() {
 
       const res = await SecureFetching("/welcome")
 
@@ -32,10 +32,16 @@ document.addEventListener('alpine:init', () => {
 
   async closeSession() {
 
+    console.log("Attempting user logout...")
+
     try {
 
       const res = await fetch("/login", { method: "PUT", credentials: "include" })
-      window.location.href = "/login"
+      if (!res.ok) {
+
+        window.location.href = "/login"
+
+      }
 
     } catch (error) {
 

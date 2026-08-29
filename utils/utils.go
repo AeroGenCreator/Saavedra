@@ -18,7 +18,11 @@ import (
 
 type contextKey string
 
-const UserIDKey contextKey = "userID"
+const (
+	UserIDKey   contextKey = "userID"
+	ApiKey      contextKey = "apiKEY"
+	UserNameKey contextKey = "userNAME"
+)
 
 // FUNCTION -> HASHED STRINGS
 func HashPassword(password string) (string, error) {
@@ -37,13 +41,13 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 // FUNCTION: GENERATE SIGNED TOKEN
-func GenerateToken(user *types.User) (string, error) {
+func GenerateToken(name string, id int) (string, error) {
 	var jwtKey = []byte(env.ApyKey)
 	expirationTime := time.Now().Add(5 * time.Minute)
 
 	claims := &types.Claims{
-		UserId:   strconv.Itoa(user.Id),
-		UserName: user.Name,
+		UserId:   strconv.Itoa(id),
+		UserName: name,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
@@ -92,12 +96,14 @@ func AuthMiddleware(next http.Handler) http.Handler {
 
 		// USER ID IS ADDED TO THE REQUEST
 		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
+		ctx = context.WithValue(ctx, UserNameKey, claims.UserName)
+		ctx = context.WithValue(ctx, ApiKey, tokenStr)
 		next.ServeHTTP(w, r.WithContext(ctx))
 
 	})
 }
 
-func LoginMiddleware(next http.Handler) http.Handler {
+func LowLevelMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		c, err := r.Cookie("auth_token")
@@ -105,13 +111,13 @@ func LoginMiddleware(next http.Handler) http.Handler {
 		// 1. Manejo de errores de la cookie
 		if err != nil {
 			if err == http.ErrNoCookie {
-				log.Println("Sin cookie de autenticación, continuando como anónimo...")
+				log.Println("No cookies, login with new user session...")
 				next.ServeHTTP(w, r)
 				return
 			}
 
-			log.Println("Error al leer cookie:", err)
-			http.Error(w, "Galleta de autenticación inválida", http.StatusBadRequest)
+			log.Println("Cookies error...", err)
+			http.Error(w, "Invalid Cookies", http.StatusBadRequest)
 			return
 		}
 
@@ -136,6 +142,17 @@ func LoginMiddleware(next http.Handler) http.Handler {
 
 		// 4. Inyección exitosa del valor en el contexto
 		ctx := context.WithValue(r.Context(), UserIDKey, claims.UserId)
+		ctx = context.WithValue(ctx, UserNameKey, claims.UserName)
+		ctx = context.WithValue(ctx, ApiKey, tokenStr)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+// PARSE STRING TO NULL IF EMPTY
+func StringONull(input string) *string {
+	if input == "" {
+		return nil
+	}
+
+	return &input
 }

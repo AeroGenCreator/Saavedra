@@ -1,0 +1,27 @@
+/* Estado base y transiciones suaves */
+.is-clickable-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+/* Efecto al pasar el mouse: se eleva y resalta la sombra */
+.is-clickable-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(10, 10, 10, 0.15);
+}
+
+/* Integración con las reglas de alto fijo y truncado */
+.card-fixed-height {
+    height: 130px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.truncate-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

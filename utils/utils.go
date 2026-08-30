@@ -69,7 +69,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		// JWTKEY
 		jwtKey := []byte(os.Getenv("SESSION_TOKEN"))
 		requestedWith := r.Header.Get("X-Requested-With")
-		log.Println(requestedWith)
+
 		// APIKEY FROM JS
 		c, err := r.Cookie("auth_token")
 

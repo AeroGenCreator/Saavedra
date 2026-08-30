@@ -35,7 +35,12 @@ document.addEventListener('alpine:init', () => {
 
     try {
       console.log("Attempting user logout...")
-      const res = await fetch("/login", { method: "PATCH", credentials: "include" })
+      const res = await fetch(
+        "/login", {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "X-Requested-With": "jsFrontendComponent" }
+      })
       if (res.ok) {
 
         window.location.href = "/login", { method: "GET" }

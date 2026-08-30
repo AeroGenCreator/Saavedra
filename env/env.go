@@ -17,7 +17,7 @@ func LoadGlobalEnvs() error {
 	}
 	log.Print("PROJECT STATUS SET TO:", IsProduction)
 
-	ApyKey = (os.Getenv("JWT_KEY"))
+	ApyKey = (os.Getenv("SESSION_TOKEN"))
 
 	return nil
 }

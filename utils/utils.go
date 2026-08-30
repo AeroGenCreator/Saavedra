@@ -43,7 +43,7 @@ func CheckPasswordHash(password, hash string) bool {
 // FUNCTION: GENERATE SIGNED TOKEN
 func GenerateToken(name string, id int) (string, error) {
 	var jwtKey = []byte(env.ApyKey)
-	expirationTime := time.Now().Add(30 * time.Second)
+	expirationTime := time.Now().Add(15 * time.Minute)
 
 	claims := &types.Claims{
 		UserId:   strconv.Itoa(id),
@@ -67,7 +67,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		// JWTKEY
-		jwtKey := []byte(os.Getenv("JWT_KEY"))
+		jwtKey := []byte(os.Getenv("SESSION_TOKEN"))
 		requestedWith := r.Header.Get("X-Requested-With")
 		log.Println(requestedWith)
 		// APIKEY FROM JS

@@ -16,11 +16,11 @@
 	<title>Welcome</title>
 </head>
 
-<body class="has-text-centered has-navbar-fixed-top">
+<body class="has-text-centered has-navbar-fixed-top" x-data="welcomeComponent">
 
     <!-- NAVBAR -->
     <section class="hero">
-        <div class="container" x-data="welcomeComponent">
+        <div class="container">
             <nav class="navbar is-fixed-top has-background-black-ter">
                 <div class="navbar-brand">
                     <a class="navbar-item" href="/welcome" @click.prevent="imgRefresh">
@@ -56,7 +56,7 @@
             <div class="columns is-multiline">
 
               <div class="column is-3">
-                    <a href="/users">
+                    <a href="/users" @click.prevent="secureUsers">
                         <div class="notification is-danger card-fixed-height is-clickable-card">
                             <article class="has-text-left">
                                 <i class="icon-users"></i>

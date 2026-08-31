@@ -9,7 +9,7 @@ import (
 type Service interface {
 	NewUser(user *types.User) (*types.User, error)
 	UpdateUser(user *types.User) (*types.User, error)
-	ListUsers(page int) ([]*types.User, int, int, int, error)
+	ListUsers(page int) (*types.Table, error)
 	SelectUser(id int) (*types.User, error)
 	DeleteUser(id int) error
 }
@@ -54,22 +54,36 @@ func (s service) UpdateUser(user *types.User) (*types.User, error) {
 	return user, nil
 }
 
-func (s service) ListUsers(page int) ([]*types.User, int, int, int, error) {
+// RETURNS: rows, current_page, total_records, total_pages, error
+func (s service) ListUsers(page int) (*types.Table, error) {
 
 	var limit int
 	var offset int
 
-	offset = (page - 1) * 30
-	limit = 30
+	offset = (page - 1) * 15
+	limit = 15
 
 	records, total_recs, err := s.store.SelectUserFrontendPage(limit, offset)
 	if err != nil {
-		return nil, 0, 0, 0, err
+		return nil, err
 	}
 
 	total_pages := divisionRounded(total_recs, limit)
 
-	return records, page, total_pages, total_recs, nil
+	rows := types.Rows{
+		Records: records,
+	}
+	metadata := types.Metadata{
+		CurrentPage: page,
+		CountPages:  total_pages,
+		CountRows:   total_recs,
+	}
+	table := types.Table{
+		Data: &rows,
+		Info: &metadata,
+	}
+
+	return &table, nil
 }
 
 func (s service) SelectUser(id int) (*types.User, error) {

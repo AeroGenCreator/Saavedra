@@ -54,6 +54,28 @@ document.addEventListener('alpine:init', () => {
 
     }
 
+  },
+
+  async secureUsers() {
+
+    try {
+
+      const res = await SecureFetching("/users")
+
+      if (!res.ok) {
+
+      window.location.href = "/welcome"
+
+      }
+
+      window.location.href = "/users"
+
+    } catch (error) {
+
+      console.log(error)
+
+    }
+
   }
 
   })

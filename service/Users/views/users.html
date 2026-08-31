@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Load Frontend Dependencies & configuration-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
+    <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <script defer src="/assets/src/js/utils/utils.js"></script>
+
+    <!-- Specific JS script for the current service -->
+    <!--script defer src=""></script-->
+
+    <!-- defer 'Alpine' should load after your own JS to map every custom component. -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
+
+	<title>Current Service</title>
+</head>
+<body>
+    <p>{{ .table }}</p>
+</body>
+</html>

@@ -2,6 +2,37 @@ document.addEventListener('alpine:init', () => {
   // Register this alpine component to a section in your HTML.
   Alpine.data('usersComponent', () => ({
 
+    // Users model variables
+    page: 1,
+    totalPages: 0,
+    totalRecord: 0,
+    data: null,
+
+    // When Component initialize
+    async init() {
+
+      try {
+
+        const res = await SecureFetching(`/users/${this.page}`)
+
+        if (!res.ok) {
+
+          throw new Error(`HTTP error! Status: ${res.status}`);
+
+        }
+
+        var data = await res.json()
+
+        console.log(data)
+
+      } catch (error) {
+
+        throw new Error(error)
+
+      }
+
+    },
+
     // Relates an event with a function
     async goHome() {
 

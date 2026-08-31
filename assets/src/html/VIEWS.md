@@ -95,7 +95,7 @@ This is a security event, the code is the same, we only need to relate the actio
 
 ```html
 <!-- The image tries redirection while alpine prevents and then calls for a JS function. -->
-<a class="navbar-item" href="/welcome" @click.prevent="imgRefresh">
+<a class="navbar-item" href="/welcome" @click.prevent="xX">
 <!-- Changing the name is valid but not a need. -->
 <a class="navbar-item" href="/welcome" @click.prevent="goHome">
 ```
@@ -120,7 +120,7 @@ Imagine we have follow every step, adding `goHome()` requires a secure fetching 
 
 ```js
 async goHome() {
-  console.log("Attempting refresh...", document.cookie)
+  console.log("Attempting go Home...", document.cookie)
   // SecureFetching is an obligation whenever you try a fetch(), this ensures the server to accept only user requests.
   // Otherwise, every request will be processed by the server.
   const res = await SecureFetching("/welcome")
@@ -153,9 +153,9 @@ Same situation exists when it comes to `logout`. A button, a redirection, alpine
 So your JS should include this event.
 
 ```js
-async closeSession() {
+async logOut() {
   try {
-    console.log("Attempting user logout...")
+    console.log("Attempting logout...")
     const res = await fetch(
       "/login", {
       method: "PATCH",
@@ -182,12 +182,12 @@ Now that you understand the whole content of the navigation bar. You can safely 
 <!-- NAVBAR-->
 <body class="has-navbar-fixed-top">
 
-    <main class="hero">
+    <section class="hero">
         <div class="container" x-data="welcomeComponent">
             <nav class="navbar is-fixed-top has-background-black-ter">
                 <div class="navbar-brand">
                     // Don't forget registering the event in your JS in an Alpine Component.
-                    <a class="navbar-item" href="/welcome" @click.prevent="imgRefresh">
+                    <a class="navbar-item" href="/welcome" @click.prevent="goHome">
                         <figure class="image mx-6">
                             <img src="/assets/img/saavedraVanilla.svg"/>
                         </figure>
@@ -198,7 +198,7 @@ Now that you understand the whole content of the navigation bar. You can safely 
                         <div class="field is-grouped">
                             <p class="control">
                                 // Don't forget registering the event in your JS in an Alpine Component.
-                                <a href="/login" @click.prevent="closeSession">
+                                <a href="/login" @click.prevent="logOut">
                                     <button class="button is-primary px-3 is-small">
                                         Cerrar Sesión
                                         <span class="px-2">
@@ -212,7 +212,7 @@ Now that you understand the whole content of the navigation bar. You can safely 
                 </div>
             </nav>
         </div>
-    </main>
+    </section>
 
 </body>
 ```

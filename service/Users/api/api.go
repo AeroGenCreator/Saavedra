@@ -25,7 +25,6 @@ func (e EndpointHandler) CallUsersByPages(w http.ResponseWriter, r *http.Request
 		page, err := strconv.Atoi(pageStr)
 
 		if err != nil {
-			log.Printf("Invalid page indentifier (%v). switching to: 1", pageStr)
 			page = 1
 		}
 

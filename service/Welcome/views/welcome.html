@@ -23,7 +23,7 @@
         <div class="container">
             <nav class="navbar is-fixed-top has-background-black-ter">
                 <div class="navbar-brand">
-                    <a class="navbar-item" href="/welcome" @click.prevent="imgRefresh">
+                    <a class="navbar-item" href="/welcome" @click.prevent="goHome">
                         <figure class="image mx-6">
                             <img src="/assets/img/saavedraVanilla.svg"/>
                         </figure>
@@ -33,7 +33,7 @@
                     <div class="navbar-item">
                         <div class="field is-grouped">
                             <p class="control">
-                                <a href="/login" @click.prevent="closeSession">
+                                <a href="/login" @click.prevent="logOut">
                                     <button class="button is-primary px-3 is-small">
                                         Cerrar Sesión
                                         <span class="px-2">

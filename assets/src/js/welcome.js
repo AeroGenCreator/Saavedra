@@ -4,7 +4,7 @@ document.addEventListener('alpine:init', () => {
 
   Alpine.data("welcomeComponent", () => ({
 
-    async imgRefresh() {
+    async goHome() {
 
       console.log("Attempting refresh...", document.cookie)
 
@@ -13,12 +13,12 @@ document.addEventListener('alpine:init', () => {
       if (!res.ok) {
 
         if (res.status === 401) {
-          this.closeSession()
+          this.logOut()
           alert("Session expires")
 
 
         } else {
-          this.closeSession()
+          this.logOut()
           alert(res.status)
 
         }
@@ -31,7 +31,7 @@ document.addEventListener('alpine:init', () => {
 
     },
 
-  async closeSession() {
+  async logOut() {
 
     try {
       console.log("Attempting user logout...")

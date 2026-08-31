@@ -52,7 +52,7 @@ func (s *store) UpdateUser(user *types.User) (*types.User, error) {
 func (s *store) SelectUserFrontendPage(limit int, offset int) ([]*types.User, int, error) {
 
 	q1 := "SELECT COUNT(id) AS count_id FROM users GROUP BY id;"
-	q2 := "SELECT * FROM users LIMIT ? OFFSET ?;"
+	q2 := "SELECT id, name, email, password FROM users LIMIT ? OFFSET ?;"
 
 	var total_recs int
 	err := s.db.QueryRow(q1).Scan(&total_recs)
@@ -67,7 +67,8 @@ func (s *store) SelectUserFrontendPage(limit int, offset int) ([]*types.User, in
 
 	defer rows.Close()
 
-	records := []*types.User{}
+	var records []*types.User
+
 	for rows.Next() {
 		var user types.User
 
@@ -86,9 +87,25 @@ func (s *store) SelectUserFrontendPage(limit int, offset int) ([]*types.User, in
 }
 
 func (s *store) SelectUser(id int) (*types.User, error) {
-	return nil, nil
+	q := "SELECT id, name, email, password FROM users WHERE id = ?;"
+
+	var user types.User
+	err := s.db.QueryRow(q, id).Scan(&user.Id, &user.Name, &user.Email, &user.Password)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (s *store) DeleteUser(id int) error {
+	q := "DELETE FROM users WHERE id = ?;"
+
+	if _, err := s.db.Exec(q, id); err != nil {
+		return err
+	}
+
 	return nil
 }

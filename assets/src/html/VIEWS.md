@@ -30,6 +30,7 @@ Copy and paste the following header in every `HTML` view before you start.
     <!-- Load Frontend Dependencies & configuration-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
+    <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
 

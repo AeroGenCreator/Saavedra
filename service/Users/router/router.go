@@ -17,5 +17,6 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 
 	mux.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handler.CallUsers)))
 	mux.Handle("/users/records", utils.AuthMiddleware(http.HandlerFunc(handler.CallUsersRecords)))
+	mux.Handle("/users/new", utils.AuthMiddleware(http.HandlerFunc(handler.CreateUserInDB)))
 
 }

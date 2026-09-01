@@ -63,21 +63,21 @@
                         <span class="icon-text">
                             <i class="icon icon-layers"></i>
                         </span>
-                        <strong>Registros Totales: </strong>
+                        <strong>Filas Totales: </strong>
                         <span x-text="totalRecords"></span>
                     </p>
                     <p>
                         <span class="icon-text">
                             <i class="icon icon-file-stack"></i>
                         </span>
-                        <strong>Paginas Totales: </strong>
+                        <strong>Hojas Totales: </strong>
                         <span x-text="totalPages"></span>
                     </p>
                     <p>
                         <span class="icon-text">
                             <i class="icon icon-arrow-down-from-line"></i>
                         </span>
-                        <strong>Pagina Actual: </strong>
+                        <strong>Hoja Actual: </strong>
                         <span x-text="page"></span>
                     </p>
                     <button
@@ -94,7 +94,7 @@
                     >
                         <i class="icon icon-circle-plus"></i>
                     </button>
-                    <button class="button is-info">
+                    <button class="button is-info" @click="newUser">
                         <i class="icon icon-user-plus"></i>
                     </button>
                 </div>

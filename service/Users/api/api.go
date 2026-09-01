@@ -74,3 +74,32 @@ func (e EndpointHandler) CallUsersRecords(w http.ResponseWriter, r *http.Request
 	}
 
 }
+
+// ROUTE: /users/new -> REDIRECTS -> /users/form?id=x
+func (e EndpointHandler) CreateUserInDB(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+
+		tpl, err := template.ParseFiles("service/Users/views/usersCreate.html")
+
+		if err != nil {
+			log.Print("Error parsing usersCreate HTML template...")
+			http.Error(w, "Parsing error...", http.StatusInternalServerError)
+			return
+		}
+
+		err = tpl.Execute(w, nil)
+		if err != nil {
+			log.Print(err.Error())
+			http.Error(w, "Loading error...", http.StatusInternalServerError)
+			return
+		}
+
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}

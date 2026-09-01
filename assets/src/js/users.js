@@ -9,6 +9,30 @@ document.addEventListener('alpine:init', () => {
     totalRecords: 0,
     loading: false,
 
+    // NEW USER BUTTON
+    async newUser() {
+
+      try {
+
+        // METHOD: HEAD -> SECURE FETCHING RETURNS STATUS -> REDIRECTION IF STATUS OK. OPTIMIZED PROCESS
+        const res = await SecureFetching("/users/new", { method: "HEAD" })
+
+        if (!res.ok) {
+
+          throw new Error(`Bad response from server...${res.status}`)
+
+        }
+
+        window.location.href = "/users/new"
+
+      } catch (error) {
+
+        throw error
+
+      }
+
+    },
+
     // INITIALIZE -> FETCH PAGE 1
     async init() {
 

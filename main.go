@@ -83,4 +83,8 @@ func main() {
 	// Servidor
 	fmt.Println("🚀 Servidor ejecutándose en http://localhost:8080")
 	http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":8080", mux)
+	if err != nil {
+		log.Fatalf("El servidor se detuvo con error: %v", err)
+	}
 }

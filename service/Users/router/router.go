@@ -15,5 +15,7 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	service := service.New(store)
 	handler := api.New(service)
 
-	mux.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handler.CallUsersByPages)))
+	mux.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handler.CallUsers)))
+	mux.Handle("/users/records", utils.AuthMiddleware(http.HandlerFunc(handler.CallUsersRecords)))
+
 }

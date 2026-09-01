@@ -3,17 +3,18 @@ document.addEventListener('alpine:init', () => {
   Alpine.data('usersComponent', () => ({
 
     // Users model variables
+    records: [],
     page: 1,
-    totalPages: 0,
-    totalRecord: 0,
-    data: null,
+    totalPages: 1,
+    totalRecords: 1,
+    loading: false,
 
     // When Component initialize
     async init() {
 
       try {
 
-        const res = await SecureFetching(`/users/${this.page}`)
+        const res = await SecureFetching(`/users/records?page=${this.page}`)
 
         if (!res.ok) {
 
@@ -23,17 +24,52 @@ document.addEventListener('alpine:init', () => {
 
         var data = await res.json()
 
-        console.log(data)
+        this.records = data.rows
+        this.page = data.current_page
+        this.totalPages = data.count_pages
+        this.totalRecords = data.count_records
 
       } catch (error) {
-
+        debugger;
         throw new Error(error)
 
       }
 
     },
 
-    // Relates an event with a function
+    // RENDER TABLE
+    async loadPlusTable() {
+
+      this.loading = true
+
+      this.page = this.page + 1
+
+      if (this.page > this.totalPages) {
+        console.log("No more pages...")
+        this.page = this.page - 1
+        return
+      }
+
+      const res = await SecureFetching(`/users/records?page=${this.page}`)
+
+      if (!res.ok) {
+
+        throw new Error(res.status)
+
+      }
+
+      data = res.json()
+
+      this.records = data.rows
+      this.page = data.current_page
+      this.totalPages = data.count_pages
+      this.totalRecords = data.count_records
+
+      this.loading = false
+
+    },
+
+    // GO HOME
     async goHome() {
 
       console.log("Attempting go Home...")
@@ -64,6 +100,7 @@ document.addEventListener('alpine:init', () => {
 
     },
 
+    // LOG OUT
     async logOut() {
 
       try {

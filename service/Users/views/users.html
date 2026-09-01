@@ -54,6 +54,43 @@
 
     <main class="hero is-fullheight">
 
+        <div class="container">
+            <h1 class="title">Users</h1>
+
+                <div>
+                    <p x-text="totalRecords"></p>
+                    <p x-text="totalPages"></p>
+                    <button class="button is-primary" @click="loadPlusTable">
+                        <i class="icon icon-circle-plus"></i>
+                    </button>
+                    <p x-text="page"></p>
+                    <button class="button is-primary">
+                        <i class="icon icon-circle-minus"></i>
+                    </button>
+                </div>
+
+
+            <table class="table is-fullwidth">
+                <thead>
+                    <tr>ID</tr>
+                    <tr>Nombre</tr>
+                    <tr>Email</tr>
+                </thead>
+                <tbody>
+
+                    <template x-for="user in records" :key="user.id">
+                        <tr>
+                            <td x-text="user.id"></td>
+                            <td x-text="user.name"></td>
+                            <td x-text="user.email"></td>
+                        </tr>
+                    </template>
+
+                </tbody>
+            </table>
+
+        </div>
+
     </main>
 
     <footer class="footer has-background-black-ter p-0">

@@ -70,17 +70,11 @@ func (s service) ListUsers(page int) (*types.Table, error) {
 
 	total_pages := divisionRounded(total_recs, limit)
 
-	rows := types.Rows{
-		Records: records,
-	}
-	metadata := types.Metadata{
+	table := types.Table{
+		Rows:        records,
 		CurrentPage: page,
 		CountPages:  total_pages,
 		CountRows:   total_recs,
-	}
-	table := types.Table{
-		Data: &rows,
-		Info: &metadata,
 	}
 
 	return &table, nil

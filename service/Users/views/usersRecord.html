@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
-    <script defer src="/assets/src/js/Users/usersCreate.js"></script>
+    <script defer src="/assets/src/js/Users/usersRecord.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 
-	<title>New User</title>
+	<title>Users Record</title>
 </head>
 
-<body class="has-navbar-fixed-top" x-data="usersCreateComponent">
+<body class="has-navbar-fixed-top" x-data="usersRecordComponent" x-init="initData('{{.Name}}', '{{.Email}}')">
 
     <section class="hero">
         <div class="container">
@@ -65,7 +65,7 @@
 
                             <div class="column is-12 has-text-centered">
                                 <h1 class="title">
-                                   Crear Nuevo Usuario
+                                   Id del Registro {{.Id}}
                                 </h1>
                             </div>
 
@@ -73,7 +73,12 @@
                                 <div class="field">
                                     <label class="label">Nombre</label>
                                     <div class="control">
-                                        <input class="input" type="text" placeholder="Nombre usuario" x-model="name">
+                                        <input
+                                            class="input"
+                                            type="text"
+                                            placeholder="Nombre usuario"
+                                            x-model="name"
+                                        >
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +87,12 @@
                                 <div class="field">
                                     <label class="label">Correo</label>
                                     <div class="control">
-                                        <input class="input" type="email" placeholder="ejemplo@gmail.com" x-model="email">
+                                        <input
+                                            class="input"
+                                            type="email"
+                                            placeholder="ejemplo@gmail.com"
+                                            x-model="email"
+                                        >
                                     </div>
                                 </div>
                             </div>
@@ -105,19 +115,32 @@
                                 </div>
                             </div>
 
+                            <div class="column is-6">
+                                <div class="field">
+                                    <div class="control">
+                                        <button class="button is-fullwidth is-primary" type="button" @click="updateUser">
+                                        Actualizar Usuario
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column is-6">
+                                <div class="field">
+                                    <div class="control">
+                                        <button class="button is-fullwidth is-danger" type="button" @click="deleteUser">
+                                        Eliminar Usuario
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
                         <span x-show="required" class="is-danger is-7">
-                            <p>Todos los campos son obligatorios</p>
+                            <p>Nombre e email son obligatorios</p>
                         </span>
 
-                        <div class="field">
-                            <div class="control">
-                                <button class="button is-fullwidth is-primary" type="button" @click="createUser">
-                                Guardar
-                                </button>
-                            </div>
-                        </div>
                   </form>
 
                 </div>

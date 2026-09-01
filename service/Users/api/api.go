@@ -75,7 +75,7 @@ func (e EndpointHandler) CallUsersRecords(w http.ResponseWriter, r *http.Request
 
 }
 
-// ROUTE: /users/new -> REDIRECTS -> /users/form?id=x
+// ROUTE: /users/new -> REDIRECTS -> /users/record?id=x
 func (e EndpointHandler) CreateUserInDB(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -100,6 +100,54 @@ func (e EndpointHandler) CreateUserInDB(w http.ResponseWriter, r *http.Request) 
 
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+// ROUTE /users/record?id=x
+func (e EndpointHandler) CallUsersRecord(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+
+		// GET USER ID
+		strId := r.URL.Query().Get("id")
+		id, err := strconv.Atoi(strId)
+		if err != nil {
+			log.Printf("Invalid 'user id': (%v)...", strId)
+			http.Redirect(w, r, "/users", http.StatusSeeOther)
+			return
+		}
+
+		// QUERY USER DATA
+		user, err := e.service.SelectUser(id)
+		if err != nil {
+			log.Printf("usersRecord query error... (%v)", err.Error())
+			http.Error(w, "userRecord error", http.StatusInternalServerError)
+			return
+		}
+
+		// PARSE HTML TEMPLATE
+		tpl, err := template.ParseFiles("service/Users/views/usersRecord.html")
+		if err != nil {
+			log.Printf("usersRecord parse error... (%v)", err.Error())
+			http.Error(w, "userRecord error", http.StatusInternalServerError)
+			return
+		}
+
+		err = tpl.Execute(w, user)
+		if err != nil {
+			log.Printf("usersRecord load error... (%v)", err.Error())
+			http.Error(w, "userRecord error", http.StatusInternalServerError)
+			return
+		}
+
+	case http.MethodPut:
+		return
+	case http.MethodDelete:
+		return
+	case http.MethodHead:
+		return
+	default:
 		return
 	}
 }

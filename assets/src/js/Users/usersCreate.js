@@ -2,6 +2,17 @@ document.addEventListener('alpine:init', () => {
   // Register this alpine component to a section in your HTML.
   Alpine.data('usersCreateComponent', () => ({
 
+    name: "",
+    email: "",
+    password: "",
+    repeatPassword: "",
+    required: false,
+
+    // CREATE NEW
+    async createUser() {
+      return
+    },
+
     // GO HOME
     async goHome() {
 

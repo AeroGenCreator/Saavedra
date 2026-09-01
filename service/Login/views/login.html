@@ -7,7 +7,7 @@
     <!-- Load Frontend Dependencies -->
     <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
-    <script src="/assets/src/js/login.js"></script>
+    <script src="/assets/src/js/Login/login.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 
 	<title>{{.CompanyName}}</title>
@@ -30,10 +30,12 @@
                                     <!-- LOGIN FORM -->
                                     <div class="py-2">
                                         <form @submit.prevent="SubmitLogin">
-                                            <label class="label has-text-left">Correo Electronico</label>
-                                            <input class="input" type="email" placeholder="example@gmail.com" x-model="email">
-                                            <label class="label has-text-left">Contraseña</label>
-                                            <input class="input" type="password" placeholder="••••••••••" x-model="password">
+                                            <label class="label has-text-left">Correo Electronico
+                                                <input class="input" type="email" placeholder="example@gmail.com" x-model="email">
+                                            </label>
+                                            <label class="label has-text-left">Contraseña
+                                                <input class="input" type="password" placeholder="••••••••••" x-model="password">
+                                            </label>
                                             <div class="is-size-7 has-text-danger" x-show="statusMessage">¡Credenciales invalidas! Intente de nuevo.</div>
                                             <button class="button is-dark my-2 mx-2 has-text-centered" type="submit">
                                                 Iniciar Sesión

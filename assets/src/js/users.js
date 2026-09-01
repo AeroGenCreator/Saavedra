@@ -6,10 +6,10 @@ document.addEventListener('alpine:init', () => {
     records: [],
     page: 1,
     totalPages: 1,
-    totalRecords: 1,
+    totalRecords: 0,
     loading: false,
 
-    // When Component initialize
+    // INITIALIZE -> FETCH PAGE 1
     async init() {
 
       try {
@@ -27,7 +27,7 @@ document.addEventListener('alpine:init', () => {
         this.records = data.rows
         this.page = data.current_page
         this.totalPages = data.count_pages
-        this.totalRecords = data.count_records
+        this.totalRecords = data.count_pages
 
       } catch (error) {
         debugger;
@@ -37,35 +37,88 @@ document.addEventListener('alpine:init', () => {
 
     },
 
-    // RENDER TABLE
+    // FETCH 1 PLUS PAGE
     async loadPlusTable() {
 
-      this.loading = true
+      try {
 
-      this.page = this.page + 1
+        this.loading = true
 
-      if (this.page > this.totalPages) {
-        console.log("No more pages...")
+        this.page = this.page + 1
+
+        if (this.page > this.totalPages) {
+          console.log("No more pages...")
+          this.page = this.page - 1
+          return
+        }
+
+        const res = await SecureFetching(`/users/records?page=${this.page}`)
+
+        if (!res.ok) {
+
+          throw new Error(res.status)
+
+        }
+
+        data = await res.json()
+
+        this.records = data.rows
+        this.page = data.current_page
+        this.totalPages = data.count_pages
+        this.totalRecords = data.count_pages
+
+      } catch (error) {
+
+        throw new Error(error)
+
+      } finally {
+
+        this.loading = false
+
+      }
+
+    },
+
+    // FETCH 1 LESS PAGE
+    async loadMinusTable() {
+
+      try {
+
+        this.loading = true
+
         this.page = this.page - 1
-        return
+
+        if (this.page <= 0) {
+
+          console.log("No less pages...")
+          this.page = 1
+          return
+        }
+
+        const res = await SecureFetching(`/users/records?page=${this.page}`)
+
+        if (!res.ok) {
+
+          throw new Error(res.status)
+
+        }
+
+        data = await res.json()
+
+        this.records = data.rows
+        this.page = data.current_page
+        this.totalPages = data.count_pages
+        this.totalRecords = data.count_pages
+
+      } catch (error) {
+
+        throw new Error(error)
+
+      } finally {
+
+        this.loading = false
+
       }
-
-      const res = await SecureFetching(`/users/records?page=${this.page}`)
-
-      if (!res.ok) {
-
-        throw new Error(res.status)
-
-      }
-
-      data = res.json()
-
-      this.records = data.rows
-      this.page = data.current_page
-      this.totalPages = data.count_pages
-      this.totalRecords = data.count_records
-
-      this.loading = false
 
     },
 

@@ -55,39 +55,76 @@
     <main class="hero is-fullheight">
 
         <div class="container">
-            <h1 class="title">Users</h1>
 
-                <div>
-                    <p x-text="totalRecords"></p>
-                    <p x-text="totalPages"></p>
-                    <button class="button is-primary" @click="loadPlusTable">
-                        <i class="icon icon-circle-plus"></i>
-                    </button>
-                    <p x-text="page"></p>
-                    <button class="button is-primary">
+            <div class="has-text-center">
+                <h1 class="title my-5">Usuarios</h1>
+                <div class="grid">
+                    <p>
+                        <span class="icon-text">
+                            <i class="icon icon-layers"></i>
+                        </span>
+                        <strong>Registros Totales: </strong>
+                        <span x-text="totalRecords"></span>
+                    </p>
+                    <p>
+                        <span class="icon-text">
+                            <i class="icon icon-file-stack"></i>
+                        </span>
+                        <strong>Paginas Totales: </strong>
+                        <span x-text="totalPages"></span>
+                    </p>
+                    <p>
+                        <span class="icon-text">
+                            <i class="icon icon-arrow-down-from-line"></i>
+                        </span>
+                        <strong>Pagina Actual: </strong>
+                        <span x-text="page"></span>
+                    </p>
+                    <button
+                        class="button is-primary is-outlined"
+                        @click="loadMinusTable"
+                        x-bind:disabled="loading"
+                    >
                         <i class="icon icon-circle-minus"></i>
                     </button>
+                    <button
+                        class="button is-primary is-outlined"
+                        @click="loadPlusTable"
+                        x-bind:disabled="loading"
+                    >
+                        <i class="icon icon-circle-plus"></i>
+                    </button>
+                    <button class="button is-info">
+                        <i class="icon icon-user-plus"></i>
+                    </button>
                 </div>
+            </div>
 
-
-            <table class="table is-fullwidth">
-                <thead>
-                    <tr>ID</tr>
-                    <tr>Nombre</tr>
-                    <tr>Email</tr>
-                </thead>
-                <tbody>
-
-                    <template x-for="user in records" :key="user.id">
-                        <tr>
-                            <td x-text="user.id"></td>
-                            <td x-text="user.name"></td>
-                            <td x-text="user.email"></td>
-                        </tr>
-                    </template>
-
-                </tbody>
-            </table>
+            <section class="section">
+                <div class="container">
+                    <table class="table is-fullwidth is-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="user in records" :key="user.id">
+                                <tr
+                                    @click="window.location.href = '/users/form?id=' + user.id"
+                                    style="cursor: pointer;"
+                                >
+                                    <td x-text="user.id"></td>
+                                    <td x-text="user.name"></td>
+                                    <td x-text="user.email"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
         </div>
 

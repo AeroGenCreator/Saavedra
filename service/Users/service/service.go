@@ -63,7 +63,7 @@ func (s service) ListUsers(page int) (*types.Table, error) {
 	offset = (page - 1) * 15
 	limit = 15
 
-	records, total_recs, err := s.store.SelectUserFrontendPage(limit, offset)
+	records, total_recs, err := s.store.SelectAllUsers(limit, offset)
 	if err != nil {
 		return nil, err
 	}

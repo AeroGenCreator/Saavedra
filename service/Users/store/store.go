@@ -8,7 +8,7 @@ import (
 type Store interface {
 	CreateUser(user *types.User) (*types.User, error)
 	UpdateUser(user *types.User) (*types.User, error)
-	SelectUserFrontendPage(limit int, offset int) ([]*types.User, int, error)
+	SelectAllUsers(limit int, offset int) ([]*types.User, int, error)
 	SelectUser(id int) (*types.User, error)
 	DeleteUser(id int) error
 }
@@ -41,7 +41,7 @@ func (s *store) CreateUser(user *types.User) (*types.User, error) {
 func (s *store) UpdateUser(user *types.User) (*types.User, error) {
 	q := "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?;"
 
-	_, err := s.db.Exec(q, user.Name, user.Email, user.Password, user.Id)
+	_, err := s.db.Exec(q, user.Name, user.Email, user.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -49,10 +49,10 @@ func (s *store) UpdateUser(user *types.User) (*types.User, error) {
 	return user, nil
 }
 
-func (s *store) SelectUserFrontendPage(limit int, offset int) ([]*types.User, int, error) {
+func (s *store) SelectAllUsers(limit int, offset int) ([]*types.User, int, error) {
 
 	q1 := "SELECT COUNT(id) AS count_id FROM users GROUP BY id;"
-	q2 := "SELECT id, name, email, password FROM users LIMIT ? OFFSET ?;"
+	q2 := "SELECT id, name, email FROM users LIMIT ? OFFSET ?;"
 
 	var total_recs int
 	err := s.db.QueryRow(q1).Scan(&total_recs)
@@ -72,7 +72,7 @@ func (s *store) SelectUserFrontendPage(limit int, offset int) ([]*types.User, in
 	for rows.Next() {
 		var user types.User
 
-		err = rows.Scan(&user.Id, &user.Name, &user.Email, &user.Password)
+		err = rows.Scan(&user.Id, &user.Name, &user.Email)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -87,10 +87,10 @@ func (s *store) SelectUserFrontendPage(limit int, offset int) ([]*types.User, in
 }
 
 func (s *store) SelectUser(id int) (*types.User, error) {
-	q := "SELECT id, name, email, password FROM users WHERE id = ?;"
+	q := "SELECT id, name, email FROM users WHERE id = ?;"
 
 	var user types.User
-	err := s.db.QueryRow(q, id).Scan(&user.Id, &user.Name, &user.Email, &user.Password)
+	err := s.db.QueryRow(q, id).Scan(&user.Id, &user.Name, &user.Email)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {

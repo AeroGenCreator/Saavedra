@@ -7,7 +7,9 @@ document.addEventListener('alpine:init', () => {
     email: '',
     password: '',
     repeatPassword: '',
-    required: false,
+    newPassword: '',
+    required: '',
+    passMatch: '',
 
     // LOAD GO STATIC DATA INTO THIS ALPINE COMPONENT
     initData(id, name, email) {
@@ -16,56 +18,49 @@ document.addEventListener('alpine:init', () => {
       this.email = email;
     },
 
-    // Check required fields.
-    noEmptys() {
-      if (this.name === '' || this.email === '') {
-        return false
-      } else {
-        return true
-      }
-    },
+    // CHECK REQUIRED FIELDS
+    hasEmptyRequiredFields() { return (this.name === '' || this.email === '') },
 
     // Check passwordValidation
-    checkPasword() {
-      if (this.password != this.repeatPassword) {
-        return false
-      } else {
-        return true
-      }
-    },
+    passwordsMatch() { return (this.password === this.repeatPassword) },
 
     // UPDATE USER
     async updateUser() {
       try {
-        this.required = false
-        const requiredFields = this.noEmptys()
-        if (!requiredFields) {
-          this.required = true
+
+        this.newPassword = ''
+        this.required = ''
+        this.passMatch = ''
+
+        if (this.hasEmptyRequiredFields()) {
+          this.required = "Faltan campos."
           return
         }
-        var newPassword = ""
-        if (this.password && this.repeatPassword) {
-          const approvedPass = this.checkPasword()
-          console.log("Si actualizar las password...")
-          newPassword = this.password
-        }
+
+        if (this.password || this.repeatPassword) {
+            if (!this.passwordsMatch()) {
+              this.passMatch = "Contraseñas no coinciden."
+              return
+            }
+
+            this.newPassword = this.password
+          }
+
         const res = await SecureFetching(
           "/users/record",
           {
             method: "PUT", body: JSON.stringify(
-              { id: this.id, name: this.name, email: this.email, password: this.password }
+              { id: this.id, name: this.name, email: this.email, password: this.newPassword }
             ),
           }
         )
         if (!res.ok) {
           throw new Error(res.status)
         }
+        location.reload()
       }
       catch (error) {
         throw error
-      }
-      finally {
-        location.reload();
       }
     },
 

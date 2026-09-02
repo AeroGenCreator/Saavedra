@@ -7,6 +7,13 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type UserStr struct {
+	Id       string `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type Table struct {
 	Rows        []*User `json:"rows"`
 	CountRows   int     `json:"count_rows"`

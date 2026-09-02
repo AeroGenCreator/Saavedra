@@ -137,7 +137,7 @@
                         <tbody>
                             <template x-for="user in records" :key="user.id">
                                 <tr
-                                    @click="window.location.href = '/users/record?id=' + user.id"
+                                    @click="openRecord(user.id)"
                                     style="cursor: pointer;"
                                 >
                                     <td x-text="user.id"></td>

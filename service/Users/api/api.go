@@ -2,6 +2,7 @@ package api
 
 import (
 	"Saavedra/service/Users/service"
+	"Saavedra/service/Users/types"
 	"encoding/json"
 	"html/template"
 	"log"
@@ -142,7 +143,38 @@ func (e EndpointHandler) CallUsersRecord(w http.ResponseWriter, r *http.Request)
 		}
 
 	case http.MethodPut:
-		return
+		var userStr types.UserStr
+		err := json.NewDecoder(r.Body).Decode(&userStr)
+		if err != nil {
+			log.Printf("usersRecord json error... (%v)", err.Error())
+			http.Error(w, "usersRecord json errro", http.StatusInternalServerError)
+			return
+		}
+
+		idInt, err := strconv.Atoi(userStr.Id)
+		if err != nil {
+			log.Printf("usersRecord parse int error...(%v)", err.Error())
+			http.Error(w, "usersRecord parse int error", http.StatusInternalServerError)
+			return
+		}
+
+		user := types.User{
+			Id:       idInt,
+			Name:     userStr.Name,
+			Email:    userStr.Email,
+			Password: userStr.Password,
+		}
+
+		updUser, err := e.service.UpdateUser(&user)
+		if err != nil {
+			log.Printf("usersRecord query error... (%v)", err.Error())
+			http.Error(w, "usersRecord json errro", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(updUser)
+
 	case http.MethodDelete:
 		return
 	case http.MethodHead:

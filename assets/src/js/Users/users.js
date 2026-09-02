@@ -9,6 +9,34 @@ document.addEventListener('alpine:init', () => {
     totalRecords: 0,
     loading: false,
 
+    // INITIALIZE -> FETCH PAGE 1
+    async init() {
+
+      try {
+
+        const res = await SecureFetching(`/users/records?page=${this.page}`)
+
+        if (!res.ok) {
+
+          throw new Error(`HTTP error! Status: ${res.status}`);
+
+        }
+
+        var data = await res.json()
+
+        this.records = data.rows
+        this.page = data.current_page
+        this.totalPages = data.count_pages
+        this.totalRecords = data.count_pages
+
+      } catch (error) {
+        debugger;
+        throw new Error(error)
+
+      }
+
+    },
+
     // NEW USER BUTTON
     async newUser() {
 
@@ -33,29 +61,24 @@ document.addEventListener('alpine:init', () => {
 
     },
 
-    // INITIALIZE -> FETCH PAGE 1
-    async init() {
+    // OPEN AN EXISTING RECORD
+    async openRecord(id) {
 
       try {
 
-        const res = await SecureFetching(`/users/records?page=${this.page}`)
+        const res = await SecureFetching("/users/record", { method: "HEAD" })
 
         if (!res.ok) {
 
-          throw new Error(`HTTP error! Status: ${res.status}`);
+          throw new Error(res.status)
 
         }
 
-        var data = await res.json()
-
-        this.records = data.rows
-        this.page = data.current_page
-        this.totalPages = data.count_pages
-        this.totalRecords = data.count_pages
+        window.location.href = `/users/record?id=${id}`
 
       } catch (error) {
-        debugger;
-        throw new Error(error)
+
+        throw (error)
 
       }
 

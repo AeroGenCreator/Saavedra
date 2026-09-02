@@ -3,6 +3,7 @@ package service
 import (
 	"Saavedra/service/Users/store"
 	"Saavedra/service/Users/types"
+	"Saavedra/utils"
 	"math"
 )
 
@@ -46,11 +47,26 @@ func (s service) NewUser(user *types.User) (*types.User, error) {
 }
 
 func (s service) UpdateUser(user *types.User) (*types.User, error) {
-	user, err := s.store.UpdateUser(user)
+
+	if user.Password == "" {
+		user, err := s.store.UpdateUserNoPass(user)
+		if err != nil {
+			return nil, err
+		}
+		return user, nil
+	}
+
+	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
 
+	user.Password = hashedPassword
+
+	user, err = s.store.UpdateUser(user)
+	if err != nil {
+		return nil, err
+	}
 	return user, nil
 }
 

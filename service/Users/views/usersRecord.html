@@ -15,7 +15,8 @@
 	<title>Users Record</title>
 </head>
 
-<body class="has-navbar-fixed-top" x-data="usersRecordComponent" x-init="initData('{{.Name}}', '{{.Email}}')">
+<!-- initData(arg1, arg2,...) INJECTION FROM HTML GO DATA TO DYNAMIC ALPINE x-model HANDLER -->
+<body class="has-navbar-fixed-top" x-data="usersRecordComponent" x-init="initData('{{.Id}}', '{{.Name}}', '{{.Email}}')">
 
     <section class="hero">
         <div class="container">
@@ -65,7 +66,7 @@
 
                             <div class="column is-12 has-text-centered">
                                 <h1 class="title">
-                                   Id del Registro {{.Id}}
+                                   Registro Id {{.Id}}
                                 </h1>
                             </div>
 
@@ -137,7 +138,7 @@
 
                         </div>
 
-                        <span x-show="required" class="is-danger is-7">
+                        <span x-show="required" class="has-text-danger is-7">
                             <p>Nombre e email son obligatorios</p>
                         </span>
 

@@ -8,6 +8,7 @@ import (
 type Store interface {
 	CreateUser(user *types.User) (*types.User, error)
 	UpdateUser(user *types.User) (*types.User, error)
+	UpdateUserNoPass(user *types.User) (*types.User, error)
 	SelectAllUsers(limit int, offset int) ([]*types.User, int, error)
 	SelectUser(id int) (*types.User, error)
 	DeleteUser(id int) error
@@ -41,11 +42,21 @@ func (s *store) CreateUser(user *types.User) (*types.User, error) {
 func (s *store) UpdateUser(user *types.User) (*types.User, error) {
 	q := "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?;"
 
+	_, err := s.db.Exec(q, user.Name, user.Email, user.Password, user.Id)
+	if err != nil {
+		return nil, err
+	}
+	user.Password = ""
+	return user, nil
+}
+
+func (s *store) UpdateUserNoPass(user *types.User) (*types.User, error) {
+	q := "UPDATE users SET name = ?, email = ? WHERE id = ?;"
+
 	_, err := s.db.Exec(q, user.Name, user.Email, user.Id)
 	if err != nil {
 		return nil, err
 	}
-
 	return user, nil
 }
 

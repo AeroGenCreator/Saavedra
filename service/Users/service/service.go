@@ -39,12 +39,19 @@ func divisionRounded(a, b int) int {
 
 func (s service) NewUser(user *types.User) (*types.User, error) {
 
-	user, err := s.store.CreateUser(user)
+	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	user.Password = hashedPassword
+
+	newUser, err := s.store.CreateUser(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return newUser, nil
 }
 
 func (s service) UpdateUser(user *types.User) (*types.User, error) {

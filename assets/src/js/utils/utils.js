@@ -30,7 +30,6 @@ async function SecureFetching(route, requestContent = {}, customHeaders = {'X-Re
   };
 
   try {
-    console.log(route, options)
 
     let response = await fetch(route, options);
 

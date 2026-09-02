@@ -72,6 +72,7 @@ document.addEventListener('alpine:init', () => {
     // DELETE USER
     async deleteUser() {
       try {
+
         console.log(`Attempting delete record: ${this.id}`)
         const res = await SecureFetching(
           "/users/record",
@@ -81,17 +82,19 @@ document.addEventListener('alpine:init', () => {
             ),
           }
         )
+
         if (!res.ok) {
-          const errorMessage = await response.text();
           switch (res.status) {
             case 403:
-              console.log(errorMessage)
+              alert("Server has forbidden this record to be deleted.")
               location.reload()
             default:
               throw new Error(res.status)
           }
         }
+
         window.location.href = "/users"
+
       } catch (error) {
         throw error
       }

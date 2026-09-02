@@ -28,36 +28,43 @@ document.addEventListener('alpine:init', () => {
     // CREATE NEW
     async createUser() {
       try {
-        this.passMatch = false
+
         this.required = false
+        this.passMatch = false
+
         const allowCreation = this.checkFields()
-        if (allowCreation) {
-          const passwordMatch = this.checkPassword()
-          if (!passwordMatch) {
-            this.passMatch = true
-            return
-          }
-          console.log("Creating record in db...")
-          const res = await SecureFetching(
-            "/users/new",
-            {
-              method: "POST",
-              body: JSON.stringify(
-                {name: this.name, email: this.email, password: this.password}
-              )
-            }
-          )
-          if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(errorText)
-          }
-          const newUser = await response.json();
-          const newId = newUser.id
-          window.location.href = `/users/record?id=${newId}`
-        } else {
+        if (!allowCreation) {
           this.required = true
           return
         }
+
+        const passwordMatch = this.checkPassword()
+        if (!passwordMatch) {
+          this.passMatch = true
+          return
+        }
+
+        console.log("Attempting request at /users/new...")
+        const res = await SecureFetching(
+          "/users/new",
+          {
+            method: "POST",
+            body: JSON.stringify(
+              {name: this.name, email: this.email, password: this.password}
+            )
+          }
+        )
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(errorText)
+        }
+        debugger;
+        const newUser = await res.json();
+        const newId = newUser.id
+
+        window.location.href = `/users/record?id=${newId}`
+
       } catch (error) {
         throw error
       }

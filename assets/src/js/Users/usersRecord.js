@@ -71,7 +71,30 @@ document.addEventListener('alpine:init', () => {
 
     // DELETE USER
     async deleteUser() {
-      return
+      try {
+        console.log(`Attempting delete record: ${this.id}`)
+        const res = await SecureFetching(
+          "/users/record",
+          {
+            method: "DELETE", body: JSON.stringify(
+              { id: this.id, name: this.name, email: this.email, password: this.password }
+            ),
+          }
+        )
+        if (!res.ok) {
+          const errorMessage = await response.text();
+          switch (res.status) {
+            case 403:
+              console.log(errorMessage)
+              location.reload()
+            default:
+              throw new Error(res.status)
+          }
+        }
+        window.location.href = "/users"
+      } catch (error) {
+        throw error
+      }
     },
 
     // GO HOME

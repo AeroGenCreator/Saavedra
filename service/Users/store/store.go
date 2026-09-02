@@ -11,7 +11,7 @@ type Store interface {
 	UpdateUserNoPass(user *types.User) (*types.User, error)
 	SelectAllUsers(limit int, offset int) ([]*types.User, int, error)
 	SelectUser(id int) (*types.User, error)
-	DeleteUser(id int) error
+	DeleteUser(user *types.User) error
 }
 
 type store struct {
@@ -111,10 +111,10 @@ func (s *store) SelectUser(id int) (*types.User, error) {
 	return &user, nil
 }
 
-func (s *store) DeleteUser(id int) error {
+func (s *store) DeleteUser(user *types.User) error {
 	q := "DELETE FROM users WHERE id = ?;"
 
-	if _, err := s.db.Exec(q, id); err != nil {
+	if _, err := s.db.Exec(q, user.Id); err != nil {
 		return err
 	}
 

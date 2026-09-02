@@ -7,10 +7,60 @@ document.addEventListener('alpine:init', () => {
     password: "",
     repeatPassword: "",
     required: false,
+    passMatch: false,
+
+    checkFields() {
+      if (!this.name || !this.email || !this.password || !this.repeatPassword) {
+        return false
+      } else {
+        return true
+      }
+    },
+
+    checkPassword() {
+      if (this.password != this.repeatPassword) {
+        return false
+      } else {
+        return true
+      }
+    },
 
     // CREATE NEW
     async createUser() {
-      return
+      try {
+        this.passMatch = false
+        this.required = false
+        const allowCreation = this.checkFields()
+        if (allowCreation) {
+          const passwordMatch = this.checkPassword()
+          if (!passwordMatch) {
+            this.passMatch = true
+            return
+          }
+          console.log("Creating record in db...")
+          const res = await SecureFetching(
+            "/users/new",
+            {
+              method: "POST",
+              body: JSON.stringify(
+                {name: this.name, email: this.email, password: this.password}
+              )
+            }
+          )
+          if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(errorText)
+          }
+          const newUser = await response.json();
+          const newId = newUser.id
+          window.location.href = `/users/record?id=${newId}`
+        } else {
+          this.required = true
+          return
+        }
+      } catch (error) {
+        throw error
+      }
     },
 
     // GO HOME

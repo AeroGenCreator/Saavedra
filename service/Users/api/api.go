@@ -4,6 +4,7 @@ import (
 	"Saavedra/service/Users/service"
 	"Saavedra/service/Users/types"
 	"encoding/json"
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,6 +17,29 @@ type EndpointHandler struct {
 
 func New(s service.Service) *EndpointHandler {
 	return &EndpointHandler{service: s}
+}
+
+// HELPER -> DECODES JSON TO STRUCT PARSING ID FROM STR TO INT
+// RETURNS User POINTER.
+func parseStruct(r *http.Request) (*types.User, error) {
+	var userStr types.UserStr
+	err := json.NewDecoder(r.Body).Decode(&userStr)
+	if err != nil {
+		return nil, err
+	}
+
+	idInt, err := strconv.Atoi(userStr.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	user := types.User{
+		Id:       idInt,
+		Name:     userStr.Name,
+		Email:    userStr.Email,
+		Password: userStr.Password,
+	}
+	return &user, nil
 }
 
 // ROUTE: /users -> ONLY RENDERS HTML
@@ -96,6 +120,32 @@ func (e EndpointHandler) CreateUserInDB(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
+	case http.MethodPost:
+		var userRequest types.NoIdUser
+		err := json.NewDecoder(r.Body).Decode(&userRequest)
+		if err != nil {
+			log.Printf("Error parsing struct '/users/new'...(%v)", err.Error())
+			http.Error(w, "Error parsing struct '/users/new'.", http.StatusInternalServerError)
+			return
+		}
+		user := types.User{
+			Id:       0,
+			Name:     userRequest.Name,
+			Email:    userRequest.Email,
+			Password: userRequest.Password,
+		}
+
+		newUser, err := e.service.NewUser(&user)
+		if err != nil {
+			log.Printf("Error creating record 'users/new'...(%v)", err.Error())
+			http.Error(w, "Error creating record", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(newUser)
+
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 
@@ -143,29 +193,14 @@ func (e EndpointHandler) CallUsersRecord(w http.ResponseWriter, r *http.Request)
 		}
 
 	case http.MethodPut:
-		var userStr types.UserStr
-		err := json.NewDecoder(r.Body).Decode(&userStr)
+		user, err := parseStruct(r)
 		if err != nil {
-			log.Printf("usersRecord json error... (%v)", err.Error())
-			http.Error(w, "usersRecord json errro", http.StatusInternalServerError)
+			log.Printf("Error parsing struct... (%v)", err.Error())
+			http.Error(w, "Error parsing struct", http.StatusInternalServerError)
 			return
 		}
 
-		idInt, err := strconv.Atoi(userStr.Id)
-		if err != nil {
-			log.Printf("usersRecord parse int error...(%v)", err.Error())
-			http.Error(w, "usersRecord parse int error", http.StatusInternalServerError)
-			return
-		}
-
-		user := types.User{
-			Id:       idInt,
-			Name:     userStr.Name,
-			Email:    userStr.Email,
-			Password: userStr.Password,
-		}
-
-		updUser, err := e.service.UpdateUser(&user)
+		updUser, err := e.service.UpdateUser(user)
 		if err != nil {
 			log.Printf("usersRecord query error... (%v)", err.Error())
 			http.Error(w, "usersRecord json errro", http.StatusInternalServerError)
@@ -176,10 +211,31 @@ func (e EndpointHandler) CallUsersRecord(w http.ResponseWriter, r *http.Request)
 		json.NewEncoder(w).Encode(updUser)
 
 	case http.MethodDelete:
-		return
+		user, err := parseStruct(r)
+		if err != nil {
+			log.Printf("Error parsing struct... (%v)", err.Error())
+			http.Error(w, "Error parsing struct", http.StatusInternalServerError)
+			return
+		}
+		err = e.service.DeleteUser(user)
+		if err != nil {
+			if errors.Is(err, types.ErrAdminProtection) {
+				log.Printf("Impossible delete admin user: %v", user.Id)
+				http.Error(w, "Cannot delete standard admin user", http.StatusForbidden)
+				return
+			}
+			log.Printf("Error deleting record: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+
 	case http.MethodHead:
-		return
+		w.WriteHeader(http.StatusOK)
+
 	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 		return
 	}
 }

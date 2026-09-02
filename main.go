@@ -64,9 +64,11 @@ func main() {
 		Email:    adminEmail,
 		Password: adminPassword,
 	}
-	if err = loginStore.InjectAdminDB(adminCreds, db); err != nil {
+	adminId, err := loginStore.InjectAdminDB(adminCreds, db)
+	if err != nil {
 		log.Fatal("Admin credential injection fails...", err)
 	}
+	env.BufferAdminId(adminId)
 
 	// Nuevo mapper de ruta-función para peticiones http.
 	mux := http.NewServeMux()

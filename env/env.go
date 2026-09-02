@@ -8,6 +8,7 @@ import (
 
 var IsProduction bool
 var ApyKey string
+var AdminId int
 
 func LoadGlobalEnvs() error {
 	IsProduction, err := strconv.ParseBool(os.Getenv("IS_PRODUCTION"))
@@ -17,7 +18,11 @@ func LoadGlobalEnvs() error {
 	}
 	log.Print("PROJECT STATUS SET TO: ", IsProduction)
 
-	ApyKey = (os.Getenv("SESSION_TOKEN"))
+	ApyKey = os.Getenv("SESSION_TOKEN")
 
 	return nil
+}
+
+func BufferAdminId(id int) {
+	AdminId = id
 }

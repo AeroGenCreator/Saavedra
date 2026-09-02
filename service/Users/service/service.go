@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Saavedra/env"
 	"Saavedra/service/Users/store"
 	"Saavedra/service/Users/types"
 	"Saavedra/utils"
@@ -12,7 +13,7 @@ type Service interface {
 	UpdateUser(user *types.User) (*types.User, error)
 	ListUsers(page int) (*types.Table, error)
 	SelectUser(id int) (*types.User, error)
-	DeleteUser(id int) error
+	DeleteUser(user *types.User) error
 }
 
 type service struct {
@@ -105,8 +106,11 @@ func (s service) SelectUser(id int) (*types.User, error) {
 	return user, nil
 }
 
-func (s service) DeleteUser(id int) error {
-	err := s.store.DeleteUser(id)
+func (s service) DeleteUser(user *types.User) error {
+	if user.Id == env.AdminId {
+		return types.ErrAdminProtection
+	}
+	err := s.store.DeleteUser(user)
 	if err != nil {
 		return err
 	}

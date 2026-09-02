@@ -41,11 +41,11 @@ func (s *store) GetUserInfo(request *types.User) (*types.User, error) {
 }
 
 // FUNCTION: CALL WHEN MAIN RUNS. INJECTS ADMIN CREDENTIALS.
-func InjectAdminDB(admin types.User, db *sql.DB) error {
+func InjectAdminDB(admin types.User, db *sql.DB) (int, error) {
 
 	hashedPassword, err := utilities.HashPassword(admin.Password)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	admin.Password = hashedPassword
@@ -59,11 +59,17 @@ func InjectAdminDB(admin types.User, db *sql.DB) error {
 	password = excluded.password;
 	`
 
-	if _, err = db.Exec(command, admin.Name, admin.Email, admin.Password); err != nil {
-		return err
+	res, err := db.Exec(command, admin.Name, admin.Email, admin.Password)
+	if err != nil {
+		return 0, err
 	}
 
-	return nil
+	adminId, err := res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(adminId), nil
 }
 
 // CONTRATO: INSERT OR UPDATE USER SESSION IF NOT EXISTS

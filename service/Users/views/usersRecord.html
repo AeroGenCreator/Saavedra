@@ -59,9 +59,9 @@
             <div class="container">
 
               <div class="columns is-centered">
-                <div class="column is-two-thirds">
+                <div class="column is-two-thirds box">
 
-                    <form class="box">
+                    <form>
                         <div class="columns is-multiline">
 
                             <div class="column is-12 has-text-centered">
@@ -116,32 +116,38 @@
                                 </div>
                             </div>
 
-                            <div class="column is-6">
-                                <div class="field">
-                                    <div class="control">
-                                        <button class="button is-fullwidth is-primary" type="button" @click="updateUser">
-                                        Actualizar Usuario
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <div class="control">
-                                        <button class="button is-fullwidth is-danger" type="button" @click="deleteUser">
-                                        Eliminar Usuario
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
 
+                  </form>
+
+
+                    <div class="block my-2">
                         <p x-text="required" class="has-text-danger is-7"></p>
                         <p x-text="passMatch" class="has-text-danger is-7"></p>
+                    </div>
 
-                  </form>
+
+                    <div class="columns is-multiline">
+                        <div class="column is-6">
+                            <div class="field">
+                                <div class="control">
+                                    <button class="button is-fullwidth is-primary" type="button" @click="updateUser">
+                                    Actualizar Usuario
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="column is-6">
+                            <div class="field">
+                                <div class="control">
+                                    <button class="button is-fullwidth is-danger" type="button" @click="deleteUser">
+                                    Eliminar Usuario
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
               </div>

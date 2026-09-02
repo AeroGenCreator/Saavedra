@@ -30,7 +30,7 @@ document.addEventListener('alpine:init', () => {
         this.totalRecords = data.count_pages
 
       } catch (error) {
-        debugger;
+
         throw new Error(error)
 
       }

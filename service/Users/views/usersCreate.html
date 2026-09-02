@@ -107,9 +107,10 @@
 
                         </div>
 
-                        <span x-show="required" class="is-danger is-7">
-                            <p>Todos los campos son obligatorios</p>
-                        </span>
+                        <div class="my-2">
+                            <p x-text="required" class="has-text-danger is-7"></p>
+                            <p x-text="passMatch" class="has-text-danger is-7"></p>
+                        </div>
 
                         <div class="field">
                             <div class="control">

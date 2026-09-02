@@ -2,12 +2,12 @@ document.addEventListener('alpine:init', () => {
   // Register this alpine component to a section in your HTML.
   Alpine.data('usersCreateComponent', () => ({
 
-    name: "",
-    email: "",
-    password: "",
-    repeatPassword: "",
-    required: false,
-    passMatch: false,
+    name: '',
+    email: '',
+    password: '',
+    repeatPassword: '',
+    required: '',
+    passMatch: '',
 
     checkFields() {
       if (!this.name || !this.email || !this.password || !this.repeatPassword) {
@@ -29,18 +29,18 @@ document.addEventListener('alpine:init', () => {
     async createUser() {
       try {
 
-        this.required = false
-        this.passMatch = false
+        this.required = ''
+        this.passMatch = ''
 
         const allowCreation = this.checkFields()
         if (!allowCreation) {
-          this.required = true
+          this.required = "Todos los campos son obligatorios."
           return
         }
 
         const passwordMatch = this.checkPassword()
         if (!passwordMatch) {
-          this.passMatch = true
+          this.passMatch = "La validación de contraseña no coincide."
           return
         }
 
@@ -59,7 +59,7 @@ document.addEventListener('alpine:init', () => {
           const errorText = await res.text();
           throw new Error(errorText)
         }
-        debugger;
+
         const newUser = await res.json();
         const newId = newUser.id
 

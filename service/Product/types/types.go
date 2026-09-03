@@ -27,3 +27,9 @@ type Proveedor struct {
 	Name  string `json:"name"`
 	Phone int    `json:"number"`
 }
+
+// SLICES
+type MaterialSlice struct {
+	Records     []*Material `json:"records"`
+	HasNextPage bool        `json:"hasNextPage"`
+}

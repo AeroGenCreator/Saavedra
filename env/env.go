@@ -9,6 +9,7 @@ import (
 var IsProduction bool
 var ApyKey string
 var AdminId int
+var RecordsPerSlice int
 
 func LoadGlobalEnvs() error {
 	IsProduction, err := strconv.ParseBool(os.Getenv("IS_PRODUCTION"))
@@ -16,9 +17,14 @@ func LoadGlobalEnvs() error {
 		log.Printf("Invalid value given to 'IS_PRODUCTION' (%v): default 'false'", err)
 		IsProduction = false
 	}
-	log.Print("PROJECT STATUS SET TO: ", IsProduction)
+	log.Print("PROJECT PRODUCTION STATUS SET TO: ", IsProduction)
 
 	ApyKey = os.Getenv("SESSION_TOKEN")
+	recordsPerSliceStr := os.Getenv("RECORDS_PER_SLICE")
+	RecordsPerSlice, err = strconv.Atoi(recordsPerSliceStr)
+	if err != nil {
+		log.Fatal("Can't parse 'RECORDS_PER_SLICE'... MAKE SURE TO SPECIFY AN INTEGER NUMBER.")
+	}
 
 	return nil
 }

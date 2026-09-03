@@ -166,3 +166,9 @@ func StringONull(input string) *string {
 
 	return &input
 }
+
+// FUNCTION -> TOTAL PAGES
+// a = COUNT OF RECORDS, b = SLICE SIZE
+func CalculateTotalPages(a, b int) int {
+	return (a + b - 1) / b
+}

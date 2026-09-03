@@ -23,5 +23,18 @@ document.addEventListener('alpine:init', () => {
         console.error('No fue posible cerrar sesión:', error)
       }
     },
+
+    async secureMaterial() {
+      try {
+        const res = await SecureFetching("/product/material", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = "/product/material"
+      } catch (error) {
+        throw error
+      }
+    },
+
   }))
 })

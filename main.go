@@ -88,7 +88,7 @@ func main() {
 	loginRouter.Assambler(mux, db)
 	welcomeRouter.Assambler(mux)
 	usersRouter.Assambler(mux, db)
-	productRouter.Assambler(mux)
+	productRouter.Assambler(mux, db)
 
 	// Servidor
 	fmt.Println("🚀 Servidor ejecutándose en http://localhost:8080")

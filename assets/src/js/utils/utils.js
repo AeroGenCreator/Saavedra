@@ -16,7 +16,7 @@ function onTokenRefreshed() {
 
 async function SecureFetching(route, requestContent = {}, customHeaders = {'X-Requested-With': 'jsFrontendComponent'}) {
 
-  console.log("Attempting secure fetch...")
+  console.log(`Attempting secure fetch for ${route}...`)
 
   // CREDENTIALS, HEADERS && OPTIONS
   const options = {

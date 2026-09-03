@@ -1,12 +1,15 @@
 package service
 
 import (
+	"Saavedra/env"
 	"Saavedra/service/Product/store"
 	"Saavedra/service/Product/types"
+	"Saavedra/utils"
 )
 
 type Service interface {
 	CreateMaterial(material *types.Material) (*types.Material, error)
+	ListMaterial(page int) (*types.MaterialSlice, error)
 }
 
 type service struct {
@@ -24,6 +27,21 @@ func (s service) CreateMaterial(material *types.Material) (*types.Material, erro
 		return nil, err
 	}
 	return newMaterial, nil
+}
+
+func (s service) ListMaterial(page int) (*types.MaterialSlice, error) {
+	offset := (page - 1) * env.RecordsPerSlice
+	records, count, err := s.store.ListMaterial(env.RecordsPerSlice, offset)
+	if err != nil {
+		return nil, err
+	}
+	totalPages := utils.CalculateTotalPages(count, env.RecordsPerSlice)
+	hasNextPage := totalPages > page
+	materialSlice := types.MaterialSlice{
+		Records:     records,
+		HasNextPage: hasNextPage,
+	}
+	return &materialSlice, nil
 }
 
 // SERVICES PROVEEDOR

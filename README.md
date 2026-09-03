@@ -7,16 +7,18 @@
 To configure Saavedraa you must provide the following environment variables.
 
 ```env
-# THIS TOKEN SIGNS EVERY JWT SENDED TO FRONTEND GENERATING SESSION STATES.
-SESSION_TOKEN=
-# SPECIFIC NAME FOR YOU DATABASE
-DATABASE_FILE_NAME=
-# ADMINISTRATOR CREDENTIALS
-ADMIN_NAME=
-ADMIN_EMAIL=
-ADMIN_PASSWORD=
-# SET TO TRUE IN PRODUCTION
+# Special token to validate request from the client.
+SESSION_TOKEN=123456789
+# Specific name for your Sqlite3 Database
+DATABASE_FILE_NAME=db
+# Administrator credentials
+ADMIN_NAME=admin
+ADMIN_EMAIL=admin@gmail.com
+ADMIN_PASSWORD=admin
+# SET TO FALSE IN PRODUCTION
 IS_PRODUCTION=0
+# QUANTITY OF RECORDS SHOWN/FETCH BY LISTS VIEW
+RECORDS_PER_SLICE=15
 ```
 
 ## Dependencies

@@ -2,6 +2,7 @@ package api
 
 import (
 	"Saavedra/service/Product/service"
+	"Saavedra/service/Product/types"
 	"encoding/json"
 	"html/template"
 	"log"
@@ -117,7 +118,19 @@ func (e *EndpointHandler) CallMaterialNew(w http.ResponseWriter, r *http.Request
 			return
 		}
 	case http.MethodPost:
-		return
+		var material types.Material
+		if err := json.NewDecoder(r.Body).Decode(&material); err != nil {
+			log.Printf("Error decoding r.Body '/product/material/new'...(%v)", err.Error())
+			http.Error(w, "Error decoding r.Body '/product/material/new'", http.StatusInternalServerError)
+			return
+		}
+		_, err := e.service.CreateMaterial(&material)
+		if err != nil {
+			log.Printf("Error creating '/product/material/new'...(%v)", err.Error())
+			http.Error(w, "Error creating '/product/material/new'", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:

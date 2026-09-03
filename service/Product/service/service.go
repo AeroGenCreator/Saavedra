@@ -8,8 +8,11 @@ import (
 )
 
 type Service interface {
-	CreateMaterial(material *types.Material) (*types.Material, error)
 	ListMaterial(page int) (*types.MaterialSlice, error)
+	CreateMaterial(material *types.Material) (*types.Material, error)
+	ReadMaterial(id string) (*types.Material, error)
+	UpdateMaterial(material *types.Material) (*types.Material, error)
+	DeleteMaterial(id string) error
 }
 
 type service struct {
@@ -42,6 +45,19 @@ func (s service) ListMaterial(page int) (*types.MaterialSlice, error) {
 		HasNextPage: hasNextPage,
 	}
 	return &materialSlice, nil
+}
+
+func (s service) ReadMaterial(id string) (*types.Material, error) {
+	// transformar id a int
+	return nil, nil
+}
+
+func (s service) UpdateMaterial(material *types.Material) (*types.Material, error) {
+	return nil, nil
+}
+
+func (s service) DeleteMaterial(id string) error {
+	return nil
 }
 
 // SERVICES PROVEEDOR

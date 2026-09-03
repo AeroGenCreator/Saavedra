@@ -6,8 +6,11 @@ import (
 )
 
 type Store interface {
-	CreateMaterial(material *types.Material) (*types.Material, error)
 	ListMaterial(limit, offset int) ([]*types.Material, int, error)
+	CreateMaterial(material *types.Material) (*types.Material, error)
+	ReadMaterial(id int) (*types.Material, error)
+	UpdateMaterial(material *types.Material) (*types.Material, error)
+	DeleteMaterial(id int) error
 }
 
 type store struct {
@@ -48,18 +51,53 @@ func (s store) ListMaterial(limit, offset int) ([]*types.Material, int, error) {
 }
 
 func (s store) CreateMaterial(material *types.Material) (*types.Material, error) {
-	q := `
+	qInsert := `
 	INSERT INTO material (name) VALUES (?)
-	ON CONFLICT(name) DO UPDATE SET name = excluded.name
-	RETURNING id, name;
+	ON CONFLICT(name) DO UPDATE SET name = excluded.name;
 	`
+	_, err := s.db.Exec(qInsert, material.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	qSelect := `SELECT id, name FROM material WHERE name = ?;`
 	var newMaterial types.Material
-	err := s.db.QueryRow(q, material.Name).Scan(&newMaterial.Id, &newMaterial.Name)
+	err = s.db.QueryRow(qSelect, material.Name).Scan(&newMaterial.Id, &newMaterial.Name)
 	if err != nil {
 		return nil, err
 	}
 
 	return &newMaterial, nil
+}
+
+func (s store) ReadMaterial(id int) (*types.Material, error) {
+	q := "SELECT id, name FROM material WHERE id = ?;"
+	var record types.Material
+	err := s.db.QueryRow(q, id).Scan(&record.Name, &record.Id)
+	if err == sql.ErrNoRows {
+		return nil, types.ErrNoRecord
+	} else if err != nil {
+		return nil, err
+	}
+	return &record, nil
+}
+
+func (s store) UpdateMaterial(material *types.Material) (*types.Material, error) {
+	q := "UPDATE material SET name = ? WHERE id = ?;"
+	_, err := s.db.Exec(q, material.Name, material.Id)
+	if err != nil {
+		return nil, err
+	}
+	return material, nil
+}
+
+func (s store) DeleteMaterial(id int) error {
+	q := "DELETE FROM material WHERE id = ?;"
+	_, err := s.db.Exec(q, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // SECTION PROVEEDOR

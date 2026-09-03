@@ -2,7 +2,7 @@ package types
 
 import "errors"
 
-var ErrUniqueConstraint = errors.New("Duplicated data. Skiping...")
+var ErrNoRecord = errors.New("There is no record for the provided 'id'.")
 
 // 3 TABLES FOR THIS SERVICE
 // SUGGESTION: REAL FIELDS FIRST, RELATIONALS DENOTATE THEM WITH Id SUFFIX

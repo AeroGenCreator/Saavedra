@@ -67,3 +67,13 @@ dlv debug main.go
 # Breakpoint by calling a function.
 (dlv) break utils.FunctionName
 ```
+
+## Service Dependencies
+
+Some services relay on others. To keep a map of them you can point them as follows. Furthermore, keep migration order when loading services... For example: First you load `Login - Routes And Migrations` then `Users - Router and Migration`.
+
+```txt
+All -> 'depends on' -> Welcome and ServeAssets
+Users ->'depends on' -> Login
+Quote ->'depends on' -> Product
+```

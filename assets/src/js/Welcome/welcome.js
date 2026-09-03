@@ -57,25 +57,28 @@ document.addEventListener('alpine:init', () => {
   },
 
   async secureUsers() {
-
     try {
-
       const res = await SecureFetching("/users")
-
       if (!res.ok) {
-
       window.location.href = "/welcome"
-
       }
-
       window.location.href = "/users"
-
     } catch (error) {
-
       console.log(error)
-
     }
+  },
 
+  // REDIRECT: PRODUCT SERVICE
+  async secureProduct() {
+    try {
+      const res = await SecureFetching("/product/menu", { method: "HEAD" })
+      if (!res.ok) {
+        throw new Error(res.status)
+      }
+      window.location.href = "/product/menu"
+    } catch (error) {
+      throw error
+    }
   }
 
   })

@@ -10,108 +10,82 @@
     <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
-    <script defer src="/assets/src/js/Welcome/welcome.js"></script>
+    <script defer src="/assets/src/js/Product/productMenu.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 
-	<title>Welcome</title>
+	<title>Product Menu</title>
 </head>
+<body class="has-navbar-fixed-top" x-data="productMenuComponent">
 
-<body class="has-text-centered has-navbar-fixed-top" x-data="welcomeComponent">
-
-    <!-- NAVBAR -->
     <section class="hero">
-        <div class="container">
-            <nav class="navbar is-fixed-top has-background-black-ter">
-                <div class="navbar-brand">
-                    <a class="navbar-item" href="/welcome" @click.prevent="goHome">
-                        <figure class="image mx-6">
-                            <img src="/assets/img/saavedraVanilla.svg"/>
-                        </figure>
-                    </a>
-                </div>
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="field is-grouped">
-                            <p class="control">
-                                <a href="/login" @click.prevent="logOut">
-                                    <button class="button is-primary px-3 is-small">
-                                        Cerrar Sesión
-                                        <span class="px-2">
-                                            <i class="icon-log-in"></i>
-                                        </span>
-                                    </button>
-                                </a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
+      <div class="container">
+        <nav class="navbar is-fixed-top has-background-black-ter">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/welcome" @click.prevent="goHome">
+              <figure class="image mx-6">
+                <img src="/assets/img/saavedraVanilla.svg" alt="Inicio">
+              </figure>
+            </a>
+          </div>
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <a href="/login" @click.prevent="logOut">
+                <button class="button is-primary px-3 is-small" type="button">
+                  Cerrar sesión <span class="px-2"><i class="icon-log-in"></i></span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
     </section>
 
-    <!-- MENU GRID VIEW-->
     <main class="hero is-fullheight">
         <section class="section">
           <div class="container">
             <div class="columns is-multiline">
 
-              <div class="column is-3">
-                    <a href="/users" @click.prevent="secureUsers">
-                        <div class="notification is-danger card-fixed-height is-clickable-card">
-                            <article class="has-text-left">
-                                <i class="icon-users"></i>
-                                <div class="content is-small">
-                                    <h3>Servicio Usuarios</h3>
-                                    <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar usuarios.
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
-                    </a>
-              </div>
-
-              <div class="column is-3">
-                    <a href="/product/menu" @click.prevent="secureProduct">
-                        <div class="notification is-warning card-fixed-height is-clickable-card">
-                            <article class="has-text-left">
-                                <i class="icon-circle-pile"></i>
-                                <div class="content is-small">
-                                    <h3>Servicio Productos</h3>
-                                    <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar productos.
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
-                    </a>
-              </div>
-
-              <div class="column is-3">
-                    <a href="/employee">
-                        <div class="notification is-info card-fixed-height is-clickable-card">
-                            <article class="has-text-left">
-                                <i class="icon-id-card-lanyard"></i>
-                                <div class="content is-small">
-                                    <h3>Servicio Clientes</h3>
-                                    <p class="has-text-small truncate-text">
-                                        Registro y administración Clientes.
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
-                    </a>
-              </div>
-
-              <div class="column is-3">
-                    <a href="/quote">
+              <div class="column is-6">
+                    <a href="/product/material" @click.prevent="secureMaterial">
                         <div class="notification is-success card-fixed-height is-clickable-card">
                             <article class="has-text-left">
-                                <i class="icon-square-percent"></i>
+                                <i class="icon-anvil"></i>
                                 <div class="content is-small">
-                                    <h3>Servicio Cotizar</h3>
+                                    <h3>Material</h3>
                                     <p class="has-text-small truncate-text">
-                                        Genera cotización de precios basado en tus productos.
+                                        Crear, editar o eliminar materiales.
+                                    </p>
+                                </div>
+                            </article>
+                        </div>
+                    </a>
+              </div>
+
+              <div class="column is-6">
+                    <a href="/product/provedor" @click.prevent="secureProveedor">
+                        <div class="notification is-info card-fixed-height is-clickable-card">
+                            <article class="has-text-left">
+                                <i class="icon-van"></i>
+                                <div class="content is-small">
+                                    <h3>Provedor</h3>
+                                    <p class="has-text-small truncate-text">
+                                        Crear, editar o eliminar provedores.
+                                    </p>
+                                </div>
+                            </article>
+                        </div>
+                    </a>
+              </div>
+
+              <div class="column is-6">
+                    <a href="/product/product" @click.prevent="secureProduct">
+                        <div class="notification is-warning card-fixed-height is-clickable-card">
+                            <article class="has-text-left">
+                                <i class="icon-shopping-basket"></i>
+                                <div class="content is-small">
+                                    <h3>Producto</h3>
+                                    <p class="has-text-small truncate-text">
+                                        Crear, editar o eliminar productos.
                                     </p>
                                 </div>
                             </article>
@@ -124,7 +98,6 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="footer has-background-black-ter p-0">
       <div class="content has-text-left">
 

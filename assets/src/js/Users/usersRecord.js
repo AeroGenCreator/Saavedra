@@ -8,41 +8,27 @@ document.addEventListener('alpine:init', () => {
     password: '',
     repeatPassword: '',
     newPassword: '',
-    required: '',
     passMatch: '',
 
-    // LOAD GO STATIC DATA INTO THIS ALPINE COMPONENT
     initData(id, name, email) {
       this.id = id
       this.name = name;
       this.email = email;
     },
 
-    // CHECK REQUIRED FIELDS
-    hasEmptyRequiredFields() { return (this.name === '' || this.email === '') },
-
-    // Check passwordValidation
     passwordsMatch() { return (this.password === this.repeatPassword) },
 
-    // UPDATE USER
-    async updateUser() {
+    async updateRecord() {
       try {
 
         this.newPassword = ''
-        this.required = ''
         this.passMatch = ''
-
-        if (this.hasEmptyRequiredFields()) {
-          this.required = "Faltan campos."
-          return
-        }
 
         if (this.password || this.repeatPassword) {
             if (!this.passwordsMatch()) {
               this.passMatch = "Contraseñas no coinciden."
               return
             }
-
             this.newPassword = this.password
           }
 
@@ -64,11 +50,8 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    // DELETE USER
-    async deleteUser() {
+    async deleteRecord() {
       try {
-
-        console.log(`Attempting delete record: ${this.id}`)
         const res = await SecureFetching(
           "/users/record",
           {
@@ -77,7 +60,6 @@ document.addEventListener('alpine:init', () => {
             ),
           }
         )
-
         if (!res.ok) {
           switch (res.status) {
             case 403:
@@ -87,74 +69,46 @@ document.addEventListener('alpine:init', () => {
               throw new Error(res.status)
           }
         }
-
         window.location.href = "/users"
-
       } catch (error) {
         throw error
       }
     },
 
-    // GO HOME
-    async goHome() {
-
-      console.log("Attempting go Home...")
-
-      const res = await SecureFetching("/welcome")
-
-      if (!res.ok) {
-
-        if (res.status === 401) {
-
-          this.logOut()
-
-          alert("Session expires")
-
-        } else {
-
-          this.logOut()
-
-          alert(res.status)
-
+    async goBack() {
+      try {
+        const res = await SecureFetching("/users", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
         }
-
-      } else {
-
-        window.location.href = "/welcome"
-
+        window.location.href = "/users"
+      } catch (error) {
+        throw error
       }
-
     },
 
-    // LOG OUT
-    async logOut() {
-
-      try {
-
-        console.log("Attempting logout...")
-
-        const res = await fetch(
-          "/login", {
-          method: "PATCH",
-          credentials: "include",
-          headers: { "X-Requested-With": "jsFrontendComponent" }
-        })
-
-        if (res.ok) {
-
-          window.location.href = "/login", { method: "GET" }
-
-        }
-
-      } catch (error) {
-
-        console.log(error)
-
+    async goHome() {
+      const res = await SecureFetching('/welcome', { method: 'HEAD' })
+      if (res.ok) {
+        window.location.href = '/welcome'
         return
-
       }
+      await this.logOut()
+      alert(res.status === 401 ? 'Sesión expirada' : `Error ${res.status}`)
+    },
 
-    }
+    async logOut() {
+      try {
+        const res = await fetch('/login', {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'X-Requested-With': 'jsFrontendComponent' },
+        })
+        if (res.ok) window.location.href = '/login'
+      } catch (error) {
+        console.error('No fue posible cerrar sesión:', error)
+      }
+    },
 
   }))
 })

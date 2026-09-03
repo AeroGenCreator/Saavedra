@@ -15,27 +15,22 @@
 	<title>Users Record</title>
 </head>
 
-<!-- initData(arg1, arg2,...) INJECTION FROM HTML GO DATA TO DYNAMIC ALPINE x-model HANDLER -->
+<!-- NAVBAR -->
 <body class="has-navbar-fixed-top" x-data="usersRecordComponent" x-init="initData('{{.Id}}', '{{.Name}}', '{{.Email}}')">
-
     <section class="hero">
         <div class="container">
             <nav class="navbar is-fixed-top has-background-black-ter">
-
                 <div class="navbar-brand">
-                    <!-- Don't forget registering the event in your JS in an Alpine Component. -->
                     <a class="navbar-item" href="/welcome" @click.prevent="goHome">
                         <figure class="image mx-6">
                             <img src="/assets/img/saavedraVanilla.svg"/>
                         </figure>
                     </a>
                 </div>
-
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="field is-grouped">
                             <p class="control">
-                                <!-- Don't forget registering the event in your JS in an Alpine Component. -->
                                 <a href="/login" @click.prevent="logOut">
                                     <button class="button is-primary px-3 is-small">
                                         Cerrar Sesión
@@ -48,122 +43,101 @@
                         </div>
                     </div>
                 </div>
-
             </nav>
         </div>
     </section>
 
+    <!-- MAIN -->
     <main class="hero is-fullheight">
-
         <section class="section">
             <div class="container">
-
-              <div class="columns is-centered">
-                <div class="column is-two-thirds box">
-
-                    <form>
-                        <div class="columns is-multiline">
-
-                            <div class="column is-12 has-text-centered">
-                                <h1 class="title">
-                                   Registro Id {{.Id}}
-                                </h1>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Nombre</label>
-                                    <div class="control">
-                                        <input
-                                            class="input"
-                                            type="text"
-                                            placeholder="Nombre usuario"
-                                            x-model="name"
-                                        >
+                <div class="columns is-centered">
+                    <div class="column is-two-thirds">
+                        <div class="box">
+                            <div class="columns is-multiline">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Nombre</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="text" placeholder="usuario" x-model="name">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-square-user-round"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Correo</label>
-                                    <div class="control">
-                                        <input
-                                            class="input"
-                                            type="email"
-                                            placeholder="ejemplo@gmail.com"
-                                            x-model="email"
-                                        >
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Correo</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="email" placeholder="ejemplo@gmail.com" x-model="email">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-mail"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Contraseña</label>
-                                    <div class="control">
-                                        <input class="input" type="password" placeholder="•••••••••" x-model="password">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Nueva Contraseña</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="password" placeholder="•••••••••••" x-model="password">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-key-square"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Repetir Contraseña</label>
-                                    <div class="control">
-                                        <input class="input" type="password" placeholder="•••••••••" x-model="repeatPassword">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Repetir Contraseña</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="password" placeholder="•••••••••••" x-model="repeatPassword">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-key-square"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                        </div>
-
-                  </form>
-
-
-                    <div class="block my-2">
-                        <p x-text="required" class="has-text-danger is-7"></p>
-                        <p x-text="passMatch" class="has-text-danger is-7"></p>
-                    </div>
-
-
-                    <div class="columns is-multiline">
-                        <div class="column is-6">
-                            <div class="field">
-                                <div class="control">
-                                    <button class="button is-fullwidth is-primary" type="button" @click="updateUser">
-                                    Actualizar Usuario
+                                <div class="column is-12 has-text-centered">
+                                    <p x-text="passMatch" class="has-text-danger is-7"></p>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-warning is-outlined"
+                                        @click="goBack"
+                                    >Regresar
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="column is-6">
-                            <div class="field">
-                                <div class="control">
-                                    <button class="button is-fullwidth is-danger" type="button" @click="deleteUser">
-                                    Eliminar Usuario
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-info"
+                                        :disabled="name === '' || email === ''"
+                                        @click="updateRecord"
+                                    >Guardar
+                                    </button>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-danger"
+                                        @click="deleteRecord"
+                                    >Eliminar
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-              </div>
-
             </div>
         </section>
-
     </main>
 
+    <!-- FOOTER -->
     <footer class="footer has-background-black-ter p-0">
         <div class="content has-text-left">
-
             <section class="section">
                 <div class="container">
                     <div class="columns">
-
                         <div class="column is-6">
                             <p class="has-text-white is-size-7">
                                 <span class="is-bold">Saavedra Vanilla</span> esta construido sobre una arquitectura
@@ -178,7 +152,6 @@
                                 </a>
                             </p>
                         </div>
-
                         <div class="column is-6">
                             <p class="is-size-7 has-text-white">
                                 Numero de Contacto / WhatsApp:
@@ -192,10 +165,7 @@
                     </div>
                 </div>
             </section>
-
         </div>
     </footer>
-
 </body>
-
 </html>

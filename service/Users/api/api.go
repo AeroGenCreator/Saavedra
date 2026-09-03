@@ -59,7 +59,8 @@ func (e EndpointHandler) CallUsers(w http.ResponseWriter, r *http.Request) {
 			log.Print("Error when rendering users template.")
 			http.Error(w, "Render Error", http.StatusInternalServerError)
 		}
-
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 		return

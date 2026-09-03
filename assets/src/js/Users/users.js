@@ -2,233 +2,96 @@ document.addEventListener('alpine:init', () => {
   // Register this alpine component to a section in your HTML.
   Alpine.data('usersComponent', () => ({
 
-    // Users model variables
+    async goHome() {
+      const res = await SecureFetching('/welcome', { method: 'HEAD' })
+      if (res.ok) {
+        window.location.href = '/welcome'
+        return
+      }
+      await this.logOut()
+      alert(res.status === 401 ? 'Sesión expirada' : `Error ${res.status}`)
+    },
+
+    async logOut() {
+      try {
+        const res = await fetch('/login', {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: { 'X-Requested-With': 'jsFrontendComponent' },
+        })
+        if (res.ok) window.location.href = '/login'
+      } catch (error) {
+        console.error('No fue posible cerrar sesión:', error)
+      }
+    },
+
+    async goBack() {
+      try {
+        const res = await SecureFetching("/welcome", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = "/welcome"
+      } catch (error) {
+        throw error
+      }
+    },
+
+  }))
+})
+
+
+document.addEventListener('alpine:init', () => {
+  // Register this alpine component to a section in your HTML.
+  Alpine.data('usersSliceComponent', () => ({
+
     records: [],
     page: 1,
-    totalPages: 1,
-    totalRecords: 0,
+    hasNextPage: false,
     loading: false,
 
-    // INITIALIZE -> FETCH PAGE 1
     async init() {
+      await this.loadRecords()
+    },
 
+    async loadRecords() {
+      this.loading = true
       try {
-
         const res = await SecureFetching(`/users/records?page=${this.page}`)
-
-        if (!res.ok) {
-
-          throw new Error(`HTTP error! Status: ${res.status}`);
-
-        }
-
-        var data = await res.json()
-
-        this.records = data.rows
-        this.page = data.current_page
-        this.totalPages = data.count_pages
-        this.totalRecords = data.count_pages
-
-      } catch (error) {
-
-        throw new Error(error)
-
-      }
-
+        if (!res.ok) throw new Error(`Error ${res.status}`)
+        const data = await res.json()
+        this.records = data.records
+        this.hasNextPage = data.hasNextPage
+      } finally { this.loading = false }
     },
 
-    // NEW USER BUTTON
-    async newUser() {
+    async nextPage() { if (this.hasNextPage) { this.page += 1; await this.loadRecords() } },
 
-      try {
+    async previousPage() { if (this.page > 1) { this.page -= 1; await this.loadRecords() } },
 
-        // METHOD: HEAD -> SECURE FETCHING RETURNS STATUS -> REDIRECTION IF STATUS OK. OPTIMIZED PROCESS
-        const res = await SecureFetching("/users/new", { method: "HEAD" })
-
-        if (!res.ok) {
-
-          throw new Error(`Bad response from server...${res.status}`)
-
-        }
-
-        window.location.href = "/users/new"
-
-      } catch (error) {
-
-        throw error
-
-      }
-
-    },
-
-    // OPEN AN EXISTING RECORD
     async openRecord(id) {
-
       try {
-
         const res = await SecureFetching("/users/record", { method: "HEAD" })
-
         if (!res.ok) {
-
           throw new Error(res.status)
-
         }
-
         window.location.href = `/users/record?id=${id}`
-
       } catch (error) {
-
-        throw (error)
-
+        throw error
       }
-
     },
 
-    // FETCH 1 PLUS PAGE
-    async loadPlusTable() {
-
+    async newRecord() {
       try {
-
-        this.loading = true
-
-        this.page = this.page + 1
-
-        if (this.page > this.totalPages) {
-          console.log("No more pages...")
-          this.page = this.page - 1
-          return
-        }
-
-        const res = await SecureFetching(`/users/records?page=${this.page}`)
-
+        const res = await SecureFetching("/users/new", { method: "HEAD" })
         if (!res.ok) {
-
           throw new Error(res.status)
-
         }
-
-        data = await res.json()
-
-        this.records = data.rows
-        this.page = data.current_page
-        this.totalPages = data.count_pages
-        this.totalRecords = data.count_pages
-
+        window.location.href = "/users/new"
       } catch (error) {
-
-        throw new Error(error)
-
-      } finally {
-
-        this.loading = false
-
+        throw error
       }
-
     },
-
-    // FETCH 1 LESS PAGE
-    async loadMinusTable() {
-
-      try {
-
-        this.loading = true
-
-        this.page = this.page - 1
-
-        if (this.page <= 0) {
-
-          console.log("No less pages...")
-          this.page = 1
-          return
-        }
-
-        const res = await SecureFetching(`/users/records?page=${this.page}`)
-
-        if (!res.ok) {
-
-          throw new Error(res.status)
-
-        }
-
-        data = await res.json()
-
-        this.records = data.rows
-        this.page = data.current_page
-        this.totalPages = data.count_pages
-        this.totalRecords = data.count_pages
-
-      } catch (error) {
-
-        throw new Error(error)
-
-      } finally {
-
-        this.loading = false
-
-      }
-
-    },
-
-    // GO HOME
-    async goHome() {
-
-      console.log("Attempting go Home...")
-
-      const res = await SecureFetching("/welcome")
-
-      if (!res.ok) {
-
-        if (res.status === 401) {
-
-          this.logOut()
-
-          alert("Session expires")
-
-        } else {
-
-          this.logOut()
-
-          alert(res.status)
-
-        }
-
-      } else {
-
-        window.location.href = "/welcome"
-
-      }
-
-    },
-
-    // LOG OUT
-    async logOut() {
-
-      try {
-
-        console.log("Attempting logout...")
-
-        const res = await fetch(
-          "/login", {
-          method: "PATCH",
-          credentials: "include",
-          headers: { "X-Requested-With": "jsFrontendComponent" }
-        })
-
-        if (res.ok) {
-
-          window.location.href = "/login", { method: "GET" }
-
-        }
-
-      } catch (error) {
-
-        console.log(error)
-
-        return
-
-      }
-
-    }
 
   }))
 })

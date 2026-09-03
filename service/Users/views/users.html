@@ -15,26 +15,22 @@
 	<title>Users</title>
 </head>
 
+<!-- HEADER -->
 <body class="has-navbar-fixed-top" x-data="usersComponent">
-
     <section class="hero">
         <div class="container">
             <nav class="navbar is-fixed-top has-background-black-ter">
-
                 <div class="navbar-brand">
-                    <!-- Don't forget registering the event in your JS in an Alpine Component. -->
                     <a class="navbar-item" href="/welcome" @click.prevent="goHome">
                         <figure class="image mx-6">
                             <img src="/assets/img/saavedraVanilla.svg"/>
                         </figure>
                     </a>
                 </div>
-
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="field is-grouped">
                             <p class="control">
-                                <!-- Don't forget registering the event in your JS in an Alpine Component. -->
                                 <a href="/login" @click.prevent="logOut">
                                     <button class="button is-primary px-3 is-small">
                                         Cerrar Sesión
@@ -47,116 +43,57 @@
                         </div>
                     </div>
                 </div>
-
             </nav>
         </div>
     </section>
 
+    <!-- MAIN -->
     <main class="hero is-fullheight">
-
-        <div class="container">
-
-            <div class="columns">
-
-                <column class="column is-12 has-text-centered">
-                    <h1 class="title my-5">Usuarios</h1>
-                </column>
-
+        <section class="section m-2 p-2" x-data="usersSliceComponent">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-6">
+                        <div class="buttons is-left">
+                            <button class="button is-info is-outlined" @click="newRecord">Crear Registro</button>
+                            <button class="button is-warning is-outlined" @click="goBack">Regresar</button>
+                        </div>
+                    </div>
+                    <div class="column is-6">
+                        <div class="buttons is-right">
+                            <button class="button" @click="previousPage" :disabled="page === 1 || loading">Menos páginas</button>
+                            <span class="button is-static" x-text="`Página ${page}`"></span>
+                            <button class="button" @click="nextPage" :disabled="!hasNextPage || loading">Más páginas</button>
+                        </div>
+                    </div>
+                </div>
+                <table class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="record in records" :key="record.id">
+                    <tr @click="openRecord(record.id)" style="cursor: pointer;">
+                        <td x-text="record.id"></td>
+                        <td x-text="record.name"></td>
+                        <td x-text="record.email"></td>
+                    </tr>
+                    </template>
+                    <tr x-show="!records || !loading && records.length === 0">
+                    <td colspan="3">No hay registros.</td>
+                    </tr>
+                </tbody>
+                </table>
             </div>
-
-            <div class="columns">
-
-                <div class="column is-3">
-                    <p>
-                        <span class="icon-text">
-                            <i class="icon icon-layers"></i>
-                        </span>
-                        <strong>Filas Totales: </strong>
-                        <span x-text="totalRecords"></span>
-                    </p>
-                </div>
-
-                <div class="column is-3">
-                    <p>
-                        <span class="icon-text">
-                            <i class="icon icon-file-stack"></i>
-                        </span>
-                        <strong>Hojas Totales: </strong>
-                        <span x-text="totalPages"></span>
-                    </p>
-                </div>
-
-                <div class="column is-3">
-                    <p>
-                        <span class="icon-text">
-                            <i class="icon icon-arrow-down-from-line"></i>
-                        </span>
-                        <strong>Hoja Actual: </strong>
-                        <span x-text="page"></span>
-                    </p>
-                </div>
-
-                <div class="column is-1">
-                    <button
-                        class="button is-primary is-outlined is-fullwidth"
-                        @click="loadMinusTable"
-                        x-bind:disabled="loading"
-                    >
-                        <i class="icon icon-circle-minus"></i>
-                    </button>
-                </div>
-
-                <div class="column is-1">
-                    <button
-                        class="button is-primary is-outlined is-fullwidth"
-                        @click="loadPlusTable"
-                        x-bind:disabled="loading"
-                    >
-                        <i class="icon icon-circle-plus"></i>
-                    </button>
-                </div>
-
-                <div class="column is-1">
-                    <button class="button is-info is-fullwidth" @click="newUser">
-                        <i class="icon icon-user-plus"></i>
-                    </button>
-                </div>
-
-            </div>
-
-            <section class="section">
-                <div class="container">
-                    <table class="table is-fullwidth is-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template x-for="user in records" :key="user.id">
-                                <tr
-                                    @click="openRecord(user.id)"
-                                    style="cursor: pointer;"
-                                >
-                                    <td x-text="user.id"></td>
-                                    <td x-text="user.name"></td>
-                                    <td x-text="user.email"></td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-        </div>
-
+        </section>
     </main>
 
+    <!-- FOOTER -->
     <footer class="footer has-background-black-ter p-0">
         <div class="content has-text-left">
-
             <section class="section">
                 <div class="container">
                     <div class="columns">
@@ -189,10 +126,7 @@
                     </div>
                 </div>
             </section>
-
         </div>
     </footer>
-
 </body>
-
 </html>

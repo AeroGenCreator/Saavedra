@@ -65,8 +65,8 @@ func (s *store) SelectAllUsers(limit int, offset int) ([]*types.User, int, error
 	q1 := "SELECT COUNT(id) AS count_id FROM users GROUP BY id;"
 	q2 := "SELECT id, name, email FROM users LIMIT ? OFFSET ?;"
 
-	var total_recs int
-	err := s.db.QueryRow(q1).Scan(&total_recs)
+	var count int
+	err := s.db.QueryRow(q1).Scan(&count)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -94,7 +94,7 @@ func (s *store) SelectAllUsers(limit int, offset int) ([]*types.User, int, error
 		return nil, 0, rows.Err()
 	}
 
-	return records, total_recs, nil
+	return records, count, nil
 }
 
 func (s *store) SelectUser(id int) (*types.User, error) {

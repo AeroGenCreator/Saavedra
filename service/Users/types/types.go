@@ -24,9 +24,7 @@ type UserStr struct {
 	Password string `json:"password"`
 }
 
-type Table struct {
-	Rows        []*User `json:"rows"`
-	CountRows   int     `json:"count_rows"`
-	CountPages  int     `json:"count_pages"`
-	CurrentPage int     `json:"current_page"`
+type UsersSlice struct {
+	Records     []*User `json:"records"`
+	HasNextPage bool    `json:"hasNextPage"`
 }

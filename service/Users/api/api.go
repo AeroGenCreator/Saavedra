@@ -68,37 +68,22 @@ func (e EndpointHandler) CallUsers(w http.ResponseWriter, r *http.Request) {
 
 // ROUTE: /users/records?page=x -> ONLY RETURNS TYPE(TABLE) -> RECORDS & METADATA
 func (e EndpointHandler) CallUsersRecords(w http.ResponseWriter, r *http.Request) {
-
 	switch r.Method {
 	case http.MethodGet:
-
 		page := r.URL.Query().Get("page")
-		if page != "" {
-			page = "1"
-		}
-
-		intPage, err := strconv.Atoi(page)
-		if err != nil {
-			intPage = 1
-		}
-
-		data, err := e.service.ListUsers(intPage)
+		data, err := e.service.ListUsers(page)
 		if err != nil {
 			log.Print(err.Error())
 			http.Error(w, "Fetching users data error...", http.StatusInternalServerError)
 			return
 		}
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(data)
-
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 		return
-
 	}
-
 }
 
 // ROUTE: /users/new -> REDIRECTS -> /users/record?id=x

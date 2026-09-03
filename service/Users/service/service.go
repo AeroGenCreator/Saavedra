@@ -6,12 +6,13 @@ import (
 	"Saavedra/service/Users/types"
 	"Saavedra/utils"
 	"math"
+	"strconv"
 )
 
 type Service interface {
 	NewUser(user *types.User) (*types.User, error)
 	UpdateUser(user *types.User) (*types.User, error)
-	ListUsers(page int) (*types.Table, error)
+	ListUsers(page string) (*types.UsersSlice, error)
 	SelectUser(id int) (*types.User, error)
 	DeleteUser(user *types.User) error
 }
@@ -79,29 +80,28 @@ func (s service) UpdateUser(user *types.User) (*types.User, error) {
 }
 
 // RETURNS: rows, current_page, total_records, total_pages, error
-func (s service) ListUsers(page int) (*types.Table, error) {
+func (s service) ListUsers(page string) (*types.UsersSlice, error) {
 
-	var limit int
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		intPage = 1
+	}
+
 	var offset int
-
-	offset = (page - 1) * 15
-	limit = 15
-
-	records, total_recs, err := s.store.SelectAllUsers(limit, offset)
+	offset = (intPage - 1) * env.RecordsPerSlice
+	records, count, err := s.store.SelectAllUsers(env.RecordsPerSlice, offset)
 	if err != nil {
 		return nil, err
 	}
 
-	total_pages := divisionRounded(total_recs, limit)
-
-	table := types.Table{
-		Rows:        records,
-		CurrentPage: page,
-		CountPages:  total_pages,
-		CountRows:   total_recs,
+	totalPages := utils.CalculateTotalPages(count, env.RecordsPerSlice)
+	hasNextPage := totalPages > intPage
+	userSlice := types.UsersSlice{
+		Records:     records,
+		HasNextPage: hasNextPage,
 	}
 
-	return &table, nil
+	return &userSlice, nil
 }
 
 func (s service) SelectUser(id int) (*types.User, error) {

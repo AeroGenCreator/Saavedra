@@ -16,25 +16,20 @@
 </head>
 
 <body class="has-navbar-fixed-top" x-data="usersCreateComponent">
-
     <section class="hero">
         <div class="container">
             <nav class="navbar is-fixed-top has-background-black-ter">
-
                 <div class="navbar-brand">
-                    <!-- Don't forget registering the event in your JS in an Alpine Component. -->
                     <a class="navbar-item" href="/welcome" @click.prevent="goHome">
                         <figure class="image mx-6">
                             <img src="/assets/img/saavedraVanilla.svg"/>
                         </figure>
                     </a>
                 </div>
-
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="field is-grouped">
                             <p class="control">
-                                <!-- Don't forget registering the event in your JS in an Alpine Component. -->
                                 <a href="/login" @click.prevent="logOut">
                                     <button class="button is-primary px-3 is-small">
                                         Cerrar Sesión
@@ -47,86 +42,86 @@
                         </div>
                     </div>
                 </div>
-
             </nav>
         </div>
     </section>
 
+    <!-- MAIN -->
     <main class="hero is-fullheight">
-
         <section class="section">
             <div class="container">
-
-              <div class="columns is-centered">
-                <div class="column is-two-thirds">
-
-                    <form class="box">
-                        <div class="columns is-multiline">
-
-                            <div class="column is-12 has-text-centered">
-                                <h1 class="title">
-                                   Crear Nuevo Usuario
-                                </h1>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Nombre</label>
-                                    <div class="control">
-                                        <input class="input" type="text" placeholder="Nombre usuario" x-model="name">
+                <div class="columns is-centered">
+                    <div class="column is-two-thirds">
+                        <div class="box">
+                            <div class="columns is-multiline">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Nombre</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="text" placeholder="usuario" x-model="name">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-square-user-round"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Correo</label>
-                                    <div class="control">
-                                        <input class="input" type="email" placeholder="ejemplo@gmail.com" x-model="email">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Correo</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="email" placeholder="ejemplo@gmail.com" x-model="email">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-mail"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Contraseña</label>
-                                    <div class="control">
-                                        <input class="input" type="password" placeholder="•••••••••" x-model="password">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Nueva Contraseña</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="password" placeholder="•••••••••••" x-model="password">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-key-square"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="column is-6">
-                                <div class="field">
-                                    <label class="label">Repetir Contraseña</label>
-                                    <div class="control">
-                                        <input class="input" type="password" placeholder="•••••••••" x-model="repeatPassword">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Repetir Contraseña</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="password" placeholder="•••••••••••" x-model="repeatPassword">
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-key-square"></i>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="column is-12 has-text-centered">
+                                    <p x-text="passMatch" class="has-text-danger is-7"></p>
+                                </div>
+                                <div class="column is-6">
+                                    <button
+                                        class="button is-fullwidth is-warning is-outlined"
+                                        @click="goBack"
+                                    >Regresar
+                                    </button>
+                                </div>
+                                <div class="column is-6">
+                                    <button
+                                        class="button is-fullwidth is-info"
+                                        :disabled="name === '' || email === '' || password === '' || repeatPassword === ''"
+                                        @click="create"
+                                    >Guardar
+                                    </button>
+                                </div>
                             </div>
-
                         </div>
-
-                        <div class="my-2">
-                            <p x-text="required" class="has-text-danger is-7"></p>
-                            <p x-text="passMatch" class="has-text-danger is-7"></p>
-                        </div>
-
-                        <div class="field">
-                            <div class="control">
-                                <button class="button is-fullwidth is-primary" type="button" @click="createUser">
-                                Guardar
-                                </button>
-                            </div>
-                        </div>
-                  </form>
-
+                    </div>
                 </div>
-              </div>
-
             </div>
         </section>
-
     </main>
 
     <footer class="footer has-background-black-ter p-0">

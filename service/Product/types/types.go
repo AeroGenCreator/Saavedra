@@ -33,3 +33,9 @@ type MaterialSlice struct {
 	Records     []*Material `json:"records"`
 	HasNextPage bool        `json:"hasNextPage"`
 }
+
+// ID STR
+type MaterialStr struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}

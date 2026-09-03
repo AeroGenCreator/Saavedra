@@ -61,7 +61,7 @@ document.addEventListener('alpine:init', () => {
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = `/product/material/record`
+        window.location.href = `/product/material/record?id=${id}`
       } catch (error) {
         throw error
       }

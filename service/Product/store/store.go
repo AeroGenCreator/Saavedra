@@ -73,7 +73,7 @@ func (s store) CreateMaterial(material *types.Material) (*types.Material, error)
 func (s store) ReadMaterial(id int) (*types.Material, error) {
 	q := "SELECT id, name FROM material WHERE id = ?;"
 	var record types.Material
-	err := s.db.QueryRow(q, id).Scan(&record.Name, &record.Id)
+	err := s.db.QueryRow(q, id).Scan(&record.Id, &record.Name)
 	if err == sql.ErrNoRows {
 		return nil, types.ErrNoRecord
 	} else if err != nil {

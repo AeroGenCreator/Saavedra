@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
-    <!--script defer src=""></script-->
+    <script defer src="/assets/src/js/Product/productMaterialRecord.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 
-	<title>Product Material</title>
+	<title>Product Material Record</title>
 </head>
-<body class="has-navbar-fixed-top" x-data="productMaterialComponent">
+<body class="has-navbar-fixed-top" x-data="productMaterialRecordComponent" x-init="initData('{{.Id}}', '{{.Name}}')">
 
     <!-- NAVBAR -->
     <section class="hero">
@@ -43,7 +43,51 @@
 
     <!-- MAIN CONTENT -->
     <main class="hero is-fullheight">
-
+        <section class="section">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-two-thirds">
+                        <div class="box">
+                            <div class="columns is-multiline">
+                                <div class="column is-12">
+                                    <div class="field">
+                                        <label class="label">Material</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="text" placeholder="Acero" x-model="name">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-anvil"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-warning is-outlined"
+                                        @click="goBack"
+                                    >Regresar
+                                    </button>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-info"
+                                        :disabled="name === ''"
+                                        @click="updateRecord"
+                                    >Guardar
+                                    </button>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-danger"
+                                        @click="deleteRecord"
+                                    >Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- FOOTER -->

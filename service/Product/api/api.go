@@ -144,22 +144,53 @@ func (e *EndpointHandler) CallMaterialNew(w http.ResponseWriter, r *http.Request
 func (e *EndpointHandler) CallMaterialRecord(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
+		id := r.URL.Query().Get("id")
+		record, err := e.service.ReadMaterial(id)
+		if err == types.ErrNoRecord {
+			log.Printf("Error query /product/material/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/material/record", http.StatusForbidden)
+			return
+		} else if err != nil {
+			log.Printf("Error query /product/material/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/material/record", http.StatusInternalServerError)
+			return
+		}
 		tpl, err := template.ParseFiles("service/Product/views/productMaterialRecord.html")
 		if err != nil {
 			log.Printf("Error parsing /product/material/record...(%v)", err.Error())
 			http.Error(w, "Error parsing /product/material/record", http.StatusInternalServerError)
 			return
 		}
-		err = tpl.Execute(w, nil)
+		err = tpl.Execute(w, record)
 		if err != nil {
 			log.Printf("Error rendering /product/material/record...(%v)", err.Error())
 			http.Error(w, "Error rendering /product/material/record", http.StatusInternalServerError)
 			return
 		}
 	case http.MethodPut:
-		return
+		var material types.MaterialStr
+		if err := json.NewDecoder(r.Body).Decode(&material); err != nil {
+			log.Printf("Error parsing /product/material/record...(%v)", err.Error())
+			http.Error(w, "Error parsing /product/material/record", http.StatusInternalServerError)
+			return
+		}
+		record, err := e.service.UpdateMaterial(&material)
+		if err != nil {
+			log.Printf("Error query /product/material/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/material/record", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(record)
 	case http.MethodDelete:
-		return
+		id := r.URL.Query().Get("id")
+		if err := e.service.DeleteMaterial(id); err != nil {
+			log.Printf("Error query /product/material/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/material/record", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:

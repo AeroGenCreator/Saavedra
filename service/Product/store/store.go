@@ -11,6 +11,11 @@ type Store interface {
 	ReadMaterial(id int) (*types.Material, error)
 	UpdateMaterial(material *types.Material) (*types.Material, error)
 	DeleteMaterial(id int) error
+	ListProovedor(limit, offset int) ([]*types.Proveedor, int, error)
+	CreateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error)
+	ReadProveedor(id int) (*types.Proveedor, error)
+	UpdateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error)
+	DeleteProveedor(id int) error
 }
 
 type store struct {
@@ -21,7 +26,8 @@ func New(db *sql.DB) Store {
 	return store{db: db}
 }
 
-// SECTION MATERIALS
+// === === MATERIALS === ===
+
 func (s store) ListMaterial(limit, offset int) ([]*types.Material, int, error) {
 	q1 := "SELECT COUNT(id) AS count_id FROM material;"
 	q2 := "SELECT id, name FROM material LIMIT ? OFFSET ?;"
@@ -100,5 +106,84 @@ func (s store) DeleteMaterial(id int) error {
 	return nil
 }
 
-// SECTION PROVEEDOR
-// SECTION PRODUCT
+// === === PROVEEDOR === ===
+
+func (s store) ListProovedor(limit, offset int) ([]*types.Proveedor, int, error) {
+	q1 := "SELECT COUNT(id) AS count_id FROM proveedor;"
+	q2 := "SELECT id, name, phone FROM proveedor LIMIT ? OFFSET ?;"
+
+	var count int
+	if err := s.db.QueryRow(q1).Scan(&count); err != nil {
+		return nil, 0, err
+	}
+	rows, err := s.db.Query(q2, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+	var records []*types.Proveedor
+	for rows.Next() {
+		var record types.Proveedor
+		err = rows.Scan(&record.Id, &record.Name, &record.Phone)
+		if err != nil {
+			return nil, 0, err
+		}
+		records = append(records, &record)
+	}
+	if rows.Err() != nil {
+		return nil, 0, rows.Err()
+	}
+	return records, count, nil
+}
+
+func (s store) CreateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error) {
+	qInsert := `
+	INSERT INTO proveedor (name, phone) VALUES (?, ?)
+	ON CONFLICT(name) DO UPDATE SET phone = excluded.phone;
+	`
+	_, err := s.db.Exec(qInsert, proveedor.Name, proveedor.Phone)
+	if err != nil {
+		return nil, err
+	}
+
+	qSelect := `SELECT id, name, phone FROM proveedor WHERE name = ?;`
+	var newProveedor types.Proveedor
+	err = s.db.QueryRow(qSelect, proveedor.Name).Scan(&newProveedor.Id, &newProveedor.Name, &newProveedor.Phone)
+	if err != nil {
+		return nil, err
+	}
+
+	return &newProveedor, nil
+}
+
+func (s store) ReadProveedor(id int) (*types.Proveedor, error) {
+	q := "SELECT id, name, phone FROM proveedor WHERE id = ?;"
+	var record types.Proveedor
+	err := s.db.QueryRow(q, id).Scan(&record.Id, &record.Name, &record.Phone)
+	if err == sql.ErrNoRows {
+		return nil, types.ErrNoRecord
+	} else if err != nil {
+		return nil, err
+	}
+	return &record, nil
+}
+
+func (s store) UpdateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error) {
+	q := "UPDATE proveedor SET name = ?, phone = ? WHERE id = ?;"
+	_, err := s.db.Exec(q, proveedor.Name, proveedor.Phone, proveedor.Id)
+	if err != nil {
+		return nil, err
+	}
+	return proveedor, nil
+}
+
+func (s store) DeleteProveedor(id int) error {
+	q := "DELETE FROM proveedor WHERE id = ?;"
+	_, err := s.db.Exec(q, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// === === PRODUCT === ===

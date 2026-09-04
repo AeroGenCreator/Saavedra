@@ -1,0 +1,102 @@
+[
+  {
+    "code": "PZ",
+    "name": "Pieza",
+    "description": "Unidad individual base para control de stock unitario."
+  },
+  {
+    "code": "KG",
+    "name": "Kilogramo",
+    "description": "Unidad base de peso para productos a granel o empacados."
+  },
+  {
+    "code": "G",
+    "name": "Gramo",
+    "description": "Unidad menor de peso para productos ligeros."
+  },
+  {
+    "code": "TON",
+    "name": "Tonelada",
+    "description": "Utilizada para inventarios industriales o materias primas pesadas (1,000 kg)."
+  },
+  {
+    "code": "BUL",
+    "name": "Bulto",
+    "description": "Muy común en México para costales de cemento, harina, semillas o fertilizantes."
+  },
+  {
+    "code": "M",
+    "name": "Metro",
+    "description": "Para productos vendidos por longitud (telas, mangueras, perfiles)."
+  },
+  {
+    "code": "CM",
+    "name": "Centímetro",
+    "description": "Medidas de longitud menores."
+  },
+  {
+    "code": "MM",
+    "name": "Milímetro",
+    "description": "Utilizado en ferretería y refacciones de alta precisión."
+  },
+  {
+    "code": "KM",
+    "name": "Kilómetro",
+    "description": "Uso logístico o de transporte, raramente en inventario de producto."
+  },
+  {
+    "code": "LT",
+    "name": "Litro",
+    "description": "Unidad estándar para líquidos y productos químicos."
+  },
+  {
+    "code": "ML",
+    "name": "Mililitro",
+    "description": "Submúltiplo para líquidos en presentaciones pequeñas."
+  },
+  {
+    "code": "M2",
+    "name": "Metro cuadrado",
+    "description": "Común para pisos, azulejos, vidrios y materiales de construcción."
+  },
+  {
+    "code": "M3",
+    "name": "Metro cúbico",
+    "description": "Utilizado para gas, áridos o cálculo de capacidad de almacenamiento."
+  },
+  {
+    "code": "CJ",
+    "name": "Caja",
+    "description": "Contenedor estándar que agrupa múltiples piezas para mayoreo."
+  },
+  {
+    "code": "PQ",
+    "name": "Paquete",
+    "description": "Agrupación menor de productos envueltos o fajados."
+  },
+  {
+    "code": "TAR",
+    "name": "Tarima / Pallet",
+    "description": "Unidad logística de almacenamiento masivo y transporte."
+  },
+  {
+    "code": "ROL",
+    "name": "Rollo",
+    "description": "Presentación enrollada para cables, mallas, plásticos o telas."
+  },
+  {
+    "code": "BOT",
+    "name": "Botella",
+    "description": "Envase específico para bebidas, aceites o productos de limpieza."
+  },
+  {
+    "code": "LAT",
+    "name": "Lata",
+    "description": "Envase metálico para alimentos o pinturas."
+  },
+  {
+    "code": "DOC",
+    "name": "Docena",
+    "description": "Conjunto de 12 piezas, tradicionalmente usado en comercio y calzado."
+  }
+]

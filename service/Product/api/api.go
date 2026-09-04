@@ -44,7 +44,7 @@ func ProductMenu(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// === MATERIAL ===
+// === === === MATERIAL === === ===
 
 // ROUTE: /product/material -> Renders HTML for LIST VIEW.
 func (e *EndpointHandler) CallMaterial(w http.ResponseWriter, r *http.Request) {
@@ -76,9 +76,6 @@ func (e *EndpointHandler) CallMaterialList(w http.ResponseWriter, r *http.Reques
 	switch r.Method {
 	case http.MethodGet:
 		page := r.URL.Query().Get("page")
-		if page == "" {
-			page = "1"
-		}
 		intPage, err := strconv.Atoi(page)
 		if err != nil {
 			intPage = 1
@@ -200,6 +197,95 @@ func (e *EndpointHandler) CallMaterialRecord(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-// === PROVEEDOR ===
+// === === === PROVEEDOR === === ===
+
+// ROUTE: /Proveedor (Renders List Template)
+func (e EndpointHandler) CallProveedor(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		tpl, err := template.ParseFiles("service/Product/views/proveedor.html")
+		if err != nil {
+			log.Panicf("Error parsing /proveedor...(%v)", err.Error())
+			http.Error(w, "Error parsing /proveedor", http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, nil); err != nil {
+			log.Panicf("Error rendering /proveedor...(%v)", err.Error())
+			http.Error(w, "Error rendering /proveedor", http.StatusInternalServerError)
+			return
+		}
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+// ROUTE: /Proveedor/slice (Fetch Data)
+func (e EndpointHandler) CallProveedorSlice(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		pageStr := r.URL.Query().Get("page")
+		page, err := strconv.Atoi(pageStr)
+		if err != nil {
+			page = 1
+		}
+		proveedorSlice, err := e.service.ListProveedor(page)
+		if err != nil {
+			log.Printf("Error query /proveedor/slice...(%v)", err.Error())
+			http.Error(w, "Error query /proveedor/slice", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(proveedorSlice)
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+// ROUTE: /Proveedor/new (Create Entry)
+func (e EndpointHandler) CallProveedorNew(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		tpl, err := template.ParseFiles("service/Product/views/proveedorNew.html")
+		if err != nil {
+			log.Panicf("Error parsing /proveedor/new...(%v)", err.Error())
+			http.Error(w, "Error parsing /proveedor/new", http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, nil); err != nil {
+			log.Panicf("Error rendering /proveedor/new...(%v)", err.Error())
+			http.Error(w, "Error rendering /proveedor/new", http.StatusInternalServerError)
+			return
+		}
+	case http.MethodPost:
+		var proveedorStr types.ProveedorStr
+		err := json.NewDecoder(r.Body).Decode(&proveedorStr)
+		if err != nil {
+			log.Printf("Error decoding /proveedor/new...(%v)", err.Error())
+			http.Error(w, "Error decoding /proveedor/new", http.StatusInternalServerError)
+			return
+		}
+		_, err = e.service.CreateProveedor(&proveedorStr)
+		if err != nil {
+			log.Printf("Error query /proveedor/new...(%v)", err.Error())
+			http.Error(w, "Error query /proveedor/new", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+// ROUTE: /Proveedor/record (Inspect Record)
 
 // === PRODUCT ===

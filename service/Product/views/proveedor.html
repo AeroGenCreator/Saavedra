@@ -10,13 +10,14 @@
     <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
-    <script defer src="/assets/src/js/Product/productMenu.js"></script>
+    <script defer src="/assets/src/js/Product/proveedor.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 
-	<title>Product Menu</title>
+	<title>Proveedor</title>
 </head>
-<body class="has-navbar-fixed-top" x-data="menuComponent">
+<body class="has-navbar-fixed-top" x-data="proveedorComponent">
 
+    <!-- NAVBAR -->
     <section class="hero">
       <div class="container">
         <nav class="navbar is-fixed-top has-background-black-ter">
@@ -40,71 +41,57 @@
       </div>
     </section>
 
+    <!-- MAIN CONTENT -->
     <main class="hero is-fullheight">
-        <section class="section">
-          <div class="container">
-            <div class="columns is-multiline">
 
-              <div class="column is-6">
-                    <a href="/product/material" @click.prevent="secureMaterial">
-                        <div class="notification is-success card-fixed-height is-clickable-card">
-                            <article class="has-text-left">
-                                <i class="icon-anvil"></i>
-                                <div class="content is-small">
-                                    <h3>Material</h3>
-                                    <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar materiales.
-                                    </p>
-                                </div>
-                            </article>
+        <section class="section m-2 p-2" x-data="proveedorListComponent">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-6">
+                        <div class="buttons is-left">
+                            <button class="button is-info is-outlined" @click="newRecord">Crear Registro</button>
+                            <button class="button is-warning is-outlined" @click="goBack">Regresar</button>
                         </div>
-                    </a>
-              </div>
-
-              <div class="column is-6">
-                    <a href="/proveedor" @click.prevent="secureProveedor">
-                        <div class="notification is-info card-fixed-height is-clickable-card">
-                            <article class="has-text-left">
-                                <i class="icon-van"></i>
-                                <div class="content is-small">
-                                    <h3>Provedor</h3>
-                                    <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar provedores.
-                                    </p>
-                                </div>
-                            </article>
+                    </div>
+                    <div class="column is-6">
+                        <div class="buttons is-right">
+                            <button class="button" @click="previousPage" :disabled="page === 1 || loading">Menos páginas</button>
+                            <span class="button is-static" x-text="`Página ${page}`"></span>
+                            <button class="button" @click="nextPage" :disabled="!hasNextPage || loading">Más páginas</button>
                         </div>
-                    </a>
-              </div>
-
-              <div class="column is-6">
-                    <a href="/product/product" @click.prevent="secureProduct">
-                        <div class="notification is-warning card-fixed-height is-clickable-card">
-                            <article class="has-text-left">
-                                <i class="icon-shopping-basket"></i>
-                                <div class="content is-small">
-                                    <h3>Producto</h3>
-                                    <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar productos.
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
-                    </a>
-              </div>
-
+                    </div>
+                </div>
+                <table class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="record in records" :key="record.id">
+                    <tr @click="openRecord(record.id)" style="cursor: pointer;">
+                        <td x-text="record.id"></td>
+                        <td x-text="record.name"></td>
+                        <td x-text="record.phone"></td>
+                    </tr>
+                    </template>
+                    <tr x-show="!records || !loading && records.length === 0">
+                    <td colspan="3">No hay registros.</td>
+                    </tr>
+                </tbody>
+                </table>
             </div>
-          </div>
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer class="footer has-background-black-ter p-0">
       <div class="content has-text-left">
-
           <section class="section">
               <div class="container">
                   <div class="columns">
-
                       <div class="column is-6">
                           <p class="has-text-white is-size-7">
                               <span class="is-bold">Saavedra Vanilla</span> esta construido sobre una arquitectura
@@ -119,7 +106,6 @@
                               </a>
                           </p>
                       </div>
-
                       <div class="column is-6">
                           <p class="is-size-7 has-text-white">
                               Numero de Contacto / WhatsApp:
@@ -129,11 +115,9 @@
                               </span>
                           </p>
                       </div>
-
                   </div>
               </div>
           </section>
-
       </div>
     </footer>
 

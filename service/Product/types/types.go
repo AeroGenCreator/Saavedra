@@ -32,7 +32,7 @@ type Material struct {
 type Proveedor struct {
 	Id    int    `json:"id"`
 	Name  string `json:"name"`
-	Phone int    `json:"number"`
+	Phone int    `json:"phone"`
 }
 
 // SLICES

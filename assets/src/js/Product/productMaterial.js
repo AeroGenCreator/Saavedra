@@ -2,6 +2,18 @@
 document.addEventListener('alpine:init', () => {
   Alpine.data('productMaterialComponent', () => ({
 
+    async goBack() {
+      try {
+        const res = await SecureFetching("/product/menu", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = "/product/menu"
+      } catch (error) {
+        throw error
+      }
+    },
+
     async goHome() {
       const res = await SecureFetching('/welcome', { method: 'HEAD' })
       if (res.ok) {
@@ -74,18 +86,6 @@ document.addEventListener('alpine:init', () => {
           throw new Error(res.status)
         }
         window.location.href = "/product/material/new"
-      } catch (error) {
-        throw error
-      }
-    },
-
-    async goBack() {
-      try {
-        const res = await SecureFetching("/product/menu", { method: "HEAD" })
-        if (!res.ok) {
-          throw new Error(res.status)
-        }
-        window.location.href = "/product/menu"
       } catch (error) {
         throw error
       }

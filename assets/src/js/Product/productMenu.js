@@ -1,5 +1,5 @@
 document.addEventListener('alpine:init', () => {
-  Alpine.data('productMenuComponent', () => ({
+  Alpine.data('menuComponent', () => ({
 
     async goHome() {
       const res = await SecureFetching('/welcome', { method: 'HEAD' })
@@ -31,6 +31,18 @@ document.addEventListener('alpine:init', () => {
           throw new Error(res.status)
         }
         window.location.href = "/product/material"
+      } catch (error) {
+        throw error
+      }
+    },
+
+    async secureProveedor() {
+      try {
+        const res = await SecureFetching("/proveedor", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = "/proveedor"
       } catch (error) {
         throw error
       }

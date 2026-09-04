@@ -15,7 +15,7 @@ type Service interface {
 	UpdateMaterial(materialStr *types.MaterialStr) (*types.Material, error)
 	DeleteMaterial(id string) error
 	ListProveedor(page int) (*types.ProveedorSlice, error)
-	CreateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error)
+	CreateProveedor(proveedorStr *types.ProveedorStr) (*types.Proveedor, error)
 	ReadProveedor(id string) (*types.Proveedor, error)
 	UpdateProveedor(proveedorStr *types.ProveedorStr) (*types.Proveedor, error)
 	DeleteProveedor(id string) error
@@ -110,8 +110,21 @@ func (s service) ListProveedor(page int) (*types.ProveedorSlice, error) {
 	return &proveedorSlice, nil
 }
 
-func (s service) CreateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error) {
-	newProveedor, err := s.store.CreateProveedor(proveedor)
+func (s service) CreateProveedor(proveedorStr *types.ProveedorStr) (*types.Proveedor, error) {
+	id, err := strconv.Atoi(proveedorStr.Id)
+	if err != nil {
+		return nil, err
+	}
+	phone, err := strconv.Atoi(proveedorStr.Phone)
+	if err != nil {
+		return nil, err
+	}
+	proveedor := types.Proveedor{
+		Id:    id,
+		Name:  proveedorStr.Name,
+		Phone: phone,
+	}
+	newProveedor, err := s.store.CreateProveedor(&proveedor)
 	if err != nil {
 		return nil, err
 	}

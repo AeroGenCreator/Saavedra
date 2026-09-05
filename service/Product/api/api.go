@@ -248,7 +248,7 @@ func (e EndpointHandler) CallProveedorSlice(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// ROUTE: /Proveedor/new (Create Entry)
+// ROUTE: /proveedor/new (Create Entry)
 func (e EndpointHandler) CallProveedorNew(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:

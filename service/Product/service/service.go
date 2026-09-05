@@ -111,16 +111,11 @@ func (s service) ListProveedor(page int) (*types.ProveedorSlice, error) {
 }
 
 func (s service) CreateProveedor(proveedorStr *types.ProveedorStr) (*types.Proveedor, error) {
-	id, err := strconv.Atoi(proveedorStr.Id)
-	if err != nil {
-		return nil, err
-	}
 	phone, err := strconv.Atoi(proveedorStr.Phone)
 	if err != nil {
 		return nil, err
 	}
 	proveedor := types.Proveedor{
-		Id:    id,
 		Name:  proveedorStr.Name,
 		Phone: phone,
 	}

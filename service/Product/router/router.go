@@ -24,4 +24,5 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	mux.Handle("/product/material/record", utils.AuthMiddleware(http.HandlerFunc(handler.CallMaterialRecord)))
 	mux.Handle("/proveedor", utils.AuthMiddleware(http.HandlerFunc(handler.CallProveedor)))
 	mux.Handle("/proveedor/slice", utils.AuthMiddleware(http.HandlerFunc(handler.CallProveedorSlice)))
+	mux.Handle("/proveedor/new", utils.AuthMiddleware(http.HandlerFunc(handler.CallProveedorNew)))
 }

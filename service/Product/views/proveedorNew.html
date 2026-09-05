@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Load Frontend Dependencies -->
+    <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
+    <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <script defer src="/assets/src/js/utils/utils.js"></script>
+    <script defer src="/assets/src/js/Product/proveedorNew.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
+
+	<title>New Proveedor</title>
+</head>
+<body class="has-navbar-fixed-top" x-data="proveedorNewComponent">
+
+    <!-- NAVBAR -->
+    <section class="hero">
+      <div class="container">
+        <nav class="navbar is-fixed-top has-background-black-ter">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/welcome" @click.prevent="goHome">
+              <figure class="image mx-6">
+                <img src="/assets/img/saavedraVanilla.svg" alt="Inicio">
+              </figure>
+            </a>
+          </div>
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <a href="/login" @click.prevent="logOut">
+                <button class="button is-primary px-3 is-small" type="button">
+                  Cerrar sesión <span class="px-2"><i class="icon-log-in"></i></span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="hero is-fullheight">
+        <section class="section">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-two-thirds">
+                        <div class="box">
+                            <div class="columns is-multiline">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Provedor</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="text" placeholder="Saavedra" x-model="name">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-save-pen"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Teléfono</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="tel" placeholder="2462072985" x-model="phone">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-phone"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <button
+                                        class="button is-fullwidth is-warning is-outlined"
+                                        @click="goBack"
+                                    >Regresar
+                                    </button>
+                                </div>
+                                <div class="column is-6">
+                                    <button
+                                        class="button is-fullwidth is-info"
+                                        :disabled="name === '' || phone === ''"
+                                        @click="create"
+                                    >Guardar
+                                    </button>
+                                </div>
+                                <div class="column is-12 has-text-info has-text-centered is-size-7">
+                                    <p x-show="name === '' || phone === ''">Todos los campos son obligatorios.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer has-background-black-ter p-0">
+      <div class="content has-text-left">
+          <section class="section">
+              <div class="container">
+                  <div class="columns">
+                      <div class="column is-6">
+                          <p class="has-text-white is-size-7">
+                              <span class="is-bold">Saavedra Vanilla</span> esta construido sobre una arquitectura
+                              desacomplada basada en DSEE.
+                              Cualquier servicio extra puede ser desarrollado según la necesidad del negocio.
+                              El cobro depende de la cantidad de
+                              capas necesitadas por servicio lo cual reduce el costo drasticamente.
+                              Para cotizar un servicio extra
+                              en tu app
+                              <a href="mailto:gallo85floyd@gmail.com">
+                                  <strong class="has-text-primary">contactanos</strong>.
+                              </a>
+                          </p>
+                      </div>
+                      <div class="column is-6">
+                          <p class="is-size-7 has-text-white">
+                              Numero de Contacto / WhatsApp:
+                              <span class="has-text-primary">
+                                  <i class="icon icon-phone"></i>
+                                  + 52 246 207 29 85
+                              </span>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          </section>
+      </div>
+    </footer>
+</body>
+</html>

@@ -62,13 +62,34 @@ document.addEventListener('alpine:init', () => {
       } finally { this.loading = false }
     },
 
-    async newRecord() { },
+    async newRecord() {
+      try {
+        const res = await SecureFetching("/proveedor/new", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = "/proveedor/new"
+      }
+      catch (error) {
+        throw error
+      }
+    },
 
-    async previousPage() { },
+    async nextPage() { if (this.hasNextPage) { this.page += 1; await this.loadRecords() } },
 
-    async nextPage() { },
+    async previousPage() { if (this.page > 1) { this.page -= 1; await this.loadRecords() } },
 
-    async openRecord(id) { },
+    async openRecord(id) {
+      try {
+        const res = await SecureFetching("/proveedor/record", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = `/proveedor/record?id=${id}`
+      } catch (error) {
+        throw error
+      }
+    },
 
   }))
 })

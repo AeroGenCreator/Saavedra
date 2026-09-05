@@ -11,6 +11,7 @@ import (
 )
 
 type Service interface {
+	LoadProductMany2One() (*types.Many2one, error)
 	ListMaterial(page int) (*types.MaterialSlice, error)
 	CreateMaterial(material *types.Material) (*types.Material, error)
 	ReadMaterial(id string) (*types.Material, error)
@@ -22,6 +23,7 @@ type Service interface {
 	UpdateProveedor(proveedorStr *types.ProveedorStr) (*types.Proveedor, error)
 	DeleteProveedor(id string) error
 	ListProduct(page string) (*types.ProductSlice, error)
+	CreateProduct(productStr *types.ProductStr) error
 }
 
 type service struct {
@@ -43,6 +45,27 @@ func GetProductMeasures() ([]*types.PMeasure, error) {
 		return nil, err
 	}
 	return pMeasuresSlice, nil
+}
+
+func (s service) LoadProductMany2One() (*types.Many2one, error) {
+	pMeasureArray, err := GetProductMeasures()
+	if err != nil {
+		return nil, err
+	}
+	materialArray, err := s.store.LoadAllMaterial()
+	if err != nil {
+		return nil, err
+	}
+	proveedorArray, err := s.store.LoadAllProveedor()
+	if err != nil {
+		return nil, err
+	}
+	many2one := types.Many2one{
+		PMeasureRecords:  pMeasureArray,
+		MaterialRecords:  materialArray,
+		ProveedorRecords: proveedorArray,
+	}
+	return &many2one, nil
 }
 
 // === === === MATERIAL === === ===
@@ -205,4 +228,36 @@ func (s service) ListProduct(page string) (*types.ProductSlice, error) {
 		HasNextPage: hasNextPage,
 	}
 	return &productSlice, nil
+}
+
+func (s service) CreateProduct(productStr *types.ProductStr) error {
+	pId, err := strconv.Atoi(productStr.Id)
+	if err != nil {
+		return err
+	}
+	price, err := strconv.ParseFloat(productStr.Price, 32)
+	if err != nil {
+		return err
+	}
+	mId, err := strconv.Atoi(productStr.MaterialId)
+	if err != nil {
+		return err
+	}
+	prId, err := strconv.Atoi(productStr.ProveedorId)
+	if err != nil {
+		return err
+	}
+	product := types.Product{
+		Id:          pId,
+		Name:        productStr.Name,
+		Description: productStr.Description,
+		PMeasure:    productStr.PMeasure,
+		Price:       float32(price),
+		MaterialId:  mId,
+		ProveedorId: prId,
+	}
+	if err = s.store.CreateProduct(&product); err != nil {
+		return err
+	}
+	return nil
 }

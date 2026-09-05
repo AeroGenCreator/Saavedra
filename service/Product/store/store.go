@@ -6,6 +6,8 @@ import (
 )
 
 type Store interface {
+	LoadAllMaterial() ([]*types.Material, error)
+	LoadAllProveedor() ([]*types.Proveedor, error)
 	ListMaterial(limit, offset int) ([]*types.Material, int, error)
 	CreateMaterial(material *types.Material) (*types.Material, error)
 	ReadMaterial(id int) (*types.Material, error)
@@ -17,7 +19,7 @@ type Store interface {
 	UpdateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error)
 	DeleteProveedor(id int) error
 	ListProduct(limit, offset int) ([]*types.ProductFetch, int, error)
-	//CreateProduct(product *types.Product) (*types.ProductFetch, error)
+	CreateProduct(product *types.Product) error
 	//ReadProduct(id int) (*types.ProductFetch, error)
 	//UpdateProduct(product *types.Product) (*types.ProductFetch, error)
 	//DeleteProduct(id int) error
@@ -29,6 +31,48 @@ type store struct {
 
 func New(db *sql.DB) Store {
 	return store{db: db}
+}
+
+func (s store) LoadAllMaterial() ([]*types.Material, error) {
+	q := "SELECT id, name FROM material;"
+	rows, err := s.db.Query(q)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var materialArray []*types.Material
+	for rows.Next() {
+		var record types.Material
+		if err := rows.Scan(&record.Id, &record.Name); err != nil {
+			return nil, err
+		}
+		materialArray = append(materialArray, &record)
+	}
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+	return materialArray, nil
+}
+
+func (s store) LoadAllProveedor() ([]*types.Proveedor, error) {
+	q := "SELECT id, name FROM proveedor;"
+	rows, err := s.db.Query(q)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var proveedorArray []*types.Proveedor
+	for rows.Next() {
+		var record types.Proveedor
+		if err := rows.Scan(&record.Id, &record.Name); err != nil {
+			return nil, err
+		}
+		proveedorArray = append(proveedorArray, &record)
+	}
+	if rows.Err() != nil {
+		return nil, rows.Err()
+	}
+	return proveedorArray, nil
 }
 
 // === === === MATERIALS === === ===
@@ -195,7 +239,7 @@ func (s store) DeleteProveedor(id int) error {
 
 func (s store) ListProduct(limit, offset int) ([]*types.ProductFetch, int, error) {
 	q1 := "SELECT COUNT(id) AS count_id FROM product;"
-	q2 := `SELECT p.id, p.name, p.description, p.pmeasure, p.price, m.name, pr.name
+	q2 := `SELECT p.id, p.name, p.description, p.pmeasure, p.price, m.id, m.name, pr.id, pr.name
 	FROM product AS p
 	LEFT JOIN material AS m ON p.material_id = m.id
 	LEFT JOIN proveedor AS pr ON p.proveedor_id = pr.id
@@ -218,7 +262,9 @@ func (s store) ListProduct(limit, offset int) ([]*types.ProductFetch, int, error
 			&record.Description,
 			&record.PMeasure,
 			&record.Price,
+			&record.MaterialId,
 			&record.Material,
+			&record.ProveedorId,
 			&record.Proveedor,
 		); err != nil {
 			return nil, 0, err
@@ -229,4 +275,27 @@ func (s store) ListProduct(limit, offset int) ([]*types.ProductFetch, int, error
 		return nil, 0, rows.Err()
 	}
 	return records, count, nil
+}
+
+func (s store) CreateProduct(product *types.Product) error {
+	q1 := `INSERT INTO product (
+	name, description, pmeasure, price, material_id, proveedor_id)
+	VALUES (?, ?, ?, ?, ?, ?)
+	ON CONFLICT(name, pmeasure, proveedor_id)
+	DO UPDATE SET
+	description = excluded.description,
+	price = excluded.price,
+	material_id = excluded.material_id;`
+	_, err := s.db.Exec(
+		q1,
+		product.Name,
+		product.Description,
+		product.PMeasure,
+		product.Price,
+		product.MaterialId,
+		product.ProveedorId)
+	if err != nil {
+		return err
+	}
+	return nil
 }

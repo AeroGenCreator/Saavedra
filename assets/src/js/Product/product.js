@@ -64,11 +64,11 @@ document.addEventListener('alpine:init', () => {
 
     async newRecord() {
       try {
-        const res = await SecureFetching("/proveedor/new", { method: "HEAD" })
+        const res = await SecureFetching("/product/new", { method: "HEAD" })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = "/proveedor/new"
+        window.location.href = "/product/new"
       }
       catch (error) {
         throw error

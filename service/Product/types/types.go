@@ -65,7 +65,9 @@ type ProductStr struct {
 	Description string `json:"description"`
 	PMeasure    string `json:"pMeasure"`
 	Price       string `json:"price"`
+	MaterialId  string `json:"materialId"`
 	Material    string `json:"material"`
+	ProveedorId string `json:"proveedorId"`
 	Proveedor   string `json:"proveedor"`
 }
 
@@ -75,6 +77,14 @@ type ProductFetch struct {
 	Description string  `json:"description"`
 	PMeasure    string  `json:"pMeasure"`
 	Price       float32 `json:"price"`
+	MaterialId  int     `json:"materialId"`
 	Material    string  `json:"material"`
+	ProveedorId int     `json:"proveedorId"`
 	Proveedor   string  `json:"proveedor"`
+}
+
+type Many2one struct {
+	PMeasureRecords  []*PMeasure  `json:"pMeasureRecords"`
+	MaterialRecords  []*Material  `json:"materialRecords"`
+	ProveedorRecords []*Proveedor `json:"ProveedorRecords"`
 }

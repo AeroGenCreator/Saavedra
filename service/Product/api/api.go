@@ -383,3 +383,61 @@ func (e EndpointHandler) CallProductSlice(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
+// ROUTE: /product/new
+func (e EndpointHandler) CallProductNew(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		many2oneData, err := e.service.LoadProductMany2One()
+		if err != nil {
+			log.Panicf("Error many2one /product/new...(%v)", err.Error())
+			http.Error(w, "Error many2one /product/new", http.StatusInternalServerError)
+			return
+		}
+		tpl, err := template.ParseFiles("service/Product/views/productNew.html")
+		if err != nil {
+			log.Panicf("Error parsing /product/new...(%v)", err.Error())
+			http.Error(w, "Error parsing /product/new", http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, many2oneData); err != nil {
+			log.Panicf("Error rendering /product/new...(%v)", err.Error())
+			http.Error(w, "Error rendering /product/new", http.StatusInternalServerError)
+			return
+		}
+	case http.MethodPost:
+		var productStr types.ProductStr
+		if err := json.NewDecoder(r.Body).Decode(&productStr); err != nil {
+			log.Printf("Error decoding /product/new...(%v)", err.Error())
+			http.Error(w, "Error decoding /product/new", http.StatusInternalServerError)
+			return
+		}
+		if err := e.service.CreateProduct(&productStr); err != nil {
+			log.Printf("Error creating /product/new...(%v)", err.Error())
+			http.Error(w, "Error creating /product/new", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		return
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+	}
+}
+
+// ROUTE: /product/record
+func (e EndpointHandler) CallProductRecord(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		return
+	case http.MethodPut:
+		return
+	case http.MethodDelete:
+		return
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+	}
+}

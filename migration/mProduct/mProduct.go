@@ -112,7 +112,8 @@ func CreateSchema(db *sql.DB) error {
 		material_id INTEGER,
 		proveedor_id INTEGER,
 		FOREIGN KEY (material_id) REFERENCES material(id) ON DELETE SET NULL,
-		FOREIGN KEY (proveedor_id) REFERENCES proveedor(id) ON DELETE SET NULL
+		FOREIGN KEY (proveedor_id) REFERENCES proveedor(id) ON DELETE SET NULL,
+		UNIQUE(name, pmeasure, proveedor_id)
 		);
 		INSERT INTO product_new(id, name, description, pmeasure, price, material_id, proveedor_id)
 		SELECT id, name, description, pmeasure, price, material_id, proveedor_id FROM product;
@@ -135,7 +136,8 @@ func CreateSchema(db *sql.DB) error {
 		material_id INTEGER,
 		proveedor_id INTEGER,
 		FOREIGN KEY (material_id) REFERENCES material(id) ON DELETE SET NULL,
-		FOREIGN KEY (proveedor_id) REFERENCES proveedor(id) ON DELETE SET NULL
+		FOREIGN KEY (proveedor_id) REFERENCES proveedor(id) ON DELETE SET NULL,
+		UNIQUE(name, pmeasure, proveedor_id)
 		);`
 		_, err := tx.Exec(createProduct)
 		if err != nil {

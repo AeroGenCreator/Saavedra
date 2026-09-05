@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Load Frontend Dependencies -->
+    <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
+    <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <script defer src="/assets/src/js/utils/utils.js"></script>
+    <script defer src="/assets/src/js/Product/product.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
+
+	<title>Product</title>
+</head>
+<body class="has-navbar-fixed-top" x-data="productComponent">
+
+    <!-- NAVBAR -->
+    <section class="hero">
+      <div class="container">
+        <nav class="navbar is-fixed-top has-background-black-ter">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/welcome" @click.prevent="goHome">
+              <figure class="image mx-6">
+                <img src="/assets/img/saavedraVanilla.svg" alt="Inicio">
+              </figure>
+            </a>
+          </div>
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <a href="/login" @click.prevent="logOut">
+                <button class="button is-primary px-3 is-small" type="button">
+                  Cerrar sesión <span class="px-2"><i class="icon-log-in"></i></span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="hero is-fullheight">
+
+        <section class="section m-2 p-2" x-data="productListComponent">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-6">
+                        <div class="buttons is-left">
+                            <button class="button is-info is-outlined" @click="newRecord">Crear Registro</button>
+                            <button class="button is-warning is-outlined" @click="goBack">Regresar</button>
+                        </div>
+                    </div>
+                    <div class="column is-6">
+                        <div class="buttons is-right">
+                            <button class="button" @click="previousPage" :disabled="page === 1 || loading">Menos páginas</button>
+                            <span class="button is-static" x-text="`Página ${page}`"></span>
+                            <button class="button" @click="nextPage" :disabled="!hasNextPage || loading">Más páginas</button>
+                        </div>
+                    </div>
+                </div>
+                <table class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Producto</th>
+                        <th>Descripción</th>
+                        <th>Medida</th>
+                        <th>Precio</th>
+                        <th>Material</th>
+                        <th>Provedor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="record in records" :key="record.id">
+                    <tr @click="openRecord(record.id)" style="cursor: pointer;">
+                        <td x-text="record.id"></td>
+                        <td x-text="record.name"></td>
+                        <td x-text="record.description"></td>
+                        <td x-text="record.pMeasure"></td>
+                        <td x-text="record.price"></td>
+                        <td x-text="record.material"></td>
+                        <td x-text="record.proveedor"></td>
+                    </tr>
+                    </template>
+                    <tr x-show="!records || !loading && records.length === 0">
+                    <td colspan="3">No hay registros.</td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer has-background-black-ter p-0">
+      <div class="content has-text-left">
+          <section class="section">
+              <div class="container">
+                  <div class="columns">
+                      <div class="column is-6">
+                          <p class="has-text-white is-size-7">
+                              <span class="is-bold">Saavedra Vanilla</span> esta construido sobre una arquitectura
+                              desacomplada basada en DSEE.
+                              Cualquier servicio extra puede ser desarrollado según la necesidad del negocio.
+                              El cobro depende de la cantidad de
+                              capas necesitadas por servicio lo cual reduce el costo drasticamente.
+                              Para cotizar un servicio extra
+                              en tu app
+                              <a href="mailto:gallo85floyd@gmail.com">
+                                  <strong class="has-text-primary">contactanos</strong>.
+                              </a>
+                          </p>
+                      </div>
+                      <div class="column is-6">
+                          <p class="is-size-7 has-text-white">
+                              Numero de Contacto / WhatsApp:
+                              <span class="has-text-primary">
+                                  <i class="icon icon-phone"></i>
+                                  + 52 246 207 29 85
+                              </span>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          </section>
+      </div>
+    </footer>
+
+</body>
+</html>

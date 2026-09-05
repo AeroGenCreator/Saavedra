@@ -4,9 +4,6 @@ import "errors"
 
 var ErrNoRecord = errors.New("There is no record for the provided 'id'.")
 
-// 3 TABLES FOR THIS SERVICE
-// SUGGESTION: REAL FIELDS FIRST, RELATIONALS DENOTATE THEM WITH Id SUFFIX
-// FOREIGN FIELDS LAST
 type Product struct {
 	Id          int     `json:"id"`
 	Name        string  `json:"name"`
@@ -15,7 +12,6 @@ type Product struct {
 	Price       float32 `json:"price"`
 	MaterialId  int     `json:"materialId"`
 	ProveedorId int     `json:"proveedorId"`
-	Phone       string  `json:"phone"`
 }
 
 type PMeasure struct {
@@ -46,8 +42,9 @@ type ProveedorSlice struct {
 	HasNextPage bool         `json:"hasNextPage"`
 }
 
-type PMeasureSlice struct {
-	Records []*PMeasure `json:"records"`
+type ProductSlice struct {
+	Records     []*ProductFetch `json:"records"`
+	HasNextPage bool            `json:"hasNextPage"`
 }
 
 // ID STR
@@ -60,4 +57,24 @@ type ProveedorStr struct {
 	Id    string `json:"id"`
 	Name  string `json:"name"`
 	Phone string `json:"phone"`
+}
+
+type ProductStr struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	PMeasure    string `json:"pMeasure"`
+	Price       string `json:"price"`
+	Material    string `json:"material"`
+	Proveedor   string `json:"proveedor"`
+}
+
+type ProductFetch struct {
+	Id          int     `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	PMeasure    string  `json:"pMeasure"`
+	Price       float32 `json:"price"`
+	Material    string  `json:"material"`
+	Proveedor   string  `json:"proveedor"`
 }

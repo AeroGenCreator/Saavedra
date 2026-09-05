@@ -105,16 +105,17 @@ func CreateSchema(db *sql.DB) error {
 		migrateProduct := `
 		CREATE TABLE product_new (
 		id INTEGER PRIMARY KEY,
-		name TEXT NOT NULL UNIQUE,
+		name TEXT NOT NULL,
 		description TEXT NOT NULL,
+		pmeasure TEXT NOT NULL,
 		price FLOAT NOT NULL,
 		material_id INTEGER,
 		proveedor_id INTEGER,
 		FOREIGN KEY (material_id) REFERENCES material(id) ON DELETE SET NULL,
 		FOREIGN KEY (proveedor_id) REFERENCES proveedor(id) ON DELETE SET NULL
 		);
-		INSERT INTO product_new(id, name, description, price, material_id, proveedor_id)
-		SELECT id, name, description, price, material_id, proveedor_id FROM product;
+		INSERT INTO product_new(id, name, description, pmeasure, price, material_id, proveedor_id)
+		SELECT id, name, description, pmeasure, price, material_id, proveedor_id FROM product;
 		DROP TABLE product;
 		ALTER table product_new RENAME TO product;
 		`
@@ -127,8 +128,9 @@ func CreateSchema(db *sql.DB) error {
 		createProduct := `
 		CREATE TABLE product (
 		id INTEGER PRIMARY KEY,
-		name TEXT NOT NULL UNIQUE,
+		name TEXT NOT NULL,
 		description TEXT NOT NULL,
+		pmeasure TEXT NOT NULL,
 		price FLOAT NOT NULL,
 		material_id INTEGER,
 		proveedor_id INTEGER,

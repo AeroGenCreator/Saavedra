@@ -5,6 +5,8 @@ import (
 	"Saavedra/service/Product/store"
 	"Saavedra/service/Product/types"
 	"Saavedra/utils"
+	"encoding/json"
+	"os"
 	"strconv"
 )
 
@@ -19,6 +21,7 @@ type Service interface {
 	ReadProveedor(id string) (*types.Proveedor, error)
 	UpdateProveedor(proveedorStr *types.ProveedorStr) (*types.Proveedor, error)
 	DeleteProveedor(id string) error
+	ListProduct(page string) (*types.ProductSlice, error)
 }
 
 type service struct {
@@ -27,6 +30,19 @@ type service struct {
 
 func New(store store.Store) Service {
 	return service{store: store}
+}
+
+func GetProductMeasures() ([]*types.PMeasure, error) {
+	file, err := os.Open("service/Product/config/medida.json")
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	var pMeasuresSlice []*types.PMeasure
+	if err := json.NewDecoder(file).Decode(&pMeasuresSlice); err != nil {
+		return nil, err
+	}
+	return pMeasuresSlice, nil
 }
 
 // === === === MATERIAL === === ===
@@ -170,4 +186,23 @@ func (s service) DeleteProveedor(id string) error {
 	return nil
 }
 
-// SERVICES PRODUCT
+// === === === PRODUCT === === ===
+
+func (s service) ListProduct(page string) (*types.ProductSlice, error) {
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		intPage = 1
+	}
+	offset := (intPage - 1) * env.RecordsPerSlice
+	records, count, err := s.store.ListProduct(env.RecordsPerSlice, offset)
+	if err != nil {
+		return nil, err
+	}
+	totalPages := utils.CalculateTotalPages(count, env.RecordsPerSlice)
+	hasNextPage := totalPages > intPage
+	productSlice := types.ProductSlice{
+		Records:     records,
+		HasNextPage: hasNextPage,
+	}
+	return &productSlice, nil
+}

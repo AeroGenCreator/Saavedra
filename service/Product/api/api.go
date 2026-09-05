@@ -337,4 +337,49 @@ func (e EndpointHandler) CallProveedorRecord(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-// === PRODUCT ===
+// === === === PRODUCT === === ===
+
+// ROUTE: /product
+func (e EndpointHandler) CallProduct(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		tpl, err := template.ParseFiles("service/Product/views/product.html")
+		if err != nil {
+			log.Printf("Error parsing /product...(%v)", err.Error())
+			http.Error(w, "Error parsing /product", http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, nil); err != nil {
+			log.Printf("Error rendering /product...(%v)", err.Error())
+			http.Error(w, "Error rendering /product", http.StatusInternalServerError)
+			return
+		}
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+// ROUTE: /product/slice
+func (e EndpointHandler) CallProductSlice(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		page := r.URL.Query().Get("page")
+		productSlice, err := e.service.ListProduct(page)
+		if err != nil {
+			log.Printf("Error query /product/slice...(%v)", err.Error())
+			http.Error(w, "Error query /product/slice", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(productSlice)
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}

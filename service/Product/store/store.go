@@ -16,6 +16,11 @@ type Store interface {
 	ReadProveedor(id int) (*types.Proveedor, error)
 	UpdateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error)
 	DeleteProveedor(id int) error
+	ListProduct(limit, offset int) ([]*types.ProductFetch, int, error)
+	//CreateProduct(product *types.Product) (*types.ProductFetch, error)
+	//ReadProduct(id int) (*types.ProductFetch, error)
+	//UpdateProduct(product *types.Product) (*types.ProductFetch, error)
+	//DeleteProduct(id int) error
 }
 
 type store struct {
@@ -26,7 +31,7 @@ func New(db *sql.DB) Store {
 	return store{db: db}
 }
 
-// === === MATERIALS === ===
+// === === === MATERIALS === === ===
 
 func (s store) ListMaterial(limit, offset int) ([]*types.Material, int, error) {
 	q1 := "SELECT COUNT(id) AS count_id FROM material;"
@@ -106,7 +111,7 @@ func (s store) DeleteMaterial(id int) error {
 	return nil
 }
 
-// === === PROVEEDOR === ===
+// === === === PROVEEDOR === === ===
 
 func (s store) ListProovedor(limit, offset int) ([]*types.Proveedor, int, error) {
 	q1 := "SELECT COUNT(id) AS count_id FROM proveedor;"
@@ -186,4 +191,42 @@ func (s store) DeleteProveedor(id int) error {
 	return nil
 }
 
-// === === PRODUCT === ===
+// === === === PRODUCT === === ===
+
+func (s store) ListProduct(limit, offset int) ([]*types.ProductFetch, int, error) {
+	q1 := "SELECT COUNT(id) AS count_id FROM product;"
+	q2 := `SELECT p.id, p.name, p.description, p.pmeasure, p.price, m.name, pr.name
+	FROM product AS p
+	LEFT JOIN material AS m ON p.material_id = m.id
+	LEFT JOIN proveedor AS pr ON p.proveedor_id = pr.id
+	LIMIT ? OFFSET ?;`
+	var count int
+	if err := s.db.QueryRow(q1).Scan(&count); err != nil {
+		return nil, 0, err
+	}
+	rows, err := s.db.Query(q2, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+	var records []*types.ProductFetch
+	for rows.Next() {
+		var record types.ProductFetch
+		if err = rows.Scan(
+			&record.Id,
+			&record.Name,
+			&record.Description,
+			&record.PMeasure,
+			&record.Price,
+			&record.Material,
+			&record.Proveedor,
+		); err != nil {
+			return nil, 0, err
+		}
+		records = append(records, &record)
+	}
+	if rows.Err() != nil {
+		return nil, 0, rows.Err()
+	}
+	return records, count, nil
+}

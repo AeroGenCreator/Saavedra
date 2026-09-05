@@ -98,5 +98,10 @@
     "code": "DOC",
     "name": "Docena",
     "description": "Conjunto de 12 piezas, tradicionalmente usado en comercio y calzado."
+  },
+  {
+    "code": "BOL",
+    "name": "Bolsa",
+    "description": "Medida aplicada como bolsa según la utilizada por el negocio."
   }
 ]

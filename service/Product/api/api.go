@@ -171,15 +171,13 @@ func (e *EndpointHandler) CallMaterialRecord(w http.ResponseWriter, r *http.Requ
 			http.Error(w, "Error parsing /product/material/record", http.StatusInternalServerError)
 			return
 		}
-		record, err := e.service.UpdateMaterial(&material)
+		_, err := e.service.UpdateMaterial(&material)
 		if err != nil {
 			log.Printf("Error query /product/material/record...(%v)", err.Error())
 			http.Error(w, "Error query /product/material/record", http.StatusInternalServerError)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(record)
 	case http.MethodDelete:
 		id := r.URL.Query().Get("id")
 		if err := e.service.DeleteMaterial(id); err != nil {
@@ -287,5 +285,56 @@ func (e EndpointHandler) CallProveedorNew(w http.ResponseWriter, r *http.Request
 }
 
 // ROUTE: /Proveedor/record (Inspect Record)
+func (e EndpointHandler) CallProveedorRecord(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		id := r.URL.Query().Get("id")
+		tpl, err := template.ParseFiles("service/Product/views/proveedorRecord.html")
+		if err != nil {
+			log.Printf("Error parsing /proveedor/record...(%v)", err.Error())
+			http.Error(w, "Error parsing /proveedor/record", http.StatusInternalServerError)
+			return
+		}
+		record, err := e.service.ReadProveedor(id)
+		if err != nil {
+			log.Printf("Error query /proveedor/record...(%v)", err.Error())
+			http.Error(w, "Error query /proveedor/record", http.StatusInternalServerError)
+		}
+		if err = tpl.Execute(w, record); err != nil {
+			log.Printf("Error rendering /proveedor/record...(%v)", err.Error())
+			http.Error(w, "Error rendering /proveedor/record", http.StatusInternalServerError)
+			return
+		}
+	case http.MethodPut:
+		var proveedorStr types.ProveedorStr
+		err := json.NewDecoder(r.Body).Decode(&proveedorStr)
+		if err != nil {
+			log.Printf(`Error decoding /proveedor/record...(%v)`, err.Error())
+			http.Error(w, "Error decoding /proveedor/record", http.StatusInternalServerError)
+			return
+		}
+		_, err = e.service.UpdateProveedor(&proveedorStr)
+		if err != nil {
+			log.Printf(`Error update /proveedor/record...(%v)`, err.Error())
+			http.Error(w, "Error update /proveedor/record", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	case http.MethodDelete:
+		strId := r.URL.Query().Get("id")
+		err := e.service.DeleteProveedor(strId)
+		if err != nil {
+			log.Printf(`Error deleting /proveedor/record...(%v)`, err.Error())
+			http.Error(w, "Error deleting /proveedor/record", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	case http.MethodHead:
+		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
 
 // === PRODUCT ===

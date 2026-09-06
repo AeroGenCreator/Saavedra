@@ -1,23 +1,55 @@
 document.addEventListener('alpine:init', () => {
-  Alpine.data('productRecordComponent', () => ({
+  Alpine.data('productRecordComponent', (m2o, record) => ({
 
   //FIELDS
-    name: '',
-    desc: '',
-    measure: '',
-    price: '',
-    material: '',
-    proveedor: '',
-    pMeasureRecords: [],
-    materialRecords: [],
-    proveedorRecords: [],
-
-  init(many2one, record) {
-    console.log(many2one, record)
-  },
+    id: record.id || '',
+    name: record.name || '',
+    desc: record.description || '',
+    measure: record.pMeasure || '',
+    price: record.price || '',
+    material: record.material || '',
+    proveedor: record.proveedor || '',
+    pMeasureRecords: m2o.pMeasureRecords || [],
+    materialRecords: m2o.materialRecords || [],
+    proveedorRecords: m2o.proveedorRecords || [],
 
   allRequired() {
     return ([this.name, this.desc, this.measure, this.price, this.material, this.proveedor].includes(""))
+    },
+
+    async updateRecord() {
+      try {
+        const objMaterial = this.materialRecords.find(item => item.name.toLowerCase() === this.material.toLowerCase())
+        const objProveedor = this.proveedorRecords.find(item => item.name.toLowerCase() === this.proveedor.toLowerCase())
+        const values = {
+          id: String(this.id),
+          name: this.name,
+          description: this.desc,
+          pMeasure: this.measure,
+          price: this.price,
+          materialId: String(objMaterial.id),
+          proveedorId: String(objProveedor.id)
+        }
+        const res = await SecureFetching('/product/record', {
+          method: 'PUT', body: JSON.stringify(values),
+        })
+        if (!res.ok) throw new Error(await res.text())
+        window.location.href = "/product"
+      } catch (error) {
+        throw error
+      }
+    },
+
+    async deleteRecord() {
+      try {
+        const res = await SecureFetching(`/product/record?id=${this.id}`, {
+          method: 'DELETE', body: JSON.stringify({ id: this.id })
+        })
+        if (!res.ok) throw new Error(await res.text())
+        window.location.href = '/product'
+      } catch (error) {
+        throw error
+      }
     },
 
   async goBack() {

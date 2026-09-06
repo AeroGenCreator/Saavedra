@@ -388,7 +388,7 @@ func (e EndpointHandler) CallProductSlice(w http.ResponseWriter, r *http.Request
 func (e EndpointHandler) CallProductNew(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		many2one, err := e.service.LoadProductMany2One()
+		many2one, _, err := e.service.LoadProductMany2One()
 		if err != nil {
 			log.Panicf("Error many2one /product/new...(%v)", err.Error())
 			http.Error(w, "Error many2one /product/new", http.StatusInternalServerError)
@@ -437,10 +437,22 @@ func (e EndpointHandler) CallProductRecord(w http.ResponseWriter, r *http.Reques
 			http.Error(w, "Error reading /product/record", http.StatusInternalServerError)
 			return
 		}
-		many2one, err := e.service.LoadProductMany2One()
+		recordByte, err := json.Marshal(record)
+		if err != nil {
+			log.Printf("Error parsing JSON record /product/record...(%v)", err.Error())
+			http.Error(w, "Error parsing JSON  record /product/record", http.StatusInternalServerError)
+			return
+		}
+		_, many2one, err := e.service.LoadProductMany2One()
 		if err != nil {
 			log.Printf("Error many2one /product/record...(%v)", err.Error())
 			http.Error(w, "Error many2one /product/record", http.StatusInternalServerError)
+			return
+		}
+		many2oneByte, err := json.Marshal(many2one)
+		if err != nil {
+			log.Printf("Error parsing JSON many2one /product/record...(%v)", err.Error())
+			http.Error(w, "Error parsing JSON many2one /product/record", http.StatusInternalServerError)
 			return
 		}
 		tpl, err := template.ParseFiles("service/Product/views/productRecord.html")
@@ -450,16 +462,39 @@ func (e EndpointHandler) CallProductRecord(w http.ResponseWriter, r *http.Reques
 			return
 		}
 		if err = tpl.Execute(w, map[string]any{
-			"Many2one": many2one,
-			"Record":   record,
+			"Many2one": template.JS(many2oneByte),
+			"Record":   template.JS(recordByte),
 		}); err != nil {
 			log.Printf("Error rendering /product/record...(%v)", err.Error())
 			http.Error(w, "Error rendering /product/record", http.StatusInternalServerError)
 		}
 	case http.MethodPut:
-		return
+		var productStr types.ProductStr
+		err := json.NewDecoder(r.Body).Decode(&productStr)
+		if err != nil {
+			log.Printf("Error decoding /product/record...(%v) (PUT)", err.Error())
+			http.Error(w, "Error decoding /product/record (PUT)", http.StatusInternalServerError)
+			return
+		}
+		if err = e.service.UpdateProduct(&productStr); err != nil {
+			log.Printf("Error updating /product/record...(%v) (PUT)", err.Error())
+			http.Error(w, "Error updating /product/record (PUT)", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case http.MethodDelete:
-		return
+		id := r.URL.Query().Get("id")
+		if id == "" {
+			log.Printf("Error. No ID for /product/record")
+			http.Error(w, "Error. No ID for /product/record", http.StatusInternalServerError)
+			return
+		}
+		if err := e.service.DeleteProduct(id); err != nil {
+			log.Printf("Error deleting /product/record...(%v)", err.Error())
+			http.Error(w, "Error deleting /product/record", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:

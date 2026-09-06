@@ -86,8 +86,14 @@ type ProductFetch struct {
 	Proveedor   string  `json:"proveedor"`
 }
 
-type Many2one struct {
+type Many2oneForJS struct {
 	PMeasureRecords  template.JS `json:"pMeasureRecords"`
 	MaterialRecords  template.JS `json:"materialRecords"`
 	ProveedorRecords template.JS `json:"ProveedorRecords"`
+}
+
+type Many2oneStruct struct {
+	PMeasureRecords  []*PMeasure  `json:"pMeasureRecords"`
+	MaterialRecords  []*Material  `json:"materialRecords"`
+	ProveedorRecords []*Proveedor `json:"proveedorRecords"`
 }

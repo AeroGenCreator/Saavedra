@@ -12,7 +12,7 @@ import (
 )
 
 type Service interface {
-	LoadProductMany2One() (*types.Many2one, error)
+	LoadProductMany2One() (*types.Many2oneForJS, *types.Many2oneStruct, error)
 	ListMaterial(page int) (*types.MaterialSlice, error)
 	CreateMaterial(material *types.Material) (*types.Material, error)
 	ReadMaterial(id string) (*types.Material, error)
@@ -26,6 +26,8 @@ type Service interface {
 	ListProduct(page string) (*types.ProductSlice, error)
 	CreateProduct(productStr *types.ProductStr) error
 	ReadProduct(id string) (*types.ProductFetch, error)
+	UpdateProduct(productStr *types.ProductStr) error
+	DeleteProduct(id string) error
 }
 
 type service struct {
@@ -49,37 +51,42 @@ func GetProductMeasures() ([]*types.PMeasure, error) {
 	return pMeasuresSlice, nil
 }
 
-func (s service) LoadProductMany2One() (*types.Many2one, error) {
+func (s service) LoadProductMany2One() (*types.Many2oneForJS, *types.Many2oneStruct, error) {
 	pMeasureArray, err := GetProductMeasures()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	materialArray, err := s.store.LoadAllMaterial()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	proveedorArray, err := s.store.LoadAllProveedor()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	pMeasureBytes, err := json.Marshal(pMeasureArray)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	materialBytes, err := json.Marshal(materialArray)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	proveedorBytes, err := json.Marshal(proveedorArray)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	many2one := types.Many2one{
+	many2one := types.Many2oneForJS{
 		PMeasureRecords:  template.JS(pMeasureBytes),
 		MaterialRecords:  template.JS(materialBytes),
 		ProveedorRecords: template.JS(proveedorBytes),
 	}
-	return &many2one, nil
+	many2oneStruct := types.Many2oneStruct{
+		PMeasureRecords:  pMeasureArray,
+		MaterialRecords:  materialArray,
+		ProveedorRecords: proveedorArray,
+	}
+	return &many2one, &many2oneStruct, nil
 }
 
 // === === === MATERIAL === === ===
@@ -281,4 +288,47 @@ func (s service) ReadProduct(id string) (*types.ProductFetch, error) {
 		return nil, err
 	}
 	return record, nil
+}
+
+func (s service) UpdateProduct(productStr *types.ProductStr) error {
+	intId, err := strconv.Atoi(productStr.Id)
+	if err != nil {
+		return err
+	}
+	floatPrice, err := strconv.ParseFloat(productStr.Price, 32)
+	if err != nil {
+		return err
+	}
+	matId, err := strconv.Atoi(productStr.MaterialId)
+	if err != nil {
+		return err
+	}
+	proId, err := strconv.Atoi(productStr.ProveedorId)
+	if err != nil {
+		return err
+	}
+	product := types.Product{
+		Id:          intId,
+		Name:        productStr.Name,
+		Description: productStr.Description,
+		PMeasure:    productStr.PMeasure,
+		Price:       float32(floatPrice),
+		MaterialId:  matId,
+		ProveedorId: proId,
+	}
+	if err = s.store.UpdateProduct(&product); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s service) DeleteProduct(id string) error {
+	intId, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	if err = s.store.DeleteProduct(intId); err != nil {
+		return err
+	}
+	return nil
 }

@@ -21,8 +21,8 @@ type Store interface {
 	ListProduct(limit, offset int) ([]*types.ProductFetch, int, error)
 	CreateProduct(product *types.Product) error
 	ReadProduct(id int) (*types.ProductFetch, error)
-	//UpdateProduct(product *types.Product) (*types.ProductFetch, error)
-	//DeleteProduct(id int) error
+	UpdateProduct(product *types.Product) error
+	DeleteProduct(id int) error
 }
 
 type store struct {
@@ -322,4 +322,34 @@ func (s store) ReadProduct(id int) (*types.ProductFetch, error) {
 		return nil, err
 	}
 	return &record, nil
+}
+
+func (s store) UpdateProduct(product *types.Product) error {
+	q := `
+	UPDATE product
+	SET name = ?, description = ?, pmeasure = ?, price = ?, material_id = ?, proveedor_id = ?
+	WHERE id = ?;`
+	_, err := s.db.Exec(
+		q,
+		product.Name,
+		product.Description,
+		product.PMeasure,
+		product.Price,
+		product.MaterialId,
+		product.ProveedorId,
+		product.Id,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s store) DeleteProduct(id int) error {
+	q := "DELETE FROM product WHERE id = ?;"
+	_, err := s.db.Exec(q, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }

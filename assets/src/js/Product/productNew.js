@@ -3,7 +3,11 @@ document.addEventListener('alpine:init', () => {
 
   //FIELDS
     name: '',
-    phone: '',
+    desc: '',
+    measure: '',
+    price: '',
+    material: '',
+    proveedor: '',
     pMeasureRecords: [],
     materialRecords: [],
     proveedorRecords: [],
@@ -12,15 +16,26 @@ document.addEventListener('alpine:init', () => {
   this.pMeasureRecords = measures
   this.materialRecords = material
   this.proveedorRecords = proveedor
-  console.log(this.pMeasureRecords)
   },
+
+  allRequired() {
+    return ([this.name, this.desc, this.measure, this.price, this.material, this.proveedor].includes(""))
+    },
 
   async create() {
     try {
+      const objMaterial = this.materialRecords.find(item => item.name.toLowerCase() === this.material.toLowerCase())
+      const objProveedor = this.proveedorRecords.find(item => item.name.toLowerCase() === this.proveedor.toLowerCase())
+      const values = {
+        name: this.name,
+        description: this.desc,
+        pMeasure: this.measure,
+        price: this.price,
+        materialId: String(objMaterial.id),
+        proveedorId: String(objProveedor.id)
+      }
       const res = await SecureFetching("/product/new", {
-        method: "POST", body: JSON.stringify(
-          { }
-        )
+        method: "POST", body: JSON.stringify(values)
       })
       if (!res.ok) {
         throw new Error(res.status)

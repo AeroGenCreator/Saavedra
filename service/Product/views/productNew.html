@@ -18,7 +18,7 @@
 <body
     class="has-navbar-fixed-top"
     x-data="productNewComponent"
-    x-init="init('{{.PMeasureRecords}}','{{.MaterialRecords}}','{{.ProveedorRecords}}')">
+    x-init="init({{.PMeasureRecords}},{{.MaterialRecords}},{{.ProveedorRecords}})">
 
     <!-- NAVBAR -->
     <section class="hero">
@@ -54,23 +54,100 @@
                             <div class="columns is-multiline">
                                 <div class="column is-6">
                                     <div class="field">
-                                        <label class="label">Provedor</label>
+                                        <label class="label">Producto</label>
                                         <div class="control has-icons-left">
-                                            <input class="input" type="text" placeholder="Saavedra" x-model="name">
+                                            <input class="input" type="text" placeholder="cable" x-model="name">
                                             <span class="icon is-small is-left">
-                                                  <i class="icon-save-pen"></i>
+                                                  <i class="icon-shopping-basket"></i>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="column is-6">
                                     <div class="field">
-                                        <label class="label">Teléfono</label>
+                                        <label class="label">Descripción</label>
                                         <div class="control has-icons-left">
-                                            <input class="input" type="tel" placeholder="2462072985" x-model="phone">
+                                            <input class="input" type="text" placeholder="Cobre N. 12" x-model="desc">
                                             <span class="icon is-small is-left">
-                                                  <i class="icon-phone"></i>
+                                                  <i class="icon-tag"></i>
                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label" for="mList">Medida</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                list="mRecords"
+                                                id="mList"
+                                                placeholder="Seleccionar..."
+                                                x-model="measure"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-tag"></i>
+                                            </span>
+                                            <datalist id="mRecords">
+                                                <template x-for="rec in pMeasureRecords" :key="rec.code">
+                                                    <option :value="rec.name" x-text="rec.name"></option>
+                                                </template>
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Precio</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="number" placeholder="$ 25.50" x-model="price">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-circle-dollar-sign"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label" for="materialList">Material</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                list="materialRecords"
+                                                id="materialList"
+                                                placeholder="Seleccionar..."
+                                                x-model="material"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-anvil"></i>
+                                            </span>
+                                            <datalist id="materialRecords">
+                                                <template x-for="rec in materialRecords" :key="rec.id">
+                                                    <option :value="rec.name" x-text="rec.name"></option>
+                                                </template>
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label" for="proveedorList">Provedor</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                list="proveedorRecords"
+                                                id="proveedorList"
+                                                placeholder="Seleccionar..."
+                                                x-model="proveedor"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-van"></i>
+                                            </span>
+                                            <datalist id="proveedorRecords">
+                                                <template x-for="rec in proveedorRecords" :key="rec.id">
+                                                    <option :value="rec.name" x-text="rec.name"></option>
+                                                </template>
+                                            </datalist>
                                         </div>
                                     </div>
                                 </div>
@@ -84,13 +161,13 @@
                                 <div class="column is-6">
                                     <button
                                         class="button is-fullwidth is-info"
-                                        :disabled="name === '' || phone === ''"
+                                        :disabled="allRequired"
                                         @click="create"
                                     >Guardar
                                     </button>
                                 </div>
                                 <div class="column is-12 has-text-info has-text-centered is-size-7">
-                                    <p x-show="name === '' || phone === ''">Todos los campos son obligatorios.</p>
+                                    <p x-show="allRequired">Todos los campos son obligatorios.</p>
                                 </div>
                             </div>
                         </div>

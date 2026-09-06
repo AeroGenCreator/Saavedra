@@ -388,7 +388,7 @@ func (e EndpointHandler) CallProductSlice(w http.ResponseWriter, r *http.Request
 func (e EndpointHandler) CallProductNew(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		many2oneData, err := e.service.LoadProductMany2One()
+		many2one, err := e.service.LoadProductMany2One()
 		if err != nil {
 			log.Panicf("Error many2one /product/new...(%v)", err.Error())
 			http.Error(w, "Error many2one /product/new", http.StatusInternalServerError)
@@ -400,7 +400,7 @@ func (e EndpointHandler) CallProductNew(w http.ResponseWriter, r *http.Request) 
 			http.Error(w, "Error parsing /product/new", http.StatusInternalServerError)
 			return
 		}
-		if err = tpl.Execute(w, many2oneData); err != nil {
+		if err = tpl.Execute(w, many2one); err != nil {
 			log.Panicf("Error rendering /product/new...(%v)", err.Error())
 			http.Error(w, "Error rendering /product/new", http.StatusInternalServerError)
 			return

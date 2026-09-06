@@ -1,6 +1,9 @@
 package types
 
-import "errors"
+import (
+	"errors"
+	"html/template"
+)
 
 var ErrNoRecord = errors.New("There is no record for the provided 'id'.")
 
@@ -84,7 +87,7 @@ type ProductFetch struct {
 }
 
 type Many2one struct {
-	PMeasureRecords  []*PMeasure  `json:"pMeasureRecords"`
-	MaterialRecords  []*Material  `json:"materialRecords"`
-	ProveedorRecords []*Proveedor `json:"ProveedorRecords"`
+	PMeasureRecords  template.JS `json:"pMeasureRecords"`
+	MaterialRecords  template.JS `json:"materialRecords"`
+	ProveedorRecords template.JS `json:"ProveedorRecords"`
 }

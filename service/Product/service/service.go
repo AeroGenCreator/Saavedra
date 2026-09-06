@@ -6,6 +6,7 @@ import (
 	"Saavedra/service/Product/types"
 	"Saavedra/utils"
 	"encoding/json"
+	"html/template"
 	"os"
 	"strconv"
 )
@@ -60,10 +61,22 @@ func (s service) LoadProductMany2One() (*types.Many2one, error) {
 	if err != nil {
 		return nil, err
 	}
+	pMeasureBytes, err := json.Marshal(pMeasureArray)
+	if err != nil {
+		return nil, err
+	}
+	materialBytes, err := json.Marshal(materialArray)
+	if err != nil {
+		return nil, err
+	}
+	proveedorBytes, err := json.Marshal(proveedorArray)
+	if err != nil {
+		return nil, err
+	}
 	many2one := types.Many2one{
-		PMeasureRecords:  pMeasureArray,
-		MaterialRecords:  materialArray,
-		ProveedorRecords: proveedorArray,
+		PMeasureRecords:  template.JS(pMeasureBytes),
+		MaterialRecords:  template.JS(materialBytes),
+		ProveedorRecords: template.JS(proveedorBytes),
 	}
 	return &many2one, nil
 }
@@ -231,10 +244,6 @@ func (s service) ListProduct(page string) (*types.ProductSlice, error) {
 }
 
 func (s service) CreateProduct(productStr *types.ProductStr) error {
-	pId, err := strconv.Atoi(productStr.Id)
-	if err != nil {
-		return err
-	}
 	price, err := strconv.ParseFloat(productStr.Price, 32)
 	if err != nil {
 		return err
@@ -248,7 +257,6 @@ func (s service) CreateProduct(productStr *types.ProductStr) error {
 		return err
 	}
 	product := types.Product{
-		Id:          pId,
 		Name:        productStr.Name,
 		Description: productStr.Description,
 		PMeasure:    productStr.PMeasure,

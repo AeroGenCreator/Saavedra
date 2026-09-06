@@ -81,11 +81,11 @@ document.addEventListener('alpine:init', () => {
 
     async openRecord(id) {
       try {
-        const res = await SecureFetching("/proveedor/record", { method: "HEAD" })
+        const res = await SecureFetching("/product/record", { method: "HEAD" })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = `/proveedor/record?id=${id}`
+        window.location.href = `/product/record?id=${id}`
       } catch (error) {
         throw error
       }

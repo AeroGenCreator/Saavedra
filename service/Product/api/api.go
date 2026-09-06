@@ -430,7 +430,32 @@ func (e EndpointHandler) CallProductNew(w http.ResponseWriter, r *http.Request) 
 func (e EndpointHandler) CallProductRecord(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		return
+		id := r.URL.Query().Get("id")
+		record, err := e.service.ReadProduct(id)
+		if err != nil {
+			log.Printf("Error reading /product/record...(%v)", err.Error())
+			http.Error(w, "Error reading /product/record", http.StatusInternalServerError)
+			return
+		}
+		many2one, err := e.service.LoadProductMany2One()
+		if err != nil {
+			log.Printf("Error many2one /product/record...(%v)", err.Error())
+			http.Error(w, "Error many2one /product/record", http.StatusInternalServerError)
+			return
+		}
+		tpl, err := template.ParseFiles("service/Product/views/productRecord.html")
+		if err != nil {
+			log.Printf("Error parsing /product/record...(%v)", err.Error())
+			http.Error(w, "Error parsing /product/record", http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, map[string]any{
+			"Many2one": many2one,
+			"Record":   record,
+		}); err != nil {
+			log.Printf("Error rendering /product/record...(%v)", err.Error())
+			http.Error(w, "Error rendering /product/record", http.StatusInternalServerError)
+		}
 	case http.MethodPut:
 		return
 	case http.MethodDelete:

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Load Frontend Dependencies -->
+    <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
+    <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <script defer src="/assets/src/js/utils/utils.js"></script>
+    <script defer src="/assets/src/js/Product/productRecord.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
+
+	<title>Record Product</title>
+</head>
+<body
+    class="has-navbar-fixed-top"
+    x-data="productRecordComponent"
+    x-init="init('{{.Many2one}}','{{.Record}}')">
+
+    <!-- NAVBAR -->
+    <section class="hero">
+      <div class="container">
+        <nav class="navbar is-fixed-top has-background-black-ter">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/welcome" @click.prevent="goHome">
+              <figure class="image mx-6">
+                <img src="/assets/img/saavedraVanilla.svg" alt="Inicio">
+              </figure>
+            </a>
+          </div>
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <a href="/login" @click.prevent="logOut">
+                <button class="button is-primary px-3 is-small" type="button">
+                  Cerrar sesión <span class="px-2"><i class="icon-log-in"></i></span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="hero is-fullheight">
+        <section class="section">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-two-thirds">
+                        <div class="box">
+                            <div class="columns is-multiline">
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Producto</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="text" placeholder="cable" x-model="name">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-shopping-basket"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Descripción</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="text" placeholder="Cobre N. 12" x-model="desc">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-tag"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label" for="mList">Medida</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                list="mRecords"
+                                                id="mList"
+                                                placeholder="Seleccionar..."
+                                                x-model="measure"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-tag"></i>
+                                            </span>
+                                            <datalist id="mRecords">
+                                                <template x-for="rec in pMeasureRecords" :key="rec.code">
+                                                    <option :value="rec.name" x-text="rec.name"></option>
+                                                </template>
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Precio</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="number" placeholder="$ 25.50" x-model="price">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-circle-dollar-sign"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label" for="materialList">Material</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                list="materialRecords"
+                                                id="materialList"
+                                                placeholder="Seleccionar..."
+                                                x-model="material"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-anvil"></i>
+                                            </span>
+                                            <datalist id="materialRecords">
+                                                <template x-for="rec in materialRecords" :key="rec.id">
+                                                    <option :value="rec.name" x-text="rec.name"></option>
+                                                </template>
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label" for="proveedorList">Provedor</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                list="proveedorRecords"
+                                                id="proveedorList"
+                                                placeholder="Seleccionar..."
+                                                x-model="proveedor"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                <i class="icon-van"></i>
+                                            </span>
+                                            <datalist id="proveedorRecords">
+                                                <template x-for="rec in proveedorRecords" :key="rec.id">
+                                                    <option :value="rec.name" x-text="rec.name"></option>
+                                                </template>
+                                            </datalist>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <button
+                                        class="button is-fullwidth is-warning is-outlined"
+                                        @click="goBack"
+                                    >Regresar
+                                    </button>
+                                </div>
+                                <div class="column is-6">
+                                    <button
+                                        class="button is-fullwidth is-info"
+                                        :disabled="allRequired"
+                                        @click="create"
+                                    >Guardar
+                                    </button>
+                                </div>
+                                <div class="column is-12 has-text-info has-text-centered is-size-7">
+                                    <p x-show="allRequired">Todos los campos son obligatorios.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer has-background-black-ter p-0">
+      <div class="content has-text-left">
+          <section class="section">
+              <div class="container">
+                  <div class="columns">
+                      <div class="column is-6">
+                          <p class="has-text-white is-size-7">
+                              <span class="is-bold">Saavedra Vanilla</span> esta construido sobre una arquitectura
+                              desacomplada basada en DSEE.
+                              Cualquier servicio extra puede ser desarrollado según la necesidad del negocio.
+                              El cobro depende de la cantidad de
+                              capas necesitadas por servicio lo cual reduce el costo drasticamente.
+                              Para cotizar un servicio extra
+                              en tu app
+                              <a href="mailto:gallo85floyd@gmail.com">
+                                  <strong class="has-text-primary">contactanos</strong>.
+                              </a>
+                          </p>
+                      </div>
+                      <div class="column is-6">
+                          <p class="is-size-7 has-text-white">
+                              Numero de Contacto / WhatsApp:
+                              <span class="has-text-primary">
+                                  <i class="icon icon-phone"></i>
+                                  + 52 246 207 29 85
+                              </span>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          </section>
+      </div>
+    </footer>
+</body>
+</html>

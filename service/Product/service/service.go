@@ -25,6 +25,7 @@ type Service interface {
 	DeleteProveedor(id string) error
 	ListProduct(page string) (*types.ProductSlice, error)
 	CreateProduct(productStr *types.ProductStr) error
+	ReadProduct(id string) (*types.ProductFetch, error)
 }
 
 type service struct {
@@ -268,4 +269,16 @@ func (s service) CreateProduct(productStr *types.ProductStr) error {
 		return err
 	}
 	return nil
+}
+
+func (s service) ReadProduct(id string) (*types.ProductFetch, error) {
+	intId, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+	record, err := s.store.ReadProduct(intId)
+	if err != nil {
+		return nil, err
+	}
+	return record, nil
 }

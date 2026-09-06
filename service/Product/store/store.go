@@ -20,7 +20,7 @@ type Store interface {
 	DeleteProveedor(id int) error
 	ListProduct(limit, offset int) ([]*types.ProductFetch, int, error)
 	CreateProduct(product *types.Product) error
-	//ReadProduct(id int) (*types.ProductFetch, error)
+	ReadProduct(id int) (*types.ProductFetch, error)
 	//UpdateProduct(product *types.Product) (*types.ProductFetch, error)
 	//DeleteProduct(id int) error
 }
@@ -298,4 +298,28 @@ func (s store) CreateProduct(product *types.Product) error {
 		return err
 	}
 	return nil
+}
+
+func (s store) ReadProduct(id int) (*types.ProductFetch, error) {
+	q := `SELECT p.id, p.name, p.description, p.pmeasure, p.price, m.id, m.name, pr.id, pr.name
+	FROM product AS p
+	LEFT JOIN material AS m ON p.material_id = m.id
+	LEFT JOIN proveedor AS pr ON p.proveedor_id = pr.id
+	WHERE p.id = ?;`
+	var record types.ProductFetch
+	err := s.db.QueryRow(q, id).Scan(
+		&record.Id,
+		&record.Name,
+		&record.Description,
+		&record.PMeasure,
+		&record.Price,
+		&record.MaterialId,
+		&record.Material,
+		&record.ProveedorId,
+		&record.Proveedor,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &record, nil
 }

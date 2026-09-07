@@ -54,7 +54,7 @@
                 <div class="columns">
                     <div class="column is-6">
                         <div class="buttons is-left">
-                            <button class="button is-info is-outlined" @click="newRecord">Crear Registro</button>
+                            <button class="button is-info is-outlined" @click="goNew">Crear Registro</button>
                             <button class="button is-warning is-outlined" @click="goBack">Regresar</button>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                         <td x-text="record.address"></td>
                         <td x-text="record.technicianPhone"></td>
                         <td x-text="record.buyerPhone"></td>
-                        <td x-text="record.cutomerEmail"></td>
+                        <td x-text="record.customerEmail"></td>
                     </tr>
                     </template>
                     <tr x-show="!records || !loading && records.length === 0">

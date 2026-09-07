@@ -127,3 +127,59 @@ async function GoBack(redirect = "/welcome") {
     throw error
   }
 }
+
+async function GoNew(redirect) {
+  try {
+    const res = await SecureFetching("/welcome", { method: "HEAD" })
+    if (!res.ok) {
+      throw new Error(res.status)
+    }
+    window.location.href = redirect
+  } catch (error) {
+    throw error
+  }
+}
+
+async function OpenRecord(id, redirect) {
+  try {
+    const res = await SecureFetching("/welcome", { method: "HEAD" })
+    if (!res.ok) {
+      throw new Error(res.status)
+    }
+    window.location.href = redirect
+  } catch (error) {
+    throw error
+  }
+}
+
+async function CreateRecord(path, redirect, options = {}) {
+  try {
+    const res = await SecureFetching(path, options)
+    if (!res.ok) {
+      throw new Error(res.status)
+    }
+    window.location.href = redirect
+  } catch (error) {
+    throw error
+  }
+}
+
+async function UpdateRecord(path, redirect, options = {}) {
+  try {
+    const res = await SecureFetching(path, options)
+    if (!res.ok) throw new Error(await res.text())
+    window.location.href = redirect
+  } catch (error) {
+    throw error
+  }
+}
+
+async function DeleteRecord(path, redirect, options = {}) {
+  try {
+    const res = await SecureFetching(path, options)
+    if (!res.ok) throw new Error(await res.text())
+    window.location.href = redirect
+  } catch (error) {
+    throw error
+  }
+}

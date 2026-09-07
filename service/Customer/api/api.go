@@ -2,6 +2,7 @@ package api
 
 import (
 	"Saavedra/service/Customer/service"
+	"Saavedra/service/Customer/types"
 	"encoding/json"
 	"html/template"
 	"log"
@@ -30,12 +31,6 @@ func (e EndpointHandler) CallCustomer(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error rendering /customer...(%v)", err.Error())
 			http.Error(w, "Error rendering /customer", http.StatusInternalServerError)
 		}
-	case http.MethodPut:
-		return
-	case http.MethodPost:
-		return
-	case http.MethodDelete:
-		return
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:
@@ -61,12 +56,6 @@ func (e EndpointHandler) CallCustomerList(w http.ResponseWriter, r *http.Request
 			http.Error(w, "Error internal server", http.StatusInternalServerError)
 			return
 		}
-	case http.MethodPut:
-		return
-	case http.MethodPost:
-		return
-	case http.MethodDelete:
-		return
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:
@@ -78,13 +67,30 @@ func (e EndpointHandler) CallCustomerList(w http.ResponseWriter, r *http.Request
 func (e EndpointHandler) CallCustomerNew(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		return
-	case http.MethodPut:
-		return
+		tpl, err := template.ParseFiles("service/Customer/views/customerNew.html")
+		if err != nil {
+			log.Printf("Error parsing HTML /customer/new...(%v)", err.Error())
+			http.Error(w, "Error parsing HTML /customer/new", http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, nil); err != nil {
+			log.Printf("Error rendering HTML /customer/new...(%v)", err.Error())
+			http.Error(w, "Error rendering HTML /customer/new", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPost:
-		return
-	case http.MethodDelete:
-		return
+		var customer types.Customer
+		if err := json.NewDecoder(r.Body).Decode(&customer); err != nil {
+			log.Printf("Error decoding JSON /customer/new...(%v)", err.Error())
+			http.Error(w, "Error decoding JSON /customer/new", http.StatusInternalServerError)
+			return
+		}
+		if err := e.service.CreateCustomer(&customer); err != nil {
+			log.Printf("Error creating /customer/new...(%v)", err.Error())
+			http.Error(w, "Error creating /customer/new", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:
@@ -121,11 +127,26 @@ func (e EndpointHandler) CallCustomerRecord(w http.ResponseWriter, r *http.Reque
 			return
 		}
 	case http.MethodPut:
-		return
-	case http.MethodPost:
-		return
+		var customer types.Customer
+		if err := json.NewDecoder(r.Body).Decode(&customer); err != nil {
+			log.Printf("Error decoding PUT /customer/record...(%v)", err.Error())
+			http.Error(w, "Error decoding PUT /customer/record", http.StatusInternalServerError)
+			return
+		}
+		if err := e.service.UpdateCustomer(&customer); err != nil {
+			log.Printf("Error updating PUT /customer/record...(%v)", err.Error())
+			http.Error(w, "Error updating PUT /customer/record", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case http.MethodDelete:
-		return
+		id := r.URL.Query().Get("id")
+		if err := e.service.DeleteCustomer(id); err != nil {
+			log.Printf("Error deleting DELETE /customer/record...(%v)", err.Error())
+			http.Error(w, "Error deleting DELETE /customer/record", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:

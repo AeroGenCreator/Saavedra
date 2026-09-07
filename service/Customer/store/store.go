@@ -65,9 +65,9 @@ func (s store) CreateCustomer(customer types.Customer) error {
 	VALUES (?, ?, ?, ?, ?, ?)
 	ON CONFLICT(name, fullname)
 	DO UPDATE SET
-	address = excluded.address
-	technicianphone = excluded.technicianphone
-	buyerphone = excluded.buyerphone
+	address = excluded.address,
+	technicianphone = excluded.technicianphone,
+	buyerphone = excluded.buyerphone,
 	customeremail = excluded.customeremail;`
 	_, err := s.db.Exec(
 		q,
@@ -119,7 +119,8 @@ func (s store) UpdateCustomer(customer *types.Customer) error {
 		customer.Address,
 		customer.TechnicianPhone,
 		customer.BuyerPhone,
-		customer.CustomerEmail)
+		customer.CustomerEmail,
+		customer.Id)
 	if err != nil {
 		return err
 	}

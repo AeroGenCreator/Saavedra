@@ -115,3 +115,15 @@ async function LogOut() {
     console.error('No fue posible cerrar sesión:', error)
   }
 }
+
+async function GoBack(redirect = "/welcome") {
+  try {
+    const res = await SecureFetching("/welcome", { method: "HEAD" })
+    if (!res.ok) {
+      throw new Error(res.status)
+    }
+    window.location.href = redirect
+  } catch (error) {
+    throw error
+  }
+}

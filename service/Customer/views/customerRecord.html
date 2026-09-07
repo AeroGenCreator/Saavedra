@@ -53,100 +53,97 @@
                             <div class="columns is-multiline">
                                 <div class="column is-6">
                                     <div class="field">
-                                        <label class="label">Producto</label>
-                                        <div class="control has-icons-left">
-                                            <input class="input" type="text" placeholder="cable" x-model="name">
-                                            <span class="icon is-small is-left">
-                                                  <i class="icon-shopping-basket"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="column is-6">
-                                    <div class="field">
-                                        <label class="label">Descripción</label>
-                                        <div class="control has-icons-left">
-                                            <input class="input" type="text" placeholder="Cobre N. 12" x-model="desc">
-                                            <span class="icon is-small is-left">
-                                                  <i class="icon-tag"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="column is-6">
-                                    <div class="field">
-                                        <label class="label" for="mList">Medida</label>
+                                        <label class="label">Cliente</label>
                                         <div class="control has-icons-left">
                                             <input
                                                 class="input"
-                                                list="mRecords"
-                                                id="mList"
-                                                placeholder="Seleccionar..."
-                                                x-model="measure"
+                                                type="text"
+                                                placeholder="N.H."
+                                                x-model="name"
                                             >
                                             <span class="icon is-small is-left">
-                                                <i class="icon-tag"></i>
-                                            </span>
-                                            <datalist id="mRecords">
-                                                <template x-for="rec in pMeasureRecords" :key="rec.code">
-                                                    <option :value="rec.name" x-text="rec.name"></option>
-                                                </template>
-                                            </datalist>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="column is-6">
-                                    <div class="field">
-                                        <label class="label">Precio</label>
-                                        <div class="control has-icons-left">
-                                            <input class="input" type="number" placeholder="$ 25.50" x-model="price">
-                                            <span class="icon is-small is-left">
-                                                  <i class="icon-circle-dollar-sign"></i>
+                                                  <i class="icon-pyramid"></i>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="column is-6">
                                     <div class="field">
-                                        <label class="label" for="materialList">Material</label>
+                                        <label class="label">Nombre Completo</label>
                                         <div class="control has-icons-left">
                                             <input
                                                 class="input"
-                                                list="materialRecords"
-                                                id="materialList"
-                                                placeholder="Seleccionar..."
-                                                x-model="material"
+                                                type="text"
+                                                placeholder="Nuevos Horizontes AC de SV"
+                                                x-model="fullName"
                                             >
                                             <span class="icon is-small is-left">
-                                                <i class="icon-anvil"></i>
+                                                  <i class="icon-case-sensitive"></i>
                                             </span>
-                                            <datalist id="materialRecords">
-                                                <template x-for="rec in materialRecords" :key="rec.id">
-                                                    <option :value="rec.name" x-text="rec.name"></option>
-                                                </template>
-                                            </datalist>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="column is-6">
                                     <div class="field">
-                                        <label class="label" for="proveedorList">Provedor</label>
+                                        <label class="label">Dirección</label>
                                         <div class="control has-icons-left">
                                             <input
                                                 class="input"
-                                                list="proveedorRecords"
-                                                id="proveedorList"
-                                                placeholder="Seleccionar..."
-                                                x-model="proveedor"
+                                                type="text"
+                                                placeholder="Av. Miguel Hidalgo 35, Col. Centro"
+                                                x-model="address"
                                             >
                                             <span class="icon is-small is-left">
-                                                <i class="icon-van"></i>
+                                                  <i class="icon-map-pin-house"></i>
                                             </span>
-                                            <datalist id="proveedorRecords">
-                                                <template x-for="rec in proveedorRecords" :key="rec.id">
-                                                    <option :value="rec.name" x-text="rec.name"></option>
-                                                </template>
-                                            </datalist>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Contacto Técnico</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                type="text"
+                                                placeholder="2223458227"
+                                                x-model="technicianPhone"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-headset"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Contacto Comprador</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                type="text"
+                                                placeholder="2223458227"
+                                                x-model="buyerPhone"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-phone"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-6">
+                                    <div class="field">
+                                        <label class="label">Correo Cliente</label>
+                                        <div class="control has-icons-left">
+                                            <input
+                                                class="input"
+                                                type="text"
+                                                placeholder="ejemplo@gmail.com"
+                                                x-model="customerEmail"
+                                            >
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-mail"></i>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -160,7 +157,7 @@
                                 <div class="column is-4">
                                     <button
                                         class="button is-fullwidth is-info"
-                                        :disabled="allRequired"
+                                        :disabled="required"
                                         @click="updateRecord"
                                     >Guardar
                                     </button>
@@ -173,7 +170,7 @@
                                     </button>
                                 </div>
                                 <div class="column is-12 has-text-info has-text-centered is-size-7">
-                                    <p x-show="allRequired">Todos los campos son obligatorios.</p>
+                                    <p x-show="required">Todos los campos son obligatorios.</p>
                                 </div>
                             </div>
                         </div>

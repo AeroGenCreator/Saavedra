@@ -7,7 +7,7 @@ type Customer struct {
 	Address         string `json:"address"`
 	TechnicianPhone string `json:"technicianPhone"`
 	BuyerPhone      string `json:"buyerPhone"`
-	CustomerEmail   string `json:"cutomerEmail"`
+	CustomerEmail   string `json:"customerEmail"`
 }
 
 type CustomerStr struct {
@@ -17,7 +17,7 @@ type CustomerStr struct {
 	Address         string `json:"address"`
 	TechnicianPhone string `json:"technicianPhone"`
 	BuyerPhone      string `json:"buyerPhone"`
-	CustomerEmail   string `json:"cutomerEmail"`
+	CustomerEmail   string `json:"customerEmail"`
 }
 
 type CustomerSlice struct {

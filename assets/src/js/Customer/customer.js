@@ -9,38 +9,9 @@ document.addEventListener('alpine:init', () => {
       this.loadRecords()
     },
 
-    async goBack() {
-      try {
-        const res = await SecureFetching("/welcome", { method: "HEAD" })
-        if (!res.ok) {
-          throw new Error(res.status)
-        }
-        window.location.href = "/welcome"
-      } catch (error) {
-        throw error
-      }
-    },
-    async goHome() {
-      const res = await SecureFetching('/welcome', { method: 'HEAD' })
-      if (res.ok) {
-        window.location.href = '/welcome'
-        return
-      }
-      await this.logOut()
-      alert(res.status === 401 ? 'Sesión expirada' : `Error ${res.status}`)
-    },
-    async logOut() {
-      try {
-        const res = await fetch('/login', {
-          method: 'PATCH',
-          credentials: 'include',
-          headers: { 'X-Requested-With': 'jsFrontendComponent' },
-        })
-        if (res.ok) window.location.href = '/login'
-      } catch (error) {
-        console.error('No fue posible cerrar sesión:', error)
-      }
-    },
+    async goHome() { await GoHome() },
+    async goBack() { await GoBack() },
+    async logOut() { await LogOut() },
 
     async newRecord() {
       try {
@@ -87,13 +58,20 @@ document.addEventListener('alpine:init', () => {
   Alpine.data('customerRecordComponent', (record) => ({
     id: record.id || null,
     name: record.name || '',
-    fullname: record.fullName || '',
+    fullName: record.fullName || '',
     address: record.address || '',
-    technicianPhone: record.TechnicianPhone || '',
+    technicianPhone: record.technicianPhone || '',
     buyerPhone: record.buyerPhone || '',
     customerEmail: record.customerEmail || '',
 
     async goHome() { await GoHome() },
     async logOut() { await LogOut() },
+    async goBack() { await GoBack("/customer") },
+
+    required() { },
+
+    async updateRecord() { },
+    async deleteRecord() { },
+
   }))
 })

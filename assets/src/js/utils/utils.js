@@ -92,3 +92,26 @@ async function SecureFetching(route, requestContent = {}, customHeaders = {'X-Re
   }
 
 }
+
+async function GoHome() {
+  const res = await this.SecureFetching('/welcome', { method: 'HEAD' })
+  if (res.ok) {
+    window.location.href = '/welcome'
+    return
+  }
+  await this.LogOut()
+  alert(res.status === 401 ? 'Sesión expirada' : `Error ${res.status}`)
+}
+
+async function LogOut() {
+  try {
+    const res = await fetch('/login', {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: { 'X-Requested-With': 'jsFrontendComponent' },
+    })
+    if (res.ok) window.location.href = '/login'
+  } catch (error) {
+    console.error('No fue posible cerrar sesión:', error)
+  }
+}

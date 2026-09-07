@@ -42,11 +42,32 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    newRecord() { },
+    async newRecord() {
+      try {
+        const res = await SecureFetching("/customer", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = `/customer/new`
+      } catch (error) {
+        throw error
+      }
+    },
 
-    previousPage() { },
-    nextPage() { },
-    openRecord(id) { },
+    async nextPage() { if (this.hasNextPage) { this.page += 1; await this.loadRecords() } },
+    async previousPage() { if (this.page > 1) { this.page -= 1; await this.loadRecords() } },
+
+    async openRecord(id) {
+      try {
+        const res = await SecureFetching("/customer", { method: "HEAD" })
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
+        window.location.href = `/customer/record?id=${id}`
+      } catch (error) {
+        throw error
+      }
+    },
 
     async loadRecords() {
       this.loading = true
@@ -59,5 +80,20 @@ document.addEventListener('alpine:init', () => {
       } finally { this.loading = false }
     },
 
+  }))
+})
+
+document.addEventListener('alpine:init', () => {
+  Alpine.data('customerRecordComponent', (record) => ({
+    id: record.id || null,
+    name: record.name || '',
+    fullname: record.fullName || '',
+    address: record.address || '',
+    technicianPhone: record.TechnicianPhone || '',
+    buyerPhone: record.buyerPhone || '',
+    customerEmail: record.customerEmail || '',
+
+    async goHome() { await GoHome() },
+    async logOut() { await LogOut() },
   }))
 })

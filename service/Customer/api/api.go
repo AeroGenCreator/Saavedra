@@ -96,7 +96,30 @@ func (e EndpointHandler) CallCustomerNew(w http.ResponseWriter, r *http.Request)
 func (e EndpointHandler) CallCustomerRecord(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		return
+		id := r.URL.Query().Get("id")
+		record, err := e.service.ReadCustomer(id)
+		if err != nil {
+			log.Printf("Error query /customer/record...(%v)", err.Error())
+			http.Error(w, "Error query /customer/record", http.StatusInternalServerError)
+			return
+		}
+		recordBytes, err := json.Marshal(record)
+		if err != nil {
+			log.Printf("Error parsing bytes /customer/record...(%v)", err.Error())
+			http.Error(w, "Error parsing bytes /customer/record", http.StatusInternalServerError)
+			return
+		}
+		tpl, err := template.ParseFiles("service/Customer/views/customerRecord.html")
+		if err != nil {
+			log.Printf("Error parsing template /customer/record...(%v)", err.Error())
+			http.Error(w, "Error parsing template /customer/record", http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, map[string]template.JS{"Record": template.JS(recordBytes)}); err != nil {
+			log.Printf("Error rendering template /customer/record...(%v)", err.Error())
+			http.Error(w, "Error rendering template /customer/record", http.StatusInternalServerError)
+			return
+		}
 	case http.MethodPut:
 		return
 	case http.MethodPost:

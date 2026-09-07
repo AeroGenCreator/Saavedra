@@ -79,6 +79,18 @@ document.addEventListener('alpine:init', () => {
     } catch (error) {
       throw error
     }
+  },
+
+  async secureCustomer() {
+    try {
+      const res = await SecureFetching("/customer", { method: "HEAD" })
+      if (!res.ok) {
+        throw new Error(res.status)
+      }
+      window.location.href = "/customer"
+    } catch (error) {
+      throw error
+    }
   }
 
   })

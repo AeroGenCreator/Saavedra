@@ -26,7 +26,7 @@ document.addEventListener('alpine:init', () => {
           name: this.name,
           description: this.desc,
           pMeasure: this.measure,
-          price: this.price,
+          price: String(this.price),
           materialId: String(objMaterial.id),
           proveedorId: String(objProveedor.id)
         }

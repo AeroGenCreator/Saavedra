@@ -8,8 +8,10 @@ package main
 
 import (
 	"Saavedra/env"
+	customerMigration "Saavedra/migration/mCustomer"
 	loginMigration "Saavedra/migration/mLogin"
 	productMigration "Saavedra/migration/mProduct"
+	customerRouter "Saavedra/service/Customer/router"
 	loginRouter "Saavedra/service/Login/router"
 	loginStore "Saavedra/service/Login/store"
 	loginTypes "Saavedra/service/Login/types"
@@ -64,6 +66,9 @@ func main() {
 	if err = productMigration.CreateSchema(db); err != nil {
 		log.Fatal(err.Error())
 	}
+	if err = customerMigration.CreateSchema(db); err != nil {
+		log.Fatal(err.Error())
+	}
 
 	// ADMIN CREDENTIALS INJECTION
 	adminCreds := loginTypes.User{
@@ -89,6 +94,7 @@ func main() {
 	welcomeRouter.Assambler(mux)
 	usersRouter.Assambler(mux, db)
 	productRouter.Assambler(mux, db)
+	customerRouter.Assambler(mux, db)
 
 	// Servidor
 	fmt.Println("🚀 Servidor ejecutándose en http://localhost:8080")

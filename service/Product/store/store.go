@@ -6,13 +6,13 @@ import (
 )
 
 type Store interface {
-	LoadAllMaterial() ([]*types.Material, error)
+	LoadAllCategory() ([]*types.Category, error)
 	LoadAllProveedor() ([]*types.Proveedor, error)
-	ListMaterial(limit, offset int) ([]*types.Material, int, error)
-	CreateMaterial(material *types.Material) (*types.Material, error)
-	ReadMaterial(id int) (*types.Material, error)
-	UpdateMaterial(material *types.Material) (*types.Material, error)
-	DeleteMaterial(id int) error
+	ListCategory(limit, offset int) ([]*types.Category, int, error)
+	CreateCategory(category *types.Category) (*types.Category, error)
+	ReadCategory(id int) (*types.Category, error)
+	UpdateCategory(category *types.Category) (*types.Category, error)
+	DeleteCategory(id int) error
 	ListProovedor(limit, offset int) ([]*types.Proveedor, int, error)
 	CreateProveedor(proveedor *types.Proveedor) (*types.Proveedor, error)
 	ReadProveedor(id int) (*types.Proveedor, error)
@@ -33,25 +33,25 @@ func New(db *sql.DB) Store {
 	return store{db: db}
 }
 
-func (s store) LoadAllMaterial() ([]*types.Material, error) {
-	q := "SELECT id, name FROM material;"
+func (s store) LoadAllCategory() ([]*types.Category, error) {
+	q := "SELECT id, name FROM category;"
 	rows, err := s.db.Query(q)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var materialArray []*types.Material
+	var categoryArray []*types.Category
 	for rows.Next() {
-		var record types.Material
+		var record types.Category
 		if err := rows.Scan(&record.Id, &record.Name); err != nil {
 			return nil, err
 		}
-		materialArray = append(materialArray, &record)
+		categoryArray = append(categoryArray, &record)
 	}
 	if rows.Err() != nil {
 		return nil, rows.Err()
 	}
-	return materialArray, nil
+	return categoryArray, nil
 }
 
 func (s store) LoadAllProveedor() ([]*types.Proveedor, error) {
@@ -75,11 +75,11 @@ func (s store) LoadAllProveedor() ([]*types.Proveedor, error) {
 	return proveedorArray, nil
 }
 
-// === === === MATERIALS === === ===
+// === === === CATEGORY === === ===
 
-func (s store) ListMaterial(limit, offset int) ([]*types.Material, int, error) {
-	q1 := "SELECT COUNT(id) AS count_id FROM material;"
-	q2 := "SELECT id, name FROM material LIMIT ? OFFSET ?;"
+func (s store) ListCategory(limit, offset int) ([]*types.Category, int, error) {
+	q1 := "SELECT COUNT(id) AS count_id FROM category;"
+	q2 := "SELECT id, name FROM category LIMIT ? OFFSET ?;"
 
 	var count int
 	if err := s.db.QueryRow(q1).Scan(&count); err != nil {
@@ -90,9 +90,9 @@ func (s store) ListMaterial(limit, offset int) ([]*types.Material, int, error) {
 		return nil, 0, err
 	}
 	defer rows.Close()
-	var records []*types.Material
+	var records []*types.Category
 	for rows.Next() {
-		var record types.Material
+		var record types.Category
 		err = rows.Scan(&record.Id, &record.Name)
 		if err != nil {
 			return nil, 0, err
@@ -105,29 +105,29 @@ func (s store) ListMaterial(limit, offset int) ([]*types.Material, int, error) {
 	return records, count, nil
 }
 
-func (s store) CreateMaterial(material *types.Material) (*types.Material, error) {
+func (s store) CreateCategory(category *types.Category) (*types.Category, error) {
 	qInsert := `
-	INSERT INTO material (name) VALUES (?)
+	INSERT INTO category (name) VALUES (?)
 	ON CONFLICT(name) DO UPDATE SET name = excluded.name;
 	`
-	_, err := s.db.Exec(qInsert, material.Name)
+	_, err := s.db.Exec(qInsert, category.Name)
 	if err != nil {
 		return nil, err
 	}
 
-	qSelect := `SELECT id, name FROM material WHERE name = ?;`
-	var newMaterial types.Material
-	err = s.db.QueryRow(qSelect, material.Name).Scan(&newMaterial.Id, &newMaterial.Name)
+	qSelect := `SELECT id, name FROM category WHERE name = ?;`
+	var newCategory types.Category
+	err = s.db.QueryRow(qSelect, category.Name).Scan(&newCategory.Id, &newCategory.Name)
 	if err != nil {
 		return nil, err
 	}
 
-	return &newMaterial, nil
+	return &newCategory, nil
 }
 
-func (s store) ReadMaterial(id int) (*types.Material, error) {
-	q := "SELECT id, name FROM material WHERE id = ?;"
-	var record types.Material
+func (s store) ReadCategory(id int) (*types.Category, error) {
+	q := "SELECT id, name FROM category WHERE id = ?;"
+	var record types.Category
 	err := s.db.QueryRow(q, id).Scan(&record.Id, &record.Name)
 	if err == sql.ErrNoRows {
 		return nil, types.ErrNoRecord
@@ -137,17 +137,17 @@ func (s store) ReadMaterial(id int) (*types.Material, error) {
 	return &record, nil
 }
 
-func (s store) UpdateMaterial(material *types.Material) (*types.Material, error) {
-	q := "UPDATE material SET name = ? WHERE id = ?;"
-	_, err := s.db.Exec(q, material.Name, material.Id)
+func (s store) UpdateCategory(category *types.Category) (*types.Category, error) {
+	q := "UPDATE category SET name = ? WHERE id = ?;"
+	_, err := s.db.Exec(q, category.Name, category.Id)
 	if err != nil {
 		return nil, err
 	}
-	return material, nil
+	return category, nil
 }
 
-func (s store) DeleteMaterial(id int) error {
-	q := "DELETE FROM material WHERE id = ?;"
+func (s store) DeleteCategory(id int) error {
+	q := "DELETE FROM category WHERE id = ?;"
 	_, err := s.db.Exec(q, id)
 	if err != nil {
 		return err
@@ -241,7 +241,7 @@ func (s store) ListProduct(limit, offset int) ([]*types.ProductFetch, int, error
 	q1 := "SELECT COUNT(id) AS count_id FROM product;"
 	q2 := `SELECT p.id, p.name, p.description, p.pmeasure, p.price, m.id, m.name, pr.id, pr.name
 	FROM product AS p
-	LEFT JOIN material AS m ON p.material_id = m.id
+	LEFT JOIN category AS m ON p.category_id = m.id
 	LEFT JOIN proveedor AS pr ON p.proveedor_id = pr.id
 	LIMIT ? OFFSET ?;`
 	var count int
@@ -262,8 +262,8 @@ func (s store) ListProduct(limit, offset int) ([]*types.ProductFetch, int, error
 			&record.Description,
 			&record.PMeasure,
 			&record.Price,
-			&record.MaterialId,
-			&record.Material,
+			&record.CategoryId,
+			&record.Category,
 			&record.ProveedorId,
 			&record.Proveedor,
 		); err != nil {
@@ -279,20 +279,20 @@ func (s store) ListProduct(limit, offset int) ([]*types.ProductFetch, int, error
 
 func (s store) CreateProduct(product *types.Product) error {
 	q1 := `INSERT INTO product (
-	name, description, pmeasure, price, material_id, proveedor_id)
+	name, description, pmeasure, price, category_id, proveedor_id)
 	VALUES (?, ?, ?, ?, ?, ?)
 	ON CONFLICT(name, pmeasure, proveedor_id)
 	DO UPDATE SET
 	description = excluded.description,
 	price = excluded.price,
-	material_id = excluded.material_id;`
+	category_id = excluded.category_id;`
 	_, err := s.db.Exec(
 		q1,
 		product.Name,
 		product.Description,
 		product.PMeasure,
 		product.Price,
-		product.MaterialId,
+		product.CategoryId,
 		product.ProveedorId)
 	if err != nil {
 		return err
@@ -303,7 +303,7 @@ func (s store) CreateProduct(product *types.Product) error {
 func (s store) ReadProduct(id int) (*types.ProductFetch, error) {
 	q := `SELECT p.id, p.name, p.description, p.pmeasure, p.price, m.id, m.name, pr.id, pr.name
 	FROM product AS p
-	LEFT JOIN material AS m ON p.material_id = m.id
+	LEFT JOIN category AS m ON p.category_id = m.id
 	LEFT JOIN proveedor AS pr ON p.proveedor_id = pr.id
 	WHERE p.id = ?;`
 	var record types.ProductFetch
@@ -313,8 +313,8 @@ func (s store) ReadProduct(id int) (*types.ProductFetch, error) {
 		&record.Description,
 		&record.PMeasure,
 		&record.Price,
-		&record.MaterialId,
-		&record.Material,
+		&record.CategoryId,
+		&record.Category,
 		&record.ProveedorId,
 		&record.Proveedor,
 	)
@@ -327,7 +327,7 @@ func (s store) ReadProduct(id int) (*types.ProductFetch, error) {
 func (s store) UpdateProduct(product *types.Product) error {
 	q := `
 	UPDATE product
-	SET name = ?, description = ?, pmeasure = ?, price = ?, material_id = ?, proveedor_id = ?
+	SET name = ?, description = ?, pmeasure = ?, price = ?, category_id = ?, proveedor_id = ?
 	WHERE id = ?;`
 	_, err := s.db.Exec(
 		q,
@@ -335,7 +335,7 @@ func (s store) UpdateProduct(product *types.Product) error {
 		product.Description,
 		product.PMeasure,
 		product.Price,
-		product.MaterialId,
+		product.CategoryId,
 		product.ProveedorId,
 		product.Id,
 	)

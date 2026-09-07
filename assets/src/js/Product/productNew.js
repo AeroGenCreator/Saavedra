@@ -6,32 +6,32 @@ document.addEventListener('alpine:init', () => {
     desc: '',
     measure: '',
     price: '',
-    material: '',
+    category: '',
     proveedor: '',
     pMeasureRecords: [],
-    materialRecords: [],
+    categoryRecords: [],
     proveedorRecords: [],
 
-  init(measures, material, proveedor) {
+  init(measures, category, proveedor) {
   this.pMeasureRecords = measures
-  this.materialRecords = material
+  this.categoryRecords = category
   this.proveedorRecords = proveedor
   },
 
   allRequired() {
-    return ([this.name, this.desc, this.measure, this.price, this.material, this.proveedor].includes(""))
+    return ([this.name, this.desc, this.measure, this.price, this.category, this.proveedor].includes(""))
     },
 
   async create() {
     try {
-      const objMaterial = this.materialRecords.find(item => item.name.toLowerCase() === this.material.toLowerCase())
+      const objCategory = this.categoryRecords.find(item => item.name.toLowerCase() === this.category.toLowerCase())
       const objProveedor = this.proveedorRecords.find(item => item.name.toLowerCase() === this.proveedor.toLowerCase())
       const values = {
         name: this.name,
         description: this.desc,
         pMeasure: this.measure,
         price: this.price,
-        materialId: String(objMaterial.id),
+        categoryId: String(objCategory.id),
         proveedorId: String(objProveedor.id)
       }
       const res = await SecureFetching("/product/new", {

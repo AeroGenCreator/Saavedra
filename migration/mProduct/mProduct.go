@@ -15,40 +15,40 @@ func CreateSchema(db *sql.DB) error {
 
 	defer tx.Rollback()
 
-	// CHECK TABLE MATERIAL
-	var material bool
-	qm := `SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='material');`
-	err = tx.QueryRow(qm).Scan(&material)
+	// CHECK TABLE CATEGORY
+	var category bool
+	qm := `SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='category');`
+	err = tx.QueryRow(qm).Scan(&category)
 	if err != nil {
-		log.Printf("Table material exists error (%v)", err)
+		log.Printf("Table category exists error (%v)", err)
 	}
 
-	if material {
-		migrateMaterial := `
-		CREATE TABLE material_new (
+	if category {
+		migrateCategory := `
+		CREATE TABLE category_new (
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL UNIQUE
 		);
-		INSERT INTO material_new(id, name)
-		SELECT id, name FROM material;
-		DROP TABLE material;
-		ALTER table material_new RENAME TO material;
+		INSERT INTO category_new(id, name)
+		SELECT id, name FROM category;
+		DROP TABLE category;
+		ALTER table category_new RENAME TO category;
 		`
-		_, err := tx.Exec(migrateMaterial)
+		_, err := tx.Exec(migrateCategory)
 		if err != nil {
-			log.Printf("Error migrating table material...(%v)", err.Error())
+			log.Printf("Error migrating table category...(%v)", err.Error())
 			return err
 		}
 	} else {
-		createMaterial := `
-		CREATE TABLE material (
+		createCategory := `
+		CREATE TABLE category (
 		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL UNIQUE
 		);
 		`
-		_, err := tx.Exec(createMaterial)
+		_, err := tx.Exec(createCategory)
 		if err != nil {
-			log.Panicf("Error creating table material...(%v)", err.Error())
+			log.Panicf("Error creating table category...(%v)", err.Error())
 			return err
 		}
 	}
@@ -109,14 +109,14 @@ func CreateSchema(db *sql.DB) error {
 		description TEXT NOT NULL,
 		pmeasure TEXT NOT NULL,
 		price FLOAT NOT NULL,
-		material_id INTEGER,
+		category_id INTEGER,
 		proveedor_id INTEGER,
-		FOREIGN KEY (material_id) REFERENCES material(id) ON DELETE SET NULL,
+		FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL,
 		FOREIGN KEY (proveedor_id) REFERENCES proveedor(id) ON DELETE SET NULL,
 		UNIQUE(name, pmeasure, proveedor_id)
 		);
-		INSERT INTO product_new(id, name, description, pmeasure, price, material_id, proveedor_id)
-		SELECT id, name, description, pmeasure, price, material_id, proveedor_id FROM product;
+		INSERT INTO product_new(id, name, description, pmeasure, price, category_id, proveedor_id)
+		SELECT id, name, description, pmeasure, price, category_id, proveedor_id FROM product;
 		DROP TABLE product;
 		ALTER table product_new RENAME TO product;
 		`
@@ -133,9 +133,9 @@ func CreateSchema(db *sql.DB) error {
 		description TEXT NOT NULL,
 		pmeasure TEXT NOT NULL,
 		price FLOAT NOT NULL,
-		material_id INTEGER,
+		category_id INTEGER,
 		proveedor_id INTEGER,
-		FOREIGN KEY (material_id) REFERENCES material(id) ON DELETE SET NULL,
+		FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL,
 		FOREIGN KEY (proveedor_id) REFERENCES proveedor(id) ON DELETE SET NULL,
 		UNIQUE(name, pmeasure, proveedor_id)
 		);`

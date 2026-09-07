@@ -1,15 +1,15 @@
-// HANDLES MATERIAL VIEW
+// HANDLES CATEGORY VIEW
 document.addEventListener('alpine:init', () => {
   Alpine.data('productMateriaNewComponent', () => ({
-    material: '',
+    category: '',
 
     async create() {
       try {
-        const res = await SecureFetching("/product/material/new", { method: "POST", body: JSON.stringify({name: this.material}) })
+        const res = await SecureFetching("/product/category/new", { method: "POST", body: JSON.stringify({name: this.category}) })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = "/product/material"
+        window.location.href = "/product/category"
       } catch (error) {
         throw error
       }
@@ -17,11 +17,11 @@ document.addEventListener('alpine:init', () => {
 
     async goBack() {
       try {
-        const res = await SecureFetching("/product/material", { method: "HEAD" })
+        const res = await SecureFetching("/product/category", { method: "HEAD" })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = "/product/material"
+        window.location.href = "/product/category"
       } catch (error) {
         throw error
       }

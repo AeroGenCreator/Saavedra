@@ -24,13 +24,13 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    async secureMaterial() {
+    async secureCategory() {
       try {
-        const res = await SecureFetching("/product/material", { method: "HEAD" })
+        const res = await SecureFetching("/product/category", { method: "HEAD" })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = "/product/material"
+        window.location.href = "/product/category"
       } catch (error) {
         throw error
       }

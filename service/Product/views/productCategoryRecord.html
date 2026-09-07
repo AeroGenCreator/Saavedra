@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
-    <script defer src="/assets/src/js/Product/productMaterial.js"></script>
+    <script defer src="/assets/src/js/Product/productCategoryRecord.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 
-	<title>Product Material</title>
+	<title>Product Category Record</title>
 </head>
-<body class="has-navbar-fixed-top" x-data="productMaterialComponent">
+<body class="has-navbar-fixed-top" x-data="productCategoryRecordComponent" x-init="initData('{{.Id}}', '{{.Name}}')">
 
     <!-- NAVBAR -->
     <section class="hero">
@@ -43,43 +43,49 @@
 
     <!-- MAIN CONTENT -->
     <main class="hero is-fullheight">
-
-        <section class="section m-2 p-2" x-data="materialListComponent">
+        <section class="section">
             <div class="container">
-                <div class="columns">
-                    <div class="column is-6">
-                        <div class="buttons is-left">
-                            <button class="button is-info is-outlined" @click="newRecord">Crear Registro</button>
-                            <button class="button is-warning is-outlined" @click="goBack">Regresar</button>
-                        </div>
-                    </div>
-                    <div class="column is-6">
-                        <div class="buttons is-right">
-                            <button class="button" @click="previousPage" :disabled="page === 1 || loading">Menos páginas</button>
-                            <span class="button is-static" x-text="`Página ${page}`"></span>
-                            <button class="button" @click="nextPage" :disabled="!hasNextPage || loading">Más páginas</button>
+                <div class="columns is-centered">
+                    <div class="column is-two-thirds">
+                        <div class="box">
+                            <div class="columns is-multiline">
+                                <div class="column is-12">
+                                    <div class="field">
+                                        <label class="label">Categoría</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" type="text" placeholder="Construcción" x-model="name">
+                                            <span class="icon is-small is-left">
+                                                  <i class="icon-tag"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-warning is-outlined"
+                                        @click="goBack"
+                                    >Regresar
+                                    </button>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-info"
+                                        :disabled="name === ''"
+                                        @click="updateRecord"
+                                    >Guardar
+                                    </button>
+                                </div>
+                                <div class="column is-4">
+                                    <button
+                                        class="button is-fullwidth is-danger"
+                                        @click="deleteRecord"
+                                    >Eliminar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <table class="table is-fullwidth is-striped">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Material</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template x-for="record in records" :key="record.id">
-                    <tr @click="openRecord(record.id)" style="cursor: pointer;">
-                        <td x-text="record.id"></td>
-                        <td x-text="record.name"></td>
-                    </tr>
-                    </template>
-                    <tr x-show="!records || !loading && records.length === 0">
-                    <td colspan="3">No hay registros.</td>
-                    </tr>
-                </tbody>
-                </table>
             </div>
         </section>
     </main>

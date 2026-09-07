@@ -13,11 +13,11 @@ import (
 
 type Service interface {
 	LoadProductMany2One() (*types.Many2oneForJS, *types.Many2oneStruct, error)
-	ListMaterial(page int) (*types.MaterialSlice, error)
-	CreateMaterial(material *types.Material) (*types.Material, error)
-	ReadMaterial(id string) (*types.Material, error)
-	UpdateMaterial(materialStr *types.MaterialStr) (*types.Material, error)
-	DeleteMaterial(id string) error
+	ListCategory(page int) (*types.CategorySlice, error)
+	CreateCategory(category *types.Category) (*types.Category, error)
+	ReadCategory(id string) (*types.Category, error)
+	UpdateCategory(categoryStr *types.CategoryStr) (*types.Category, error)
+	DeleteCategory(id string) error
 	ListProveedor(page int) (*types.ProveedorSlice, error)
 	CreateProveedor(proveedorStr *types.ProveedorStr) (*types.Proveedor, error)
 	ReadProveedor(id string) (*types.Proveedor, error)
@@ -56,7 +56,7 @@ func (s service) LoadProductMany2One() (*types.Many2oneForJS, *types.Many2oneStr
 	if err != nil {
 		return nil, nil, err
 	}
-	materialArray, err := s.store.LoadAllMaterial()
+	categoryArray, err := s.store.LoadAllCategory()
 	if err != nil {
 		return nil, nil, err
 	}
@@ -68,7 +68,7 @@ func (s service) LoadProductMany2One() (*types.Many2oneForJS, *types.Many2oneStr
 	if err != nil {
 		return nil, nil, err
 	}
-	materialBytes, err := json.Marshal(materialArray)
+	categoryBytes, err := json.Marshal(categoryArray)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -78,76 +78,76 @@ func (s service) LoadProductMany2One() (*types.Many2oneForJS, *types.Many2oneStr
 	}
 	many2one := types.Many2oneForJS{
 		PMeasureRecords:  template.JS(pMeasureBytes),
-		MaterialRecords:  template.JS(materialBytes),
+		CategoryRecords:  template.JS(categoryBytes),
 		ProveedorRecords: template.JS(proveedorBytes),
 	}
 	many2oneStruct := types.Many2oneStruct{
 		PMeasureRecords:  pMeasureArray,
-		MaterialRecords:  materialArray,
+		CategoryRecords:  categoryArray,
 		ProveedorRecords: proveedorArray,
 	}
 	return &many2one, &many2oneStruct, nil
 }
 
-// === === === MATERIAL === === ===
+// === === === CATEGORY === === ===
 
-func (s service) ListMaterial(page int) (*types.MaterialSlice, error) {
+func (s service) ListCategory(page int) (*types.CategorySlice, error) {
 	offset := (page - 1) * env.RecordsPerSlice
-	records, count, err := s.store.ListMaterial(env.RecordsPerSlice, offset)
+	records, count, err := s.store.ListCategory(env.RecordsPerSlice, offset)
 	if err != nil {
 		return nil, err
 	}
 	totalPages := utils.CalculateTotalPages(count, env.RecordsPerSlice)
 	hasNextPage := totalPages > page
-	materialSlice := types.MaterialSlice{
+	categorySlice := types.CategorySlice{
 		Records:     records,
 		HasNextPage: hasNextPage,
 	}
-	return &materialSlice, nil
+	return &categorySlice, nil
 }
 
-func (s service) CreateMaterial(material *types.Material) (*types.Material, error) {
-	newMaterial, err := s.store.CreateMaterial(material)
+func (s service) CreateCategory(category *types.Category) (*types.Category, error) {
+	newCategory, err := s.store.CreateCategory(category)
 	if err != nil {
 		return nil, err
 	}
-	return newMaterial, nil
+	return newCategory, nil
 }
 
-func (s service) ReadMaterial(id string) (*types.Material, error) {
+func (s service) ReadCategory(id string) (*types.Category, error) {
 	intId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil, err
 	}
-	material, err := s.store.ReadMaterial(intId)
+	category, err := s.store.ReadCategory(intId)
 	if err != nil {
 		return nil, err
 	}
-	return material, nil
+	return category, nil
 }
 
-func (s service) UpdateMaterial(materialStr *types.MaterialStr) (*types.Material, error) {
-	intInd, err := strconv.Atoi(materialStr.Id)
+func (s service) UpdateCategory(categoryStr *types.CategoryStr) (*types.Category, error) {
+	intInd, err := strconv.Atoi(categoryStr.Id)
 	if err != nil {
 		return nil, err
 	}
-	material := types.Material{
+	category := types.Category{
 		Id:   intInd,
-		Name: materialStr.Name,
+		Name: categoryStr.Name,
 	}
-	updMaterial, err := s.store.UpdateMaterial(&material)
+	updCategory, err := s.store.UpdateCategory(&category)
 	if err != nil {
 		return nil, err
 	}
-	return updMaterial, nil
+	return updCategory, nil
 }
 
-func (s service) DeleteMaterial(id string) error {
+func (s service) DeleteCategory(id string) error {
 	intId, err := strconv.Atoi(id)
 	if err != nil {
 		return err
 	}
-	if err := s.store.DeleteMaterial(intId); err != nil {
+	if err := s.store.DeleteCategory(intId); err != nil {
 		return err
 	}
 	return nil
@@ -256,7 +256,7 @@ func (s service) CreateProduct(productStr *types.ProductStr) error {
 	if err != nil {
 		return err
 	}
-	mId, err := strconv.Atoi(productStr.MaterialId)
+	mId, err := strconv.Atoi(productStr.CategoryId)
 	if err != nil {
 		return err
 	}
@@ -269,7 +269,7 @@ func (s service) CreateProduct(productStr *types.ProductStr) error {
 		Description: productStr.Description,
 		PMeasure:    productStr.PMeasure,
 		Price:       float32(price),
-		MaterialId:  mId,
+		CategoryId:  mId,
 		ProveedorId: prId,
 	}
 	if err = s.store.CreateProduct(&product); err != nil {
@@ -299,7 +299,7 @@ func (s service) UpdateProduct(productStr *types.ProductStr) error {
 	if err != nil {
 		return err
 	}
-	matId, err := strconv.Atoi(productStr.MaterialId)
+	matId, err := strconv.Atoi(productStr.CategoryId)
 	if err != nil {
 		return err
 	}
@@ -313,7 +313,7 @@ func (s service) UpdateProduct(productStr *types.ProductStr) error {
 		Description: productStr.Description,
 		PMeasure:    productStr.PMeasure,
 		Price:       float32(floatPrice),
-		MaterialId:  matId,
+		CategoryId:  matId,
 		ProveedorId: proId,
 	}
 	if err = s.store.UpdateProduct(&product); err != nil {

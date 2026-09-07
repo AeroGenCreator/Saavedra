@@ -13,7 +13,7 @@ type Product struct {
 	Description string  `json:"description"`
 	PMeasure    string  `json:"pMeasure"`
 	Price       float32 `json:"price"`
-	MaterialId  int     `json:"materialId"`
+	CategoryId  int     `json:"categoryId"`
 	ProveedorId int     `json:"proveedorId"`
 }
 
@@ -23,7 +23,7 @@ type PMeasure struct {
 	Description string `json:"description"`
 }
 
-type Material struct {
+type Category struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
@@ -35,8 +35,8 @@ type Proveedor struct {
 }
 
 // SLICES
-type MaterialSlice struct {
-	Records     []*Material `json:"records"`
+type CategorySlice struct {
+	Records     []*Category `json:"records"`
 	HasNextPage bool        `json:"hasNextPage"`
 }
 
@@ -51,7 +51,7 @@ type ProductSlice struct {
 }
 
 // ID STR
-type MaterialStr struct {
+type CategoryStr struct {
 	Id   string `json:"id"`
 	Name string `json:"name"`
 }
@@ -68,8 +68,8 @@ type ProductStr struct {
 	Description string `json:"description"`
 	PMeasure    string `json:"pMeasure"`
 	Price       string `json:"price"`
-	MaterialId  string `json:"materialId"`
-	Material    string `json:"material"`
+	CategoryId  string `json:"categoryId"`
+	Category    string `json:"category"`
 	ProveedorId string `json:"proveedorId"`
 	Proveedor   string `json:"proveedor"`
 }
@@ -80,20 +80,20 @@ type ProductFetch struct {
 	Description string  `json:"description"`
 	PMeasure    string  `json:"pMeasure"`
 	Price       float32 `json:"price"`
-	MaterialId  int     `json:"materialId"`
-	Material    string  `json:"material"`
+	CategoryId  int     `json:"categoryId"`
+	Category    string  `json:"category"`
 	ProveedorId int     `json:"proveedorId"`
 	Proveedor   string  `json:"proveedor"`
 }
 
 type Many2oneForJS struct {
 	PMeasureRecords  template.JS `json:"pMeasureRecords"`
-	MaterialRecords  template.JS `json:"materialRecords"`
+	CategoryRecords  template.JS `json:"categoryRecords"`
 	ProveedorRecords template.JS `json:"ProveedorRecords"`
 }
 
 type Many2oneStruct struct {
 	PMeasureRecords  []*PMeasure  `json:"pMeasureRecords"`
-	MaterialRecords  []*Material  `json:"materialRecords"`
+	CategoryRecords  []*Category  `json:"categoryRecords"`
 	ProveedorRecords []*Proveedor `json:"proveedorRecords"`
 }

@@ -7,19 +7,19 @@ document.addEventListener('alpine:init', () => {
     desc: record.description || '',
     measure: record.pMeasure || '',
     price: record.price || '',
-    material: record.material || '',
+    category: record.category || '',
     proveedor: record.proveedor || '',
     pMeasureRecords: m2o.pMeasureRecords || [],
-    materialRecords: m2o.materialRecords || [],
+    categoryRecords: m2o.categoryRecords || [],
     proveedorRecords: m2o.proveedorRecords || [],
 
   allRequired() {
-    return ([this.name, this.desc, this.measure, this.price, this.material, this.proveedor].includes(""))
+    return ([this.name, this.desc, this.measure, this.price, this.category, this.proveedor].includes(""))
     },
 
     async updateRecord() {
       try {
-        const objMaterial = this.materialRecords.find(item => item.name.toLowerCase() === this.material.toLowerCase())
+        const objCategory = this.categoryRecords.find(item => item.name.toLowerCase() === this.category.toLowerCase())
         const objProveedor = this.proveedorRecords.find(item => item.name.toLowerCase() === this.proveedor.toLowerCase())
         const values = {
           id: String(this.id),
@@ -27,7 +27,7 @@ document.addEventListener('alpine:init', () => {
           description: this.desc,
           pMeasure: this.measure,
           price: String(this.price),
-          materialId: String(objMaterial.id),
+          categoryId: String(objCategory.id),
           proveedorId: String(objProveedor.id)
         }
         const res = await SecureFetching('/product/record', {

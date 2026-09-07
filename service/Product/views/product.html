@@ -69,7 +69,7 @@
                         <th>Descripción</th>
                         <th>Medida</th>
                         <th>Precio</th>
-                        <th>Material</th>
+                        <th>Category</th>
                         <th>Provedor</th>
                     </tr>
                 </thead>
@@ -81,12 +81,12 @@
                         <td x-text="record.description"></td>
                         <td x-text="record.pMeasure"></td>
                         <td x-text="record.price"></td>
-                        <td x-text="record.material"></td>
+                        <td x-text="record.category"></td>
                         <td x-text="record.proveedor"></td>
                     </tr>
                     </template>
                     <tr x-show="!records || !loading && records.length === 0">
-                    <td colspan="3">No hay registros.</td>
+                    <td colspan="7">No hay registros.</td>
                     </tr>
                 </tbody>
                 </table>

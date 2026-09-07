@@ -18,10 +18,10 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	// AuthMiddleware Protects backend from requests
 	mux.Handle("/product/menu", utils.AuthMiddleware(http.HandlerFunc(api.ProductMenu)))
 
-	mux.Handle("/product/material", utils.AuthMiddleware(http.HandlerFunc(handler.CallMaterial)))
-	mux.Handle("/product/material/list", utils.AuthMiddleware(http.HandlerFunc(handler.CallMaterialList)))
-	mux.Handle("/product/material/new", utils.AuthMiddleware(http.HandlerFunc(handler.CallMaterialNew)))
-	mux.Handle("/product/material/record", utils.AuthMiddleware(http.HandlerFunc(handler.CallMaterialRecord)))
+	mux.Handle("/product/category", utils.AuthMiddleware(http.HandlerFunc(handler.CallCategory)))
+	mux.Handle("/product/category/list", utils.AuthMiddleware(http.HandlerFunc(handler.CallCategoryList)))
+	mux.Handle("/product/category/new", utils.AuthMiddleware(http.HandlerFunc(handler.CallCategoryNew)))
+	mux.Handle("/product/category/record", utils.AuthMiddleware(http.HandlerFunc(handler.CallCategoryRecord)))
 	mux.Handle("/proveedor", utils.AuthMiddleware(http.HandlerFunc(handler.CallProveedor)))
 	mux.Handle("/proveedor/slice", utils.AuthMiddleware(http.HandlerFunc(handler.CallProveedorSlice)))
 	mux.Handle("/proveedor/new", utils.AuthMiddleware(http.HandlerFunc(handler.CallProveedorNew)))

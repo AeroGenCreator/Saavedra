@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
-    <script defer src="/assets/src/js/Product/productMaterialNew.js"></script>
+    <script defer src="/assets/src/js/Product/productCategoryNew.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
 
-	<title>Product Material</title>
+	<title>Product Category</title>
 </head>
 <body class="has-navbar-fixed-top" x-data="productMateriaNewComponent">
 
@@ -51,11 +51,11 @@
                             <div class="columns is-multiline">
                                 <div class="column is-12">
                                     <div class="field">
-                                        <label class="label">Material</label>
+                                        <label class="label">Categoría</label>
                                         <div class="control has-icons-left">
-                                            <input class="input" type="text" placeholder="Acero" x-model="material">
+                                            <input class="input" type="text" placeholder="Construcción" x-model="category">
                                             <span class="icon is-small is-left">
-                                                  <i class="icon-anvil"></i>
+                                                  <i class="icon-tag"></i>
                                             </span>
                                         </div>
                                     </div>
@@ -70,7 +70,7 @@
                                 <div class="column is-6">
                                     <button
                                         class="button is-fullwidth is-info"
-                                        :disabled="material === ''"
+                                        :disabled="category === ''"
                                         @click="create"
                                     >Crear Registro
                                     </button>

@@ -1,6 +1,6 @@
-// HANDLES MATERIAL VIEW
+// HANDLES CATEGORY VIEW
 document.addEventListener('alpine:init', () => {
-  Alpine.data('productMaterialComponent', () => ({
+  Alpine.data('productCategoryComponent', () => ({
 
     async goBack() {
       try {
@@ -39,9 +39,9 @@ document.addEventListener('alpine:init', () => {
   }))
 })
 
-// HANDLES MATERIAL LIST
+// HANDLES CATEGORY LIST
 document.addEventListener('alpine:init', () => {
-  Alpine.data('materialListComponent', () => ({
+  Alpine.data('categoryListComponent', () => ({
 
     records: [],
     page: 1,
@@ -55,7 +55,7 @@ document.addEventListener('alpine:init', () => {
     async loadRecords() {
       this.loading = true
       try {
-        const res = await SecureFetching(`/product/material/list?page=${this.page}`)
+        const res = await SecureFetching(`/product/category/list?page=${this.page}`)
         if (!res.ok) throw new Error(`Error ${res.status}`)
         const data = await res.json()
         this.records = data.records // cambia si el contrato JSON usa otro nombre
@@ -69,11 +69,11 @@ document.addEventListener('alpine:init', () => {
 
     async openRecord(id) {
       try {
-        const res = await SecureFetching("/product/material/record", { method: "HEAD" })
+        const res = await SecureFetching("/product/category/record", { method: "HEAD" })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = `/product/material/record?id=${id}`
+        window.location.href = `/product/category/record?id=${id}`
       } catch (error) {
         throw error
       }
@@ -81,11 +81,11 @@ document.addEventListener('alpine:init', () => {
 
     async newRecord() {
       try {
-        const res = await SecureFetching("/product/material/new", { method: "HEAD" })
+        const res = await SecureFetching("/product/category/new", { method: "HEAD" })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = "/product/material/new"
+        window.location.href = "/product/category/new"
       } catch (error) {
         throw error
       }

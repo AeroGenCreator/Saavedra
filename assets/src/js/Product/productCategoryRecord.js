@@ -1,6 +1,6 @@
-// HANDLES MATERIAL VIEW
+// HANDLES CATEGORY VIEW
 document.addEventListener('alpine:init', () => {
-  Alpine.data('productMaterialRecordComponent', () => ({
+  Alpine.data('productCategoryRecordComponent', () => ({
 
     id: '',
     name: '',
@@ -12,7 +12,7 @@ document.addEventListener('alpine:init', () => {
 
     async updateRecord() {
       try {
-        const res = await SecureFetching('/product/material/record', {
+        const res = await SecureFetching('/product/category/record', {
           method: 'PUT', body: JSON.stringify({ id: this.id, name: this.name }),
         })
         if (!res.ok) throw new Error(await res.text())
@@ -24,11 +24,11 @@ document.addEventListener('alpine:init', () => {
 
     async deleteRecord() {
       try {
-        const res = await SecureFetching(`/product/material/record?id=${this.id}`, {
+        const res = await SecureFetching(`/product/category/record?id=${this.id}`, {
           method: 'DELETE', body: JSON.stringify({ id: this.id })
         })
         if (!res.ok) throw new Error(await res.text())
-        window.location.href = '/product/material'
+        window.location.href = '/product/category'
       } catch (error) {
         throw error
       }
@@ -36,11 +36,11 @@ document.addEventListener('alpine:init', () => {
 
     async goBack() {
       try {
-        const res = await SecureFetching("/product/material", { method: "HEAD" })
+        const res = await SecureFetching("/product/category", { method: "HEAD" })
         if (!res.ok) {
           throw new Error(res.status)
         }
-        window.location.href = "/product/material"
+        window.location.href = "/product/category"
       } catch (error) {
         throw error
       }

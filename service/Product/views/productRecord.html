@@ -108,20 +108,20 @@
                                 </div>
                                 <div class="column is-6">
                                     <div class="field">
-                                        <label class="label" for="materialList">Material</label>
+                                        <label class="label" for="categoryList">Category</label>
                                         <div class="control has-icons-left">
                                             <input
                                                 class="input"
-                                                list="materialRecords"
-                                                id="materialList"
+                                                list="categoryRecords"
+                                                id="categoryList"
                                                 placeholder="Seleccionar..."
-                                                x-model="material"
+                                                x-model="category"
                                             >
                                             <span class="icon is-small is-left">
-                                                <i class="icon-anvil"></i>
+                                                <i class="icon-tag"></i>
                                             </span>
-                                            <datalist id="materialRecords">
-                                                <template x-for="rec in materialRecords" :key="rec.id">
+                                            <datalist id="categoryRecords">
+                                                <template x-for="rec in categoryRecords" :key="rec.id">
                                                     <option :value="rec.name" x-text="rec.name"></option>
                                                 </template>
                                             </datalist>

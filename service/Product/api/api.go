@@ -44,35 +44,35 @@ func ProductMenu(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// === === === MATERIAL === === ===
+// === === === CATEGORY === === ===
 
-// ROUTE: /product/material -> Renders HTML for LIST VIEW.
-func (e *EndpointHandler) CallMaterial(w http.ResponseWriter, r *http.Request) {
+// ROUTE: /product/category -> Renders HTML for LIST VIEW.
+func (e *EndpointHandler) CallCategory(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		tpl, err := template.ParseFiles("service/Product/views/productMaterial.html")
+		tpl, err := template.ParseFiles("service/Product/views/productCategory.html")
 		if err != nil {
-			log.Printf("Error parsing HTML /product/material...(%v)", err.Error())
-			http.Error(w, "Error parsing HTML /product/material", http.StatusInternalServerError)
+			log.Printf("Error parsing HTML /product/category...(%v)", err.Error())
+			http.Error(w, "Error parsing HTML /product/category", http.StatusInternalServerError)
 			return
 		}
 		err = tpl.Execute(w, nil)
 		if err != nil {
-			log.Printf("Error rendering HTML /product/material...(%v)", err.Error())
-			http.Error(w, "Error rendering HTML /product/material", http.StatusInternalServerError)
+			log.Printf("Error rendering HTML /product/category...(%v)", err.Error())
+			http.Error(w, "Error rendering HTML /product/category", http.StatusInternalServerError)
 			return
 		}
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:
-		log.Print("Invalid Method /product/material")
-		http.Error(w, "Invalid Method /product/material", http.StatusMethodNotAllowed)
+		log.Print("Invalid Method /product/category")
+		http.Error(w, "Invalid Method /product/category", http.StatusMethodNotAllowed)
 		return
 	}
 }
 
-// ROUTE: /product/material/list -> RETURNS rows
-func (e *EndpointHandler) CallMaterialList(w http.ResponseWriter, r *http.Request) {
+// ROUTE: /product/category/list -> RETURNS rows
+func (e *EndpointHandler) CallCategoryList(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		page := r.URL.Query().Get("page")
@@ -80,117 +80,117 @@ func (e *EndpointHandler) CallMaterialList(w http.ResponseWriter, r *http.Reques
 		if err != nil {
 			intPage = 1
 		}
-		materialSlice, err := e.service.ListMaterial(intPage)
+		categorySlice, err := e.service.ListCategory(intPage)
 		if err != nil {
-			log.Printf("Error fetching /product/material/list...(%v)", err.Error())
-			http.Error(w, "Error fetching /product/material/list", http.StatusInternalServerError)
+			log.Printf("Error fetching /product/category/list...(%v)", err.Error())
+			http.Error(w, "Error fetching /product/category/list", http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(materialSlice)
+		json.NewEncoder(w).Encode(categorySlice)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:
-		log.Print("Invalid Method /product/material")
-		http.Error(w, "Invalid Method /product/material", http.StatusMethodNotAllowed)
+		log.Print("Invalid Method /product/category")
+		http.Error(w, "Invalid Method /product/category", http.StatusMethodNotAllowed)
 		return
 	}
 }
 
-// ROUTE: /material/new
-func (e *EndpointHandler) CallMaterialNew(w http.ResponseWriter, r *http.Request) {
+// ROUTE: /category/new
+func (e *EndpointHandler) CallCategoryNew(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		tpl, err := template.ParseFiles("service/Product/views/productMaterialNew.html")
+		tpl, err := template.ParseFiles("service/Product/views/productCategoryNew.html")
 		if err != nil {
-			log.Printf("Error parsing /product/material/new...(%v)", err.Error())
-			http.Error(w, "Error parsing /product/material/new", http.StatusInternalServerError)
+			log.Printf("Error parsing /product/category/new...(%v)", err.Error())
+			http.Error(w, "Error parsing /product/category/new", http.StatusInternalServerError)
 			return
 		}
 		err = tpl.Execute(w, nil)
 		if err != nil {
-			log.Printf("Error rendering /product/material/new...(%v)", err.Error())
-			http.Error(w, "Error rendering /product/material/new", http.StatusInternalServerError)
+			log.Printf("Error rendering /product/category/new...(%v)", err.Error())
+			http.Error(w, "Error rendering /product/category/new", http.StatusInternalServerError)
 			return
 		}
 	case http.MethodPost:
-		var material types.Material
-		if err := json.NewDecoder(r.Body).Decode(&material); err != nil {
-			log.Printf("Error decoding r.Body '/product/material/new'...(%v)", err.Error())
-			http.Error(w, "Error decoding r.Body '/product/material/new'", http.StatusInternalServerError)
+		var category types.Category
+		if err := json.NewDecoder(r.Body).Decode(&category); err != nil {
+			log.Printf("Error decoding r.Body '/product/category/new'...(%v)", err.Error())
+			http.Error(w, "Error decoding r.Body '/product/category/new'", http.StatusInternalServerError)
 			return
 		}
-		_, err := e.service.CreateMaterial(&material)
+		_, err := e.service.CreateCategory(&category)
 		if err != nil {
-			log.Printf("Error creating '/product/material/new'...(%v)", err.Error())
-			http.Error(w, "Error creating '/product/material/new'", http.StatusInternalServerError)
+			log.Printf("Error creating '/product/category/new'...(%v)", err.Error())
+			http.Error(w, "Error creating '/product/category/new'", http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:
-		log.Print("Invalid Method /product/material/new")
-		http.Error(w, "Invalid Method /product/material/new", http.StatusMethodNotAllowed)
+		log.Print("Invalid Method /product/category/new")
+		http.Error(w, "Invalid Method /product/category/new", http.StatusMethodNotAllowed)
 		return
 	}
 }
 
-// ROUTE: /product/material/record
-func (e *EndpointHandler) CallMaterialRecord(w http.ResponseWriter, r *http.Request) {
+// ROUTE: /product/category/record
+func (e *EndpointHandler) CallCategoryRecord(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		id := r.URL.Query().Get("id")
-		record, err := e.service.ReadMaterial(id)
+		record, err := e.service.ReadCategory(id)
 		if err == types.ErrNoRecord {
-			log.Printf("Error query /product/material/record...(%v)", err.Error())
-			http.Error(w, "Error query /product/material/record", http.StatusForbidden)
+			log.Printf("Error query /product/category/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/category/record", http.StatusForbidden)
 			return
 		} else if err != nil {
-			log.Printf("Error query /product/material/record...(%v)", err.Error())
-			http.Error(w, "Error query /product/material/record", http.StatusInternalServerError)
+			log.Printf("Error query /product/category/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/category/record", http.StatusInternalServerError)
 			return
 		}
-		tpl, err := template.ParseFiles("service/Product/views/productMaterialRecord.html")
+		tpl, err := template.ParseFiles("service/Product/views/productCategoryRecord.html")
 		if err != nil {
-			log.Printf("Error parsing /product/material/record...(%v)", err.Error())
-			http.Error(w, "Error parsing /product/material/record", http.StatusInternalServerError)
+			log.Printf("Error parsing /product/category/record...(%v)", err.Error())
+			http.Error(w, "Error parsing /product/category/record", http.StatusInternalServerError)
 			return
 		}
 		err = tpl.Execute(w, record)
 		if err != nil {
-			log.Printf("Error rendering /product/material/record...(%v)", err.Error())
-			http.Error(w, "Error rendering /product/material/record", http.StatusInternalServerError)
+			log.Printf("Error rendering /product/category/record...(%v)", err.Error())
+			http.Error(w, "Error rendering /product/category/record", http.StatusInternalServerError)
 			return
 		}
 	case http.MethodPut:
-		var material types.MaterialStr
-		if err := json.NewDecoder(r.Body).Decode(&material); err != nil {
-			log.Printf("Error parsing /product/material/record...(%v)", err.Error())
-			http.Error(w, "Error parsing /product/material/record", http.StatusInternalServerError)
+		var category types.CategoryStr
+		if err := json.NewDecoder(r.Body).Decode(&category); err != nil {
+			log.Printf("Error parsing /product/category/record...(%v)", err.Error())
+			http.Error(w, "Error parsing /product/category/record", http.StatusInternalServerError)
 			return
 		}
-		_, err := e.service.UpdateMaterial(&material)
+		_, err := e.service.UpdateCategory(&category)
 		if err != nil {
-			log.Printf("Error query /product/material/record...(%v)", err.Error())
-			http.Error(w, "Error query /product/material/record", http.StatusInternalServerError)
+			log.Printf("Error query /product/category/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/category/record", http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
 	case http.MethodDelete:
 		id := r.URL.Query().Get("id")
-		if err := e.service.DeleteMaterial(id); err != nil {
-			log.Printf("Error query /product/material/record...(%v)", err.Error())
-			http.Error(w, "Error query /product/material/record", http.StatusInternalServerError)
+		if err := e.service.DeleteCategory(id); err != nil {
+			log.Printf("Error query /product/category/record...(%v)", err.Error())
+			http.Error(w, "Error query /product/category/record", http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
 	case http.MethodHead:
 		w.WriteHeader(http.StatusOK)
 	default:
-		log.Print("Invalid Method /product/material/record")
-		http.Error(w, "Invalid Method /product/material/record", http.StatusMethodNotAllowed)
+		log.Print("Invalid Method /product/category/record")
+		http.Error(w, "Invalid Method /product/category/record", http.StatusMethodNotAllowed)
 		return
 	}
 }

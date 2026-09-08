@@ -161,9 +161,9 @@
                     <div class="field">
                         <label class="label">Agregar</label>
                         <button
-                            class="button is-primary is-fullwidth is-normal is-light"
+                            class="button is-primary is-fullwidth is-normal"
                             @click="appendItem"
-                            disabled="appendRequired"
+                            :disabled="appendRequired"
                         >
                             <span class="icon is-centered">
                                 <i class="icon-badge-plus"></i>
@@ -232,13 +232,13 @@
                         <button
                             class="button is-danger is-light"
                             @click="printQuote"
-                            disabled="saveRequired"
+                            :disabled="saveRequired"
                         >Imprimir
                         </button>
                         <button
                             class="button is-info"
                             @click="createRecord"
-                            disabled="saveRequired"
+                            :disabled="saveRequired"
                         >Guardar
                         </button>
                     </div>

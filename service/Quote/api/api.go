@@ -1,14 +1,22 @@
 package api
 
 import (
+	"Saavedra/service/Quote/service"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 )
 
 type EndpointHandler struct {
+	service service.Service
 }
 
+func New(service service.Service) EndpointHandler {
+	return EndpointHandler{service: service}
+}
+
+// ROUTE: /quote/menu
 func CallQuoteMenu(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -28,6 +36,7 @@ func CallQuoteMenu(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ROUTE: /quote/new
 func CallQuoteNew(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -42,6 +51,24 @@ func CallQuoteNew(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error rendering HTML /quote/new", http.StatusInternalServerError)
 			return
 		}
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+	}
+}
+
+// ROUTE: /quote/many2one
+func (e EndpointHandler) CallMany2One(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		many2one, err := e.service.Many2One()
+		if err != nil {
+			log.Printf("Error fetching many2one data /quote/many2one...(%v)", err.Error())
+			http.Error(w, "Error fetching many2one data /quote/many2one", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(many2one)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

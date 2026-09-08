@@ -31,19 +31,29 @@ document.addEventListener('alpine:init', () => {
     total: 0,
     sendMulti: false,
 
-    init() { this.fetchData() },
+    async init() {
+      this.loading = true
+      try {
+        const data = await FetchDataFromResponse("/quote/many2one", { method: "GET" })
+        this.userArray = data.userArray
+        this.customerArray = data.customerArray
+        this.productArray = data.productArray
+      } finally { this.loading = false }
+    },
 
     toggleMulti() { return (!this.sendMulti) },
-    fetchData() { return },
     popItem() { return },
-    appendItem() { return },
+    appendItem() {
+      this.product = '',
+      this.quantity = 0
+    },
     openRecord(name) { return },
 
     printQuote() { return },
     createRecord() { return },
 
     saveRequired() { return },
-    appendRequired() { return },
+    appendRequired() { return (this.product === '' || this.quantity <= 0) },
 
     async goHome() { await GoHome() },
     async logOut() { await LogOut() },

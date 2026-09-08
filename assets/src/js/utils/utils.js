@@ -195,3 +195,12 @@ async function OnlyRedirect(path) {
     throw error
   }
 }
+
+async function FetchDataFromResponse(path, options = {}) {
+  try {
+    const res = await SecureFetching(path, options)
+    if (!res.ok) throw new Error(`Error ${res.status}`)
+    const data = await res.json()
+    return data
+  } catch (error) { throw error }
+}

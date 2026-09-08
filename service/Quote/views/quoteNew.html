@@ -93,7 +93,7 @@
                 </div>
                 <div class="column is-3">
                     <div class="field">
-                        <label class="label">Horas Hombre</label>
+                        <label class="label">Cantidad Horas Hombre</label>
                         <div class="control has-icons-left">
                             <input class="input" type="number" placeholder="40" x-model="hrsHombre">
                             <span class="icon is-small is-left">
@@ -104,16 +104,27 @@
                 </div>
                 <div class="column is-3">
                     <div class="field">
-                        <label class="label">Constante Extra</label>
+                        <label class="label">Costo Hora Hombre</label>
                         <div class="control has-icons-left">
-                            <input class="input" type="number" placeholder="constant" x-model="constant">
+                            <input class="input" type="number" placeholder="80" x-model="hrCost">
                             <span class="icon is-small is-left">
-                                  <i class="icon-sigma"></i>
+                                  <i class="icon-coins"></i>
                             </span>
                         </div>
                     </div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-3">
+                    <div class="field">
+                        <label class="label">Costo Transporte</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="number" placeholder="500" x-model="transportCost">
+                            <span class="icon is-small is-left">
+                                  <i class="icon-truck"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
                     <div class="field">
                         <label class="label" for="productList">Producto</label>
                         <div class="control has-icons-left">
@@ -135,7 +146,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-3">
                     <div class="field">
                         <label class="label">Cantidad</label>
                         <div class="control has-icons-left">
@@ -146,7 +157,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="column is-4">
+                <div class="column is-3">
                     <div class="field">
                         <label class="label">Agregar</label>
                         <button
@@ -162,7 +173,7 @@
                 </div>
             </div>
             <!-- TABLE -->
-            <table class="table is-fullwidth is-striped mb-6">
+            <table class="table is-fullwidth is-striped my-6">
             <thead>
                 <tr>
                     <th>Producto</th>
@@ -187,6 +198,8 @@
             </tbody>
             <tfoot>
                 <tr>
+                    <td>Subtotal Transporte</td>
+                    <td x-text="transportCost"></td>
                   <td>Subtotal HrsHombre</td>
                   <td x-text="hrsHombreTotal"></td>
                   <td>Subtotal Productos</td>
@@ -196,15 +209,31 @@
                 </tr>
               </tfoot>
             </table>
+            <!-- CONFIG OUTPUT -->
+            <div class="columns">
+                <div class="column is-2">
+                    <div class="field">
+                        <label class="checkbox">
+                          <input type="checkbox" x-model="sendMulti" @click="toggleMulti"/>
+                          Enviar A Varios
+                        </label>
+                    </div>
+                </div>
+            </div>
             <!-- DANGER BUTTONS -->
-
             <div class="columns">
                 <div class="column is-12">
-                    <div class="buttons">
+                    <div class="buttons mt-6">
                         <button
                             class="button is-warning is-outlined"
                             @click="goBack"
                         >Regresar
+                        </button>
+                        <button
+                            class="button is-danger is-light"
+                            @click="printQuote"
+                            disabled="saveRequired"
+                        >Imprimir
                         </button>
                         <button
                             class="button is-info"

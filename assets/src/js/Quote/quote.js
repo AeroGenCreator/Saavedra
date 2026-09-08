@@ -21,20 +21,26 @@ document.addEventListener('alpine:init', () => {
     user: '',
     customer: '',
     hrsHombre: 0,
-    constant: 0,
+    hrCost: 0,
+    transportCost: 0,
     product: '',
     quantity: 0,
     loading: false,
     hrsHombreTotal: 0,
     productosTotal: 0,
     total: 0,
+    sendMulti: false,
 
     init() { this.fetchData() },
 
+    toggleMulti() { return (!this.sendMulti) },
     fetchData() { return },
     popItem() { return },
     appendItem() { return },
     openRecord(name) { return },
+
+    printQuote() { return },
+    createRecord() { return },
 
     saveRequired() { return },
     appendRequired() { return },

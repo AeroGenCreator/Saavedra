@@ -15,7 +15,9 @@
 
 	<title>Quote Menu</title>
 </head>
+
 <body class="has-navbar-fixed-top" x-data="menuComponent">
+    <!-- NAVBAR -->
     <section class="hero">
       <div class="container">
         <nav class="navbar is-fixed-top has-background-black-ter">
@@ -39,62 +41,44 @@
       </div>
     </section>
 
+    <!--MAIN -->
     <main class="hero is-fullheight">
         <section class="section">
           <div class="container">
             <div class="columns is-multiline">
-
               <div class="column is-6">
-                    <a href="/product/category" @click.prevent="secureCategory">
+                    <a href="/quote/new" @click.prevent="secureQuoteNew">
                         <div class="notification is-success card-fixed-height is-clickable-card">
                             <article class="has-text-left">
-                                <i class="icon-tag"></i>
+                                <i class="icon-piggy-bank"></i>
                                 <div class="content is-small">
-                                    <h3>Categorias</h3>
+                                    <h3>Nueva Cotización</h3>
                                     <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar categorias.
+                                        Crear nueva cotización
                                     </p>
                                 </div>
                             </article>
                         </div>
                     </a>
               </div>
-
               <div class="column is-6">
-                    <a href="/proveedor" @click.prevent="secureProveedor">
-                        <div class="notification is-info card-fixed-height is-clickable-card">
-                            <article class="has-text-left">
-                                <i class="icon-van"></i>
-                                <div class="content is-small">
-                                    <h3>Provedor</h3>
-                                    <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar provedores.
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
-                    </a>
-              </div>
-
-              <div class="column is-6">
-                    <a href="/product/product" @click.prevent="secureProduct">
+                    <a href="/quote" @click.prevent="secureQuote">
                         <div class="notification is-warning card-fixed-height is-clickable-card">
                             <article class="has-text-left">
-                                <i class="icon-shopping-basket"></i>
+                                <i class="icon-notepad-text"></i>
                                 <div class="content is-small">
-                                    <h3>Producto</h3>
+                                    <h3>Cotización Historico</h3>
                                     <p class="has-text-small truncate-text">
-                                        Crear, editar o eliminar productos.
+                                        Administra las cotizaciones guardadas.
                                     </p>
                                 </div>
                             </article>
                         </div>
                     </a>
               </div>
-
-                <div class="column is-6">
-                    <a href="/welcome" @click.prevent="goHome">
-                        <div class="notification is-danger card-fixed-height is-clickable-card">
+                <div class="column is-12">
+                    <a href="/welcome" @click.prevent="goBack">
+                        <div class="notification is-link card-fixed-height is-clickable-card">
                             <article class="has-text-left">
                                 <i class="icon-undo-2"></i>
                                 <div class="content is-small">
@@ -107,12 +91,12 @@
                         </div>
                     </a>
                 </div>
-
             </div>
           </div>
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer class="footer has-background-black-ter p-0">
       <div class="content has-text-left">
           <section class="section">

@@ -16,6 +16,7 @@ import (
 	loginStore "Saavedra/service/Login/store"
 	loginTypes "Saavedra/service/Login/types"
 	productRouter "Saavedra/service/Product/router"
+	quoteRouter "Saavedra/service/Quote/router"
 	assetsRouter "Saavedra/service/ServeAssets/router"
 	usersRouter "Saavedra/service/Users/router"
 	welcomeRouter "Saavedra/service/Welcome/router"
@@ -95,6 +96,7 @@ func main() {
 	usersRouter.Assambler(mux, db)
 	productRouter.Assambler(mux, db)
 	customerRouter.Assambler(mux, db)
+	quoteRouter.Assambler(mux, db)
 
 	// Servidor
 	fmt.Println("🚀 Servidor ejecutándose en http://localhost:8080")

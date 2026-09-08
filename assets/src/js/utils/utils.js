@@ -183,3 +183,15 @@ async function DeleteRecord(path, redirect, options = {}) {
     throw error
   }
 }
+
+async function OnlyRedirect(path) {
+  try {
+    const res = await SecureFetching("/welcome", { method: "HEAD" })
+    if (!res.ok) {
+      throw new Error(res.status)
+    }
+    window.location.href = path
+  } catch (error) {
+    throw error
+  }
+}

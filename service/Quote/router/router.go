@@ -9,4 +9,5 @@ import (
 
 func Assambler(mux *http.ServeMux, db *sql.DB) {
 	mux.Handle("/quote/menu", utils.AuthMiddleware(http.HandlerFunc(api.CallQuoteMenu)))
+	mux.Handle("/quote/new", utils.AuthMiddleware(http.HandlerFunc(api.CallQuoteNew)))
 }

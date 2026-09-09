@@ -1,153 +1,662 @@
 # Saavedra
 
-_Así como Don Quijote, me hallo luchando contra molinos de viento. ¿Serán reales?_.
+_Así como Don Quijote, me hallo luchando contra molinos de viento. ¿Serán reales?_
 
-# About it
+![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge\&logo=go\&logoColor=white\&labelColor=black)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge\&logo=python\&logoColor=white\&labelColor=black)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge\&logo=javascript\&logoColor=white\&labelColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge\&logo=html5\&logoColor=white\&labelColor=black)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge\&logo=css3\&logoColor=white\&labelColor=black)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge\&logo=sqlite\&logoColor=white\&labelColor=black)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge\&logo=fastapi\&logoColor=white\&labelColor=black)
+![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge\&logo=alpine.js\&logoColor=white\&labelColor=black)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge\&logo=jsonwebtokens\&logoColor=white\&labelColor=black)
+![PyPI](https://img.shields.io/badge/PyPI-3775A9?style=for-the-badge\&logo=pypi\&logoColor=white\&labelColor=black)
+![Pytest](https://img.shields.io/badge/Pytest-0A9EDC?style=for-the-badge\&logo=pytest\&logoColor=white\&labelColor=black)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge\&logo=linux\&logoColor=black\&labelColor=white)
+![macOS](https://img.shields.io/badge/macOS-000000?style=for-the-badge\&logo=apple\&logoColor=white\&labelColor=black)
 
-Saavedra was born as a response to a lack of opportunities in the traditional job market, but more importantly, as an initiative to turn that situation into an opportunity for building software. Despite having developed a solid understanding of software engineering, I recognized a growing demand for highly customized applications alongside a significant reduction in the cost of developing them, largely driven by generative AI.
+## About
+
+**Saavedra** is a Customer-Centered software architecture for building highly customized business applications through loosely coupled services and explicit boundaries.
 
 ![image](assets/img/GitHub/saavLogin.png)
 
-This led me to propose an architecture focused on **code reuse, minimal metaprogramming, explicit contracts, and clear separation of responsibilities**, rather than relying heavily on generalized abstractions. The backend exposes REST APIs built around the **Repository Pattern**, while the system deliberately separates volatile application data from persistent historical data.
+The project explores a simple architectural proposition:
 
-Instead of treating relational database modeling as something that must be redesigned for every client requirement, Saavedra uses **JSON as a source of volatile configuration and application data**, while the database remains the **historical source of truth**. This approach reduces the complexity involved in constantly adapting relational schemas to highly specific client requirements.
+> **When the cost of producing software decreases, architectural generalization does not always have to increase with it.**
 
-The architecture also accepts a certain degree of code repetition. In a traditional software development environment, excessive repetition is generally considered undesirable. However, when AI can assist with generating, refactoring, and maintaining repetitive functionality at a significantly lower cost, the trade-off changes. In this context, some duplication can be preferable to introducing additional abstraction and architectural complexity solely for the sake of reuse.
+Instead of building a highly generalized system capable of representing every possible business domain, Saavedra favors **small, explicit, replaceable components** that can be adapted to a specific business without forcing unrelated parts of the system to change.
 
-A central idea behind Saavedra is that generative AI may change the economics of software construction. If implementation becomes significantly cheaper, it may become economically reasonable to replace part of a highly generalized architecture with more specialized, client-specific implementations—as long as the system preserves explicit contracts, dependency boundaries, and the persistence of relevant facts.
+The architecture prioritizes:
 
-This does not mean that Saavedra is designed to allow AI-generated code to modify the entire system without constraints. On the contrary, the architecture is intentionally divided into relatively independent layers so that specific components can be rewritten, adapted, or extended without unnecessarily breaking unrelated services. The objective is to create an environment where generative AI can assist implementation while the overall architecture continues to protect system boundaries.
+* Explicit contracts
+* Loose coupling
+* Minimal metaprogramming
+* Selective code reuse
+* Service-oriented organization
+* Repository Pattern
+* REST APIs
+* Relational persistence
+* Volatile configuration through structured files
+* Clear dependency boundaries
+* Replaceable business logic
 
-The complete architecture is organized into loosely coupled layers:
+---
 
-`DB → Store → Service → App → Router → HTML/CSS → JS → Request`
+## Architecture
 
-Each layer has a specific responsibility and can evolve independently. The **Service layer** acts as the main coordination point: it can request analytical operations from Python or retrieve configuration and volatile data from JSON sources, without forcing the rest of the system to depend directly on those implementation details.
+Saavedra follows a **Customer-Centered** architecture in which the application is composed of relatively independent services.
 
-The backend is built primarily with **Go and Python**, while the frontend uses **HTML, CSS, and JavaScript**. Authentication and API protection are handled through **JWT**. The application follows a hybrid approach combining **REST APIs and Server-Side Rendering (SSR)**, while JavaScript is used to manage the dynamic behavior of the DOM and provide a more interactive client experience.
+```mermaid
+---
+title: Customer Centered
+---
 
-## Generative AI and My Development Process
+flowchart TB
 
-There is an important distinction between the philosophy behind Saavedra and my personal approach to writing its code.
+FT(("`**Frontend**`"))
+ST([HTML, JS, CSS])
+RT(["`**Router**`"])
+GO(["`**GO** API Endpoints`"])
+TY([GO Types])
+LG(("`**GO** Logic & Decisions`"))
+DB[(Database)]
+JS(["`_JSON, YAML, TOML..._`"])
+PY(["`**Python** IA & Data Science`"])
 
-Although the system is intentionally designed to take advantage of generative AI-assisted development, I do not currently rely on generative AI to write most of my code. I primarily use AI as a **rapid source of technical consultation**, documentation, conceptual clarification, and architectural discussion.
+FT-."Request".->RT
 
-The implementation itself has largely been written manually.
+subgraph "`**Service-Based Backend**`"
 
-This is not a rejection of AI-assisted programming. It is a personal engineering preference based on how I currently work. In many situations, I find that writing a piece of code myself is more efficient than generating it with an AI system and then spending time reviewing, understanding, correcting, and integrating the generated output.
+    subgraph "`**Repository Pattern**`"
 
-My reasoning is relatively simple: if I write the code myself, I have already gone through the process of reading and understanding it while producing it. The time saved by delegating implementation to an AI may sometimes be partially offset by the time required to inspect the generated code, verify its assumptions, identify incorrect details, and adapt it to the existing system.
+        RT-.->GO
+        GO-.->TY-.->LG
+        LG-."`_Query_`"-.->DB
 
-Therefore, at least for the way I currently work, manual implementation can be more efficient because the act of writing the code is simultaneously part of the process of understanding and validating it.
+    end
 
-However, I do not consider this a universal conclusion.
+    JS-."`_Client Configuration_`".->LG
+    LG<-."`_Analytics_`"-.->PY
 
-This is currently a **personal hypothesis rather than an established result**. I have not yet conducted formal studies, collected sufficient statistical data, or developed a complete thesis around this approach. One of my long-term goals is to investigate this question more rigorously.
+end
+```
 
-In particular, I am interested in evaluating whether AI-assisted software development actually produces a measurable economic advantage when factors such as the following are considered:
+### Architectural flow
 
-* Time required to generate code.
-* Time required to review and understand generated code.
-* Time spent correcting implementation errors.
-* Integration costs.
-* Maintenance costs.
-* Token and computational costs.
-* Defect rates.
-* Development speed.
-* The degree of architectural coupling introduced by generated code.
+A request enters through the **Router** and is directed toward the appropriate Go endpoint.
 
-The central question is not simply whether AI can write code faster than a developer. The more interesting question is whether **the total cost of producing, understanding, validating, integrating, and maintaining that code is actually lower**.
+The endpoint works with explicit **types** and delegates business decisions to the **Service/Logic layer**.
 
-Saavedra could eventually become a practical environment for investigating this question. Its architecture is partly based on the assumption that AI can make specialized and partially redundant implementations economically viable, provided that architectural boundaries remain stable and explicit.
+The service can then:
 
-However, this remains an idea that requires empirical validation.
+* Query persistent data through the repository layer.
+* Load volatile configuration from JSON, YAML, TOML, or similar sources.
+* Request analytical or computational operations from Python.
+* Return the resulting data through the API or server-rendered view.
 
-Before pursuing formal research around these questions, my immediate objective is more practical: **to commercialize the system, work with real software requirements, and establish a sustainable source of income through its development**. Real-world use would also provide a more meaningful foundation for future research by allowing architectural decisions to be evaluated against actual development costs, maintenance requirements, and client-specific implementations.
+The important characteristic is that these dependencies remain explicit.
 
-The objective of Saavedra is therefore not simply to demonstrate that I can write code. It is intended to demonstrate my progression toward **full-stack software engineering**, including database design, backend architecture, API design, authentication, frontend development, system decomposition, and the trade-offs involved in building maintainable software.
+For example, the business logic does not need to know how the frontend is implemented, while the frontend does not need to know how persistence is implemented.
 
-I would not describe myself as a senior engineer. However, I have developed an understanding that goes beyond the implementation of individual functions or features. I am increasingly interested in the underlying computational and architectural principles that make software systems reliable, adaptable, economically viable, and maintainable.
+---
 
-In that sense, Saavedra is both a software project and a practical engineering hypothesis. Its architecture assumes that the role of the engineer is increasingly centered on defining **boundaries, contracts, constraints, and system structure**, while implementation can be accelerated—and in some cases partially replaced—by generative AI.
+## Layer Model
 
-At the same time, my own development process demonstrates another side of that hypothesis: even in a future where AI can generate increasingly large portions of software, understanding how and when a human developer should delegate implementation remains an open engineering and economic question.
+The logical request path can be summarized as:
 
-**The engineer defines the architecture and its constraints. AI can assist the implementation. The challenge is determining when that assistance actually reduces the total cost of software development.**
+```text
+Request
+   │
+   ▼
+Router
+   │
+   ▼
+App
+   │
+   ▼
+Service
+   │
+   ├──────────────► Store
+   │                  │
+   │                  ▼
+   │              Database
+   │
+   ├──────────────► JSON / YAML / TOML
+   │
+   └──────────────► Python
+                         │
+                         ▼
+                  Analytics / AI
+```
 
-## Current Implementation Notice
+The broader application structure follows:
 
-Saavedra is currently implemented for a specific technology business, where it is being used primarily to manage quotation-related workflows. This implementation should not be interpreted as the architectural limit of the system.
+```text
+DB → Store → Service → App → Router → HTML/CSS → JS → Request
+```
 
-The purpose of the project is precisely to allow business-specific functionality to be removed, replaced, or rewritten while preserving the services and architectural components that remain relevant to a different type of business. In other words, the current implementation represents one concrete application of the architecture rather than a restriction on its potential use.
+Each layer has a defined responsibility rather than acting as a generic abstraction over the entire application.
 
-When adapting Saavedra to another business, technology-specific components can be removed while reusable services, contracts, and infrastructure can remain in place wherever they are appropriate. New business-specific functionality can then be implemented without requiring the entire system to be rebuilt from scratch.
+---
 
-Most importantly, the architecture is not purely theoretical. **There is already a real business using the system**, providing an initial practical validation of the approach and a foundation for its continued evolution.
+## Data Strategy
+
+Saavedra distinguishes between **persistent historical data** and **volatile application data**.
+
+### Database
+
+SQLite is used as the persistent source of historical truth.
+
+```text
+Database
+   │
+   ├── Users
+   ├── Customers
+   ├── Products
+   ├── Quotes
+   └── Other persistent entities
+```
+
+The database represents information that must survive application changes and remain historically consistent.
+
+### Structured Files
+
+JSON, YAML, TOML, and similar formats are used for information that does not necessarily belong in the relational model.
+
+Examples include:
+
+```text
+Client configuration
+Application settings
+UI configuration
+Feature configuration
+Volatile business parameters
+```
+
+This avoids forcing every client-specific configuration requirement into the relational schema.
+
+The result is a deliberate distinction:
+
+```text
+Persistent facts       → Database
+Volatile configuration → JSON / YAML / TOML
+Analytical processing  → Python
+Application logic      → Go
+```
+
+---
+
+## Repository Pattern
+
+Persistence is isolated behind repositories.
+
+```text
+Service
+   │
+   ▼
+Repository
+   │
+   ▼
+SQLite
+```
+
+The service layer therefore depends on the repository contract rather than directly coupling business logic to database operations.
+
+This provides a clear boundary between:
+
+```text
+Business Logic
+      │
+      ▼
+Data Access
+      │
+      ▼
+Persistence
+```
+
+The repository is responsible for persistence concerns; the service is responsible for business decisions.
+
+---
+
+## Service Architecture
+
+Services are the main units of business functionality.
+
+A service follows a structure similar to:
+
+```text
+service/
+└── Login/
+    ├── router/
+    ├── api/
+    ├── service/
+    ├── store/
+    ├── types/
+    └── views/
+```
+
+Each service can contain its own:
+
+* Routes
+* API endpoints
+* Business logic
+* Persistence layer
+* Types
+* Views
+
+This allows functionality to be added, removed, or rewritten without requiring the entire application to be reorganized.
+
+---
+
+## Frontend
 
 ![image](assets/img/GitHub/saavMenu.png)
-![image](assets/img/GitHub/saavList.png)
 ![image](assets/img/GitHub/saavQuote.png)
+![image](assets/img/GitHub/saavList.png)
 
-## Quick Start
+The frontend uses a hybrid **SSR + REST** approach.
 
-To configure Saavedraa you must provide the following environment variables.
+```text
+HTML
+ │
+ ├── CSS
+ │
+ └── JavaScript
+       │
+       └── Alpine.js
+```
+
+Server-Side Rendering provides the initial document structure, while JavaScript manages dynamic DOM behavior and client-side interactions.
+
+REST endpoints provide structured access to backend functionality where dynamic requests are required.
+
+The frontend is therefore not treated as a completely independent SPA by default. Instead, rendering and API communication are combined according to the needs of each feature.
+
+---
+
+## Backend
+
+The primary backend implementation uses **Go**.
+
+Go is responsible for:
+
+* HTTP routing
+* API endpoints
+* Application flow
+* Business logic
+* Type definitions
+* Service orchestration
+* Persistence coordination
+
+Python is used as a complementary computational layer for:
+
+* Data analysis
+* AI-related operations
+* Scientific computing
+* Specialized processing
+
+The two environments remain separated by an explicit service boundary.
+
+```text
+                 ┌─────────────┐
+                 │     Go      │
+                 │ Application │
+                 └──────┬──────┘
+                        │
+                 Service Boundary
+                        │
+                        ▼
+                 ┌─────────────┐
+                 │   Python    │
+                 │ Analytics   │
+                 └─────────────┘
+```
+
+---
+
+## Authentication
+
+Protected application resources use **JWT-based authentication**.
+
+The authentication flow is conceptually:
+
+```text
+Client
+  │
+  │ Credentials
+  ▼
+Authentication
+  │
+  │ JWT
+  ▼
+Client
+  │
+  │ Authenticated Request
+  ▼
+Router
+  │
+  ▼
+Protected Service
+```
+
+Secrets and environment-specific configuration are kept outside the source code.
+
+---
+
+## Project Structure
+
+The current project structure is organized around services rather than purely around technical layers.
+
+```text
+.
+└── Saavedra/
+    │
+    ├── assets/
+    │   ├── css/
+    │   ├── img/
+    │   ├── src/
+    │   │   ├── html/
+    │   │   └── js/
+    │   │       └── utils/
+    │   └── web/
+    │
+    ├── config/
+    │
+    ├── db/
+    │
+    ├── env/
+    │   └── env.go
+    │
+    ├── migration/
+    │   ├── mLogin/
+    │   └── mUsers/
+    │
+    ├── private/
+    │   └── secrets.toml
+    │
+    ├── service/
+    │   └── Login/
+    │       ├── router/
+    │       ├── api/
+    │       ├── service/
+    │       ├── store/
+    │       ├── types/
+    │       └── views/
+    │
+    ├── utils/
+    │   └── utils.go
+    │
+    └── main.go
+```
+
+### Directory responsibilities
+
+| Directory    | Responsibility                          |
+| ------------ | --------------------------------------- |
+| `assets/`    | Frontend resources                      |
+| `config/`    | Application configuration               |
+| `db/`        | Database-related resources              |
+| `env/`       | Environment configuration               |
+| `migration/` | Relational schema declarations          |
+| `private/`   | Local secrets and private configuration |
+| `service/`   | Business services                       |
+| `utils/`     | Shared utilities                        |
+| `main.go`    | Application entry point                 |
+
+---
+
+## Service Dependencies
+
+Services can explicitly depend on other services.
+
+The current dependency map includes:
+
+```text
+All
+ ├── Welcome
+ └── ServeAssets
+
+Users
+ └── Login
+
+Quote
+ ├── Product
+ ├── Proveedor
+ └── Customer
+```
+
+Dependency order is relevant when loading services and executing their migrations.
+
+For example:
+
+```text
+Login
+   ↓
+Users
+   ↓
+Customer
+   ↓
+Quote
+```
+
+The dependency map provides a simple way to understand which services must exist before another service can operate.
+
+---
+
+## Current Implementation
+
+Saavedra is currently implemented for a **technology business**, with quotation management as one of its main workflows.
+
+The current implementation is intentionally business-specific.
+
+This does not define the architectural boundary of Saavedra.
+
+The architecture is designed so that business-specific services can be removed, replaced, or rewritten while preserving independent infrastructure and services that remain relevant.
+
+For example:
+
+```text
+                 Saavedra
+                    │
+        ┌───────────┴───────────┐
+        │                       │
+ Business-specific          Reusable
+ functionality              services
+        │                       │
+        ▼                       ▼
+ Technology                  Auth
+ quotations                 Routing
+ Products                    Storage
+ Suppliers                   Utilities
+ Customers                   Infrastructure
+```
+
+The goal is not to make every possible business fit into one universal data model.
+
+Instead, Saavedra provides a structure from which a new application can be composed by retaining the useful services and replacing the domain-specific ones.
+
+**The architecture is already being used by a real business.**
+
+---
+
+## Generative AI as an Architectural Consideration
+
+Saavedra considers generative AI part of the changing economics of software development.
+
+The architecture therefore favors:
+
+* Explicit boundaries.
+* Small independent services.
+* Low coupling.
+* Replaceable implementations.
+* Clear contracts.
+* Limited metaprogramming.
+
+These properties make it possible for individual components to be generated, rewritten, or adapted without requiring the entire system to change with them.
+
+The architecture does **not** require AI-generated code.
+
+The implementation of Saavedra has largely been written manually. AI is primarily used as a technical reference for documentation, conceptual clarification, debugging, and architectural discussion.
+
+The distinction is intentional:
+
+```text
+Architecture
+     │
+     ▼
+Defines boundaries and constraints
+     │
+     ▼
+Implementation
+     │
+     ├── Human-written
+     │
+     └── AI-assisted when appropriate
+```
+
+The underlying hypothesis is that reducing the cost of implementation may change the point at which abstraction becomes economically worthwhile.
+
+Instead of asking:
+
+> "How can every implementation be generalized?"
+
+the architecture asks:
+
+> "Which abstractions actually reduce total system complexity?"
+
+---
+
+## Configuration
+
+Create the required environment configuration:
 
 ```env
-# Special token to validate request from the client.
+# Token used to validate client requests
 SESSION_TOKEN=
-# Specific name for your Sqlite3 Database
+
+# SQLite database filename
 DATABASE_FILE_NAME=
+
 # Administrator credentials
 ADMIN_NAME=
 ADMIN_EMAIL=
 ADMIN_PASSWORD=
-# SET TO FALSE IN PRODUCTION
+
+# Set to FALSE in production
 IS_PRODUCTION=
-# QUANTITY OF RECORDS SHOWN/FETCH BY LISTS VIEW
+
+# Number of records fetched/displayed per list slice
 RECORDS_PER_SLICE=
+
+# Application port
+PORT=
 ```
 
-## Dependencies
+> **Security:** never commit production credentials, tokens, or private secrets to the repository.
 
-Either to develop or run Saavedra it is important to add the following header.
+---
+
+## Frontend Dependencies
+
+Saavedra currently uses the following frontend resources:
 
 ```html
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
-<link rel="stylesheet" href="/assets/css/savedraaCSS.css">
+<link rel="stylesheet" href="/assets/css/saavedraCSS.css">
 <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+
 <script defer src="/assets/src/js/utils/utils.js"></script>
-<script defer src=""></script> <!-- JavaScript For current HTML File -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
+
+<!-- JavaScript for the current HTML file -->
+<script defer src=""></script>
+
+<script
+    defer
+    src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js">
+</script>
 ```
+
+---
 
 ## Debugging
 
-Saavedra suggest debugging by CLI. The following is the current debugging tool used by Saavedra `dlv`.
+Saavedra can be debugged through the Go command-line debugger **Delve (`dlv`)**.
+
+Start a debugging session:
 
 ```bash
-# Initializing debug mode.
 dlv debug main.go
+```
 
-# Adding a breakpoint on line 30. (Must have content or must not be a commented line).
-# # Otherwise dlv won't create the breakpoint
+Set a breakpoint by file and line:
+
+```text
 (dlv) break utils/utils.go:30
 ```
 
-```bash
-# Breakpoint by calling a function.
+Breakpoints can also be placed on functions:
+
+```text
 (dlv) break utils.FunctionName
 ```
 
-## Service Dependencies
+The breakpoint target must correspond to executable code.
 
-Some services relay on others. To keep a map of them you can point them as follows. Furthermore, keep migration order when loading services... For example: First you load `Login - Routes And Migrations` then `Users - Router and Migration`.
+---
 
-```txt
-All -> 'depends on' -> Welcome and ServeAssets
-Users ->'depends on' -> Login
-Quote ->'depends on' -> Product
-Quote ->'depends on' -> Proveedor
-Quote ->'depends on' -> Customer
-```
+## Design Principles
+
+Saavedra is built around a small set of architectural principles:
+
+### 1. Explicit boundaries
+
+Dependencies should be visible rather than hidden behind excessive abstraction.
+
+### 2. Minimal metaprogramming
+
+Metaprogramming is used only where it provides a concrete benefit.
+
+### 3. Selective reuse
+
+Code should be reused when reuse reduces complexity—not simply because duplication is traditionally considered undesirable.
+
+### 4. Replaceable services
+
+A business-specific service should be replaceable without forcing unrelated services to change.
+
+### 5. Persistent truth
+
+The database stores historical facts that need durable persistence.
+
+### 6. Volatile configuration
+
+Client-specific or frequently changing configuration can live outside the relational model.
+
+### 7. Technology separation
+
+Go, Python, the database, and the frontend communicate through explicit boundaries.
+
+### 8. AI-compatible architecture
+
+The system should be structured so that individual implementations can be assisted or rewritten without destabilizing unrelated components.
+
+---
+
+## Project Status
+
+Saavedra is an actively evolving architecture and application.
+
+It should be considered a **working engineering system rather than a finalized framework or formal academic model**.
+
+The current implementation provides a real-world environment in which the architecture, service boundaries, persistence strategy, and development assumptions can be evaluated through continued use.
+
+---
+
+## License
+
+License information will be added as the project reaches its next release stage.

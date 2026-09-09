@@ -42,6 +42,11 @@ func main() {
 	adminName := os.Getenv("ADMIN_NAME")
 	adminEmail := os.Getenv("ADMIN_EMAIL")
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("There was not port specify in '.env'.")
+	}
 
 	if adminName == "" || adminEmail == "" || adminPassword == "" {
 		log.Fatal("There are missing admin credentials in '.env' file...")
@@ -99,9 +104,9 @@ func main() {
 	quoteRouter.Assambler(mux, db)
 
 	// Servidor
-	fmt.Println("🚀 Servidor ejecutándose en http://localhost:8080")
-	http.ListenAndServe(":8080", mux)
-	err = http.ListenAndServe(":8080", mux)
+	fmt.Println("🚀 Servidor ejecutándose en http://localhost:" + port)
+	http.ListenAndServe(":"+port, mux)
+	err = http.ListenAndServe(":"+port, mux)
 	if err != nil {
 		log.Fatalf("El servidor se detuvo con error: %v", err)
 	}

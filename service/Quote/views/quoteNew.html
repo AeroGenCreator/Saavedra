@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/assets/web/lucide-font/lucide.css">
     <link rel="stylesheet" href="/assets/css/savedraaCSS.css">
     <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/assets/src/js/Quote/quote.css">
     <script defer src="/assets/src/js/utils/utils.js"></script>
     <script defer src="/assets/src/js/Quote/quote.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.16.3/dist/cdn.min.js"></script>
@@ -46,136 +47,138 @@
         <section class="section">
           <div class="container">
             <!-- FORM -->
-            <div class="columns is-multiline">
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label" for="usersList">Usuario</label>
-                        <div class="control has-icons-left">
-                            <input
-                                class="input"
-                                list="usersRecords"
-                                id="usersList"
-                                placeholder="Quien cotiza?"
-                                x-model="user"
+            <div id="view-form">
+                <div class="columns is-multiline">
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label" for="usersList">Usuario</label>
+                            <div class="control has-icons-left">
+                                <input
+                                    class="input"
+                                    list="usersRecords"
+                                    id="usersList"
+                                    placeholder="Quien cotiza?"
+                                    x-model="user"
+                                >
+                                <span class="icon is-small is-left">
+                                    <i class="icon-user"></i>
+                                </span>
+                                <datalist id="usersRecords">
+                                    <template x-for="rec in userArray" :key="rec.id">
+                                        <option :value="rec.name" x-text="rec.name"></option>
+                                    </template>
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label" for="customerList">Cliente</label>
+                            <div class="control has-icons-left">
+                                <input
+                                    class="input"
+                                    list="customerRecords"
+                                    id="customerList"
+                                    placeholder="Nenova Inc."
+                                    x-model="customer"
+                                >
+                                <span class="icon is-small is-left">
+                                    <i class="icon-file-user"></i>
+                                </span>
+                                <datalist id="customerRecords">
+                                    <template x-for="rec in customerArray" :key="rec.id">
+                                        <option :value="rec.name" x-text="rec.name"></option>
+                                    </template>
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label">Cantidad Hrs. Hombre</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="number" placeholder="40" x-model="hrMen">
+                                <span class="icon is-small is-left">
+                                      <i class="icon-timer"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label">Costo Hora Hombre</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="number" placeholder="80" x-model="hrCost">
+                                <span class="icon is-small is-left">
+                                      <i class="icon-coins"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label">Costo Transporte</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="number" placeholder="500" x-model="transportCost">
+                                <span class="icon is-small is-left">
+                                      <i class="icon-truck"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label" for="productList">Producto</label>
+                            <div class="control has-icons-left">
+                                <input
+                                    class="input"
+                                    list="productRecords"
+                                    id="productList"
+                                    placeholder="Rollo Cable"
+                                    x-model="product"
+                                    :disabled="unlockProduct"
+                                >
+                                <span class="icon is-small is-left">
+                                    <i class="icon-shopping-basket"></i>
+                                </span>
+                                <datalist id="productRecords">
+                                    <template x-for="rec in productArray" :key="rec.id">
+                                        <option :value="rec.name" x-text="rec.name"></option>
+                                    </template>
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label">Cantidad</label>
+                            <div class="control has-icons-left">
+                                <input
+                                    class="input"
+                                    type="number"
+                                    placeholder="120"
+                                    x-model="quantity"
+                                    :disabled="unlockProduct"
+                                >
+                                <span class="icon is-small is-left">
+                                      <i class="icon-circle-pile"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-3">
+                        <div class="field">
+                            <label class="label">Agregar</label>
+                            <button
+                                class="button is-warning is-fullwidth is-normal"
+                                @click="appendItem"
+                                :disabled="appendRequired"
                             >
-                            <span class="icon is-small is-left">
-                                <i class="icon-user"></i>
-                            </span>
-                            <datalist id="usersRecords">
-                                <template x-for="rec in userArray" :key="rec.id">
-                                    <option :value="rec.name" x-text="rec.name"></option>
-                                </template>
-                            </datalist>
+                                <span class="icon is-centered">
+                                    <i class="icon-badge-plus"></i>
+                                </span>
+                            </button>
                         </div>
-                    </div>
-                </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label" for="customerList">Cliente</label>
-                        <div class="control has-icons-left">
-                            <input
-                                class="input"
-                                list="customerRecords"
-                                id="customerList"
-                                placeholder="Nenova Inc."
-                                x-model="customer"
-                            >
-                            <span class="icon is-small is-left">
-                                <i class="icon-file-user"></i>
-                            </span>
-                            <datalist id="customerRecords">
-                                <template x-for="rec in customerArray" :key="rec.id">
-                                    <option :value="rec.name" x-text="rec.name"></option>
-                                </template>
-                            </datalist>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label">Cantidad Horas Hombre</label>
-                        <div class="control has-icons-left">
-                            <input class="input" type="number" placeholder="40" x-model="hrMen">
-                            <span class="icon is-small is-left">
-                                  <i class="icon-timer"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label">Costo Hora Hombre</label>
-                        <div class="control has-icons-left">
-                            <input class="input" type="number" placeholder="80" x-model="hrCost">
-                            <span class="icon is-small is-left">
-                                  <i class="icon-coins"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label">Costo Transporte</label>
-                        <div class="control has-icons-left">
-                            <input class="input" type="number" placeholder="500" x-model="transportCost">
-                            <span class="icon is-small is-left">
-                                  <i class="icon-truck"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label" for="productList">Producto</label>
-                        <div class="control has-icons-left">
-                            <input
-                                class="input"
-                                list="productRecords"
-                                id="productList"
-                                placeholder="Rollo Cable"
-                                x-model="product"
-                                :disabled="unlockProduct"
-                            >
-                            <span class="icon is-small is-left">
-                                <i class="icon-shopping-basket"></i>
-                            </span>
-                            <datalist id="productRecords">
-                                <template x-for="rec in productArray" :key="rec.id">
-                                    <option :value="rec.name" x-text="rec.name"></option>
-                                </template>
-                            </datalist>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label">Cantidad</label>
-                        <div class="control has-icons-left">
-                            <input
-                                class="input"
-                                type="number"
-                                placeholder="120"
-                                x-model="quantity"
-                                :disabled="unlockProduct"
-                            >
-                            <span class="icon is-small is-left">
-                                  <i class="icon-circle-pile"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-3">
-                    <div class="field">
-                        <label class="label">Agregar</label>
-                        <button
-                            class="button is-primary is-fullwidth is-normal"
-                            @click="appendItem"
-                            :disabled="appendRequired"
-                        >
-                            <span class="icon is-centered">
-                                <i class="icon-badge-plus"></i>
-                            </span>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -214,91 +217,102 @@
                 <tr>
                     <td colspan="8"></td>
                 </tr>
-                <tr>
-                    <td>Subtotal Transporte</td>
+                <tr class="is-dark">
+                    <td>Cliente</td>
+                    <td x-text="customer"></td>
+                    <td>Hrs. Hombre</td>
+                    <td x-text="hrMen"></td>
+                    <td colspan="4">
+                </tr>
+                <tr class="is-dark">
+                    <td>Subtotal Trans.</td>
                     <td x-text="transportCost"></td>
-                    <td>Subtotal HrsHombre</td>
+                    <td>Subtotal HrsHom.</td>
                     <td x-text="hrMenTotal"></td>
-                    <td>Subtotal Productos</td>
+                    <td>Subtotal Prods.</td>
                     <td x-text="productTotal"></td>
-                    <td>Total Cotización</td>
+                    <td>Total</td>
                     <td x-text="total"></td>
                 </tr>
               </tfoot>
             </table>
-            <!-- CONFIG OUTPUT -->
-            <div class="columns">
-                <div class="column is-2">
-                    <div class="field">
-                        <label class="checkbox">
-                          <input type="checkbox" x-model="sendMulti" @click="toggleMulti"/>
-                          Enviar A Varios
-                        </label>
+            <!-- CONFIG MAILING -->
+            <section id="mail-controls">
+                <div class="columns">
+                    <div class="column is-2">
+                        <div class="field">
+                            <label class="checkbox">
+                              <input type="checkbox" x-model="sendMulti" @click="toggleMulti"/>
+                              Enviar A Varios
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="column is-2">
-                    <div class="field" x-show="sendMulti">
-                        <label class="label">Correos</label>
-                        <input class="input" type="email" placeholder="ejemplo@gmail.com" x-model="chip">
+                    <div class="column is-2">
+                        <div class="field" x-show="sendMulti">
+                            <label class="label">Correos</label>
+                            <input class="input" type="email" placeholder="ejemplo@gmail.com" x-model="chip">
+                        </div>
                     </div>
-                </div>
-                <div class="column is-2">
-                    <div class="field" x-show="sendMulti">
-                        <label class="label">Agregar</label>
-                        <button
-                            class="button is-danger is-light is-fullwidth"
-                            @click="appendChip"
-                        >
-                            <span class="icon is-centered">
-                                <i class="icon-mail"></i>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <div class="column is-6">
-                    <div class="chips-container" x-show="sendMulti">
-                        <template x-for="chip in mailChips">
-                            <span
-                                class="tag is-primary mx-2"
-                                x-text="chip"
-                                @click="popChip(chip)"
-                                style="cursor: pointer;"
+                    <div class="column is-2">
+                        <div class="field" x-show="sendMulti">
+                            <label class="label">Agregar</label>
+                            <button
+                                class="button is-danger is-light is-fullwidth"
+                                @click="appendChip"
                             >
-                            </span>
-                        </template>
+                                <span class="icon is-centered">
+                                    <i class="icon-mail"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="column is-6">
+                        <div class="chips-container" x-show="sendMulti">
+                            <template x-for="chip in mailChips">
+                                <span
+                                    class="tag is-dark mx-2"
+                                    x-text="chip"
+                                    @click="popChip(chip)"
+                                    style="cursor: pointer;"
+                                >
+                                </span>
+                            </template>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
             <!-- DANGER BUTTONS -->
-            <div class="columns">
-                <div class="column is-12">
-                    <div class="buttons mt-6">
-                        <button
-                            class="button is-warning is-outlined"
-                            @click="goBack"
-                        >Regresar
-                        </button>
-                        <button
-                            class="button is-danger"
-                            @click="printQuote"
-                            :disabled="unlockActions"
-                        >Imprimir
-                        </button>
-                        <button
-                            class="button is-primary"
-                            @click="send"
-                            :disabled="unlockActions"
-                        >Enviar
-                        </button>
-                        <button
-                            class="button is-info"
-                            @click="createRecord"
-                            :disabled="unlockActions"
-                        >Guardar
-                        </button>
+            <section id="view-controls">
+                <div class="columns">
+                    <div class="column is-12">
+                        <div class="buttons mt-6">
+                            <button
+                                class="button is-warning is-outlined"
+                                @click="goBack"
+                            >Regresar
+                            </button>
+                            <button
+                                class="button is-primary"
+                                @click="printQuote"
+                                :disabled="unlockActions"
+                            >Imprimir
+                            </button>
+                            <button
+                                class="button is-primary"
+                                @click="send"
+                                :disabled="unlockActions"
+                            >Enviar
+                            </button>
+                            <button
+                                class="button is-primary"
+                                @click="createRecord"
+                                :disabled="unlockActions"
+                            >Guardar
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
         </section>
     </main>

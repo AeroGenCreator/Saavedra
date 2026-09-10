@@ -58,7 +58,7 @@ document.addEventListener('alpine:init', () => {
       this.mailChips = newChips
     },
 
-    printQuote() { return },
+    printQuote() { window.print() },
     createRecord() { return },
     send() { return },
 

@@ -1,0 +1,35 @@
+@media print {
+  nav, footer, #mail-controls, #view-controls, #view-form {
+    display: none !important;
+  }
+
+  body.has-navbar-fixed-top {
+    padding-top: 0 !important;
+  }
+
+  main.hero.is-fullheight {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .section,
+  .container {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  table.my-6 {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-family: Georgia, serif;
+    font-size: 7pt;
+    line-height: 1.5;
+  }
+}

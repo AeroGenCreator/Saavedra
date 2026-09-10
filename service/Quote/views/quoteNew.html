@@ -95,7 +95,7 @@
                     <div class="field">
                         <label class="label">Cantidad Horas Hombre</label>
                         <div class="control has-icons-left">
-                            <input class="input" type="number" placeholder="40" x-model="hrsHombre">
+                            <input class="input" type="number" placeholder="40" x-model="hrMen">
                             <span class="icon is-small is-left">
                                   <i class="icon-timer"></i>
                             </span>
@@ -134,6 +134,7 @@
                                 id="productList"
                                 placeholder="Rollo Cable"
                                 x-model="product"
+                                :disabled="unlockProduct"
                             >
                             <span class="icon is-small is-left">
                                 <i class="icon-shopping-basket"></i>
@@ -150,7 +151,13 @@
                     <div class="field">
                         <label class="label">Cantidad</label>
                         <div class="control has-icons-left">
-                            <input class="input" type="number" placeholder="120" x-model="quantity">
+                            <input
+                                class="input"
+                                type="number"
+                                placeholder="120"
+                                x-model="quantity"
+                                :disabled="unlockProduct"
+                            >
                             <span class="icon is-small is-left">
                                   <i class="icon-circle-pile"></i>
                             </span>
@@ -188,8 +195,16 @@
             </thead>
             <tbody>
                 <template x-for="record in records" :key="record.name">
-                <tr @click="openRecord(record.name)" style="cursor: pointer;">
+                <tr @click="popItem(record.name)" style="cursor: pointer;">
                     <td x-text="record.name"></td>
+                    <td x-text="record.description"></td>
+                    <td x-text="record.pMeasure"></td>
+                    <td x-text="record.price"></td>
+                    <td x-text="record.category"></td>
+                    <td x-text="record.proveedor"></td>
+                    <td x-text="record.quantity"></td>
+                    <td x-text="record.subtotal"></td>
+
                 </tr>
                 </template>
                 <tr x-show="!records || !loading && records.length === 0">
@@ -198,14 +213,17 @@
             </tbody>
             <tfoot>
                 <tr>
+                    <td colspan="8"></td>
+                </tr>
+                <tr>
                     <td>Subtotal Transporte</td>
                     <td x-text="transportCost"></td>
-                  <td>Subtotal HrsHombre</td>
-                  <td x-text="hrsHombreTotal"></td>
-                  <td>Subtotal Productos</td>
-                  <td x-text="productosTotal"></td>
-                  <td>Total Cotización</td>
-                  <td x-text="total"></td>
+                    <td>Subtotal HrsHombre</td>
+                    <td x-text="hrMenTotal"></td>
+                    <td>Subtotal Productos</td>
+                    <td x-text="productTotal"></td>
+                    <td>Total Cotización</td>
+                    <td x-text="total"></td>
                 </tr>
               </tfoot>
             </table>
@@ -230,15 +248,21 @@
                         >Regresar
                         </button>
                         <button
-                            class="button is-danger is-light"
+                            class="button is-danger"
                             @click="printQuote"
-                            :disabled="saveRequired"
+                            :disabled="unlockActions"
                         >Imprimir
+                        </button>
+                        <button
+                            class="button is-primary"
+                            @click="send"
+                            :disabled="unlockActions"
+                        >Enviar
                         </button>
                         <button
                             class="button is-info"
                             @click="createRecord"
-                            :disabled="saveRequired"
+                            :disabled="unlockActions"
                         >Guardar
                         </button>
                     </div>

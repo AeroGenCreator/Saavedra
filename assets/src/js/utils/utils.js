@@ -204,3 +204,8 @@ async function FetchDataFromResponse(path, options = {}) {
     return data
   } catch (error) { throw error }
 }
+
+function ValidateEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}

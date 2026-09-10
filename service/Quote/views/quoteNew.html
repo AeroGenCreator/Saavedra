@@ -204,7 +204,6 @@
                     <td x-text="record.proveedor"></td>
                     <td x-text="record.quantity"></td>
                     <td x-text="record.subtotal"></td>
-
                 </tr>
                 </template>
                 <tr x-show="!records || !loading && records.length === 0">
@@ -235,6 +234,38 @@
                           <input type="checkbox" x-model="sendMulti" @click="toggleMulti"/>
                           Enviar A Varios
                         </label>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <div class="field" x-show="sendMulti">
+                        <label class="label">Correos</label>
+                        <input class="input" type="email" placeholder="ejemplo@gmail.com" x-model="chip">
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <div class="field" x-show="sendMulti">
+                        <label class="label">Agregar</label>
+                        <button
+                            class="button is-danger is-light is-fullwidth"
+                            @click="appendChip"
+                        >
+                            <span class="icon is-centered">
+                                <i class="icon-mail"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="column is-6">
+                    <div class="chips-container" x-show="sendMulti">
+                        <template x-for="chip in mailChips">
+                            <span
+                                class="tag is-primary mx-2"
+                                x-text="chip"
+                                @click="popChip(chip)"
+                                style="cursor: pointer;"
+                            >
+                            </span>
+                        </template>
                     </div>
                 </div>
             </div>

@@ -14,7 +14,7 @@ document.addEventListener('alpine:init', () => {
 document.addEventListener('alpine:init', () => {
   Alpine.data('quoteNewComponent', () => ({
 
-    records: [], userArray: [], customerArray: [], productArray: [], user: '', customer: '',
+    records: [], userArray: [], customerArray: [], productArray: [], user: '', customer: '', mailChips: [], chip: '',
     hrMen: 0, hrCost: 0, transportCost: 0, product: '', quantity: 0, loading: false, productTotal: 0, sendMulti: false,
 
     async init() {
@@ -29,10 +29,7 @@ document.addEventListener('alpine:init', () => {
 
     appendItem() {
       const exists = this.records.find(item => item.name.toLowerCase() === this.product.toLowerCase())
-      if (exists) {
-        alert(`El articulo ${this.product} ya existe en la lista, eliminar primero.`)
-        return
-      }
+      if (exists) { return alert(`El articulo ${this.product} ya existe en la lista, eliminar primero.`) }
       var record = this.productArray.find(item => item.name.toLowerCase() === this.product.toLowerCase());
       record.quantity = this.quantity;
       record.subtotal = record.quantity * record.price;
@@ -41,7 +38,6 @@ document.addEventListener('alpine:init', () => {
       this.product = ''
       this.quantity = 0
     },
-
     popItem(name) {
       var newRecords = this.records.filter(item => item.name !== name)
       this.productTotal = newRecords.reduce((sum, item) => sum + item.subtotal, 0)
@@ -50,6 +46,17 @@ document.addEventListener('alpine:init', () => {
 
     hrMenTotal() { return this.hrMen * this.hrCost},
     total() { return parseFloat(this.transportCost) + parseFloat(this.hrMenTotal()) + this.productTotal},
+
+    appendChip() {
+      const valid = ValidateEmail(this.chip)
+      if (!valid) { return alert(`Estructura invalida de email: ${this.chip}.`)}
+      this.mailChips.push(this.chip);
+      this.chip = '';
+    },
+    popChip(chip) {
+      var newChips = this.mailChips.filter(item => item !== chip)
+      this.mailChips = newChips
+    },
 
     printQuote() { return },
     createRecord() { return },

@@ -530,7 +530,39 @@ the architecture asks:
 
 ## Configuration
 
-Create the required environment configuration:
+Clone the repository from Git Hub 📦
+
+```bash
+git clone https://github.com/AeroGenCreator/Saavedra.git
+```
+
+```bash
+cd Saavedra
+```
+
+Docker Commands 🐳
+
+```bash
+docker build -t saavedra_app .
+```
+
+```bash
+docker run -d -p 8080:8080 --name saavedra_container saavedra_app
+```
+
+```bash
+docker exec -it saavedra_container bash
+```
+
+```bash
+touch /usr/src/Saavedra/.env
+```
+
+```bash
+nano /usr/src/Saavedra/.env
+```
+
+Required environment configuration: ⚙️
 
 ```env
 # Token used to validate client requests
@@ -551,7 +583,7 @@ IS_PRODUCTION=
 RECORDS_PER_SLICE=
 
 # Application port
-PORT=
+PORT=8080
 ```
 
 > **Security:** never commit production credentials, tokens, or private secrets to the repository.

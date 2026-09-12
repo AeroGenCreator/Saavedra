@@ -1,0 +1,33 @@
+services:
+  saavedra:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: saavedra:v1.0
+    container_name: saavedra_container
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - SESSION_TOKEN=${SESSION_TOKEN}
+      - DATABASE_FILE_NAME=${DATABASE_FILE_NAME}
+      - ADMIN_NAME=${ADMIN_NAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - IS_PRODUCTION=${IS_PRODUCTION}
+      - RECORDS_PER_SLICE=${RECORDS_PER_SLICE}
+      - PORT=${PORT}
+    volumes:
+      - ./assets:/usr/src/Saavedra/assets
+      - ./config:/usr/src/Saavedra/config
+      - ./db:/usr/src/Saavedra/db
+      - ./env:/usr/src/Saavedra/env
+      - ./migration:/usr/src/Saavedra/migration
+      - ./service:/usr/src/Saavedra/service
+      - ./utils:/usr/src/Saavedra/utils
+      - ./go.mod:/usr/src/Saavedra/go.mod
+      - ./go.sum:/usr/src/Saavedra/go.sum
+      - ./main.go:/usr/src/Saavedra/main.go
+    ports:
+      - ${PORT}:${PORT}
+    entrypoint: ["/usr/src/Saavedra/entrypoint.sh"]

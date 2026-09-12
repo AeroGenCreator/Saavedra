@@ -540,26 +540,27 @@ git clone https://github.com/AeroGenCreator/Saavedra.git
 cd Saavedra
 ```
 
+```bash
+# Create your database directory backup. Important: Call it 'db'
+mkdir -p db
+```
+
 Docker Commands 🐳
 
 ```bash
-docker build -t saavedra_app .
+docker compose up
 ```
 
 ```bash
-docker run -d -p 8080:8080 --name saavedra_container saavedra_app
+# Enter the container and run it.
+docker compose exec -it saavedra bash
+
+go run main.go
 ```
 
 ```bash
-docker exec -it saavedra_container bash
-```
-
-```bash
-touch /usr/src/Saavedra/.env
-```
-
-```bash
-nano /usr/src/Saavedra/.env
+# Update changes
+docker compose up --build saavedra
 ```
 
 Required environment configuration: ⚙️
